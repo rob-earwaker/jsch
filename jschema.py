@@ -1,29 +1,3 @@
-"""
->>> import jschema
-
->>> class Greeting(jschema.Class):
-...     max_properties = 1
-...     name = jschema.String(
-...         max_length=10,
-...         min_length=1,
-...         pattern='^W'
-...     )
-
->>> print Greeting.jschema.asjson(pretty=True)
-{
-    "maxProperties": 1,
-    "properties": {
-        "name": {
-            "maxLength": 10,
-            "minLength": 1,
-            "pattern": "^W",
-            "type": "string"
-        }
-    },
-    "type": "object"
-}
-
-"""
 import json
 import re
 
