@@ -100,6 +100,20 @@ class TestInteger(SchemaAttrTestCase):
         with self.assertFailsValidation(message):
             Person().age = 12
 
+    def test_maximum_validation(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(maximum=23)
+        message = "invalid integer [maximum=23]: 35"
+        with self.assertFailsValidation(message):
+            Person().age = 35
+
+    def test_exclusive_maximum_validation(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(maximum=23, exclusive_maximum=True)
+        message = "invalid integer [maximum=23, exclusive_maximum=True]: 23"
+        with self.assertFailsValidation(message):
+            Person().age = 23
+
     def test_schema_with_no_validation_fields(self):
         class Person(jschema.Class):
             age = jschema.Integer()
@@ -111,6 +125,21 @@ class TestInteger(SchemaAttrTestCase):
             age = jschema.Integer(multiple_of=7)
         schema = Person().jschema['properties']['age']
         self.assertEqual({'multipleOf': 7, 'type': 'integer'}, schema)
+
+    def test_schema_with_maximum(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(maximum=23)
+        schema = Person().jschema['properties']['age']
+        self.assertEqual({'maximum': 23, 'type': 'integer'}, schema)
+
+    def test_schema_with_exclusive_maximum(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(maximum=23, exclusive_maximum=True)
+        schema = Person().jschema['properties']['age']
+        self.assertEqual(
+            {'exclusiveMaximum': True, 'maximum': 23, 'type': 'integer'},
+            schema
+        )
 
 
 if __name__ == '__main__':
