@@ -86,13 +86,19 @@ class Integer(SchemaAttr):
 
     def __init__(self, **kwargs):
         self.exclusive_maximum = kwargs.pop('exclusive_maximum', None)
+        self.exclusive_minimum = kwargs.pop('exclusive_minimum', None)
         self.maximum = kwargs.pop('maximum', None)
+        self.minimum = kwargs.pop('minimum', None)
         self.multiple_of = kwargs.pop('multiple_of', None)
         super(Integer, self).__init__(self.TYPE, **kwargs)
         if self.exclusive_maximum is not None:
             self.jschema['exclusiveMaximum'] = self.exclusive_maximum
+        if self.exclusive_minimum is not None:
+            self.jschema['exclusiveMinimum'] = self.exclusive_minimum
         if self.maximum is not None:
             self.jschema['maximum'] = self.maximum
+        if self.minimum is not None:
+            self.jschema['minimum'] = self.minimum
         if self.multiple_of is not None:
             self.jschema['multipleOf'] = self.multiple_of
 
@@ -108,6 +114,13 @@ class Integer(SchemaAttr):
                 )
             if value > self.maximum:
                 self.raise_validation_error(self.TYPE, value, 'maximum')
+        if self.minimum is not None:
+            if self.exclusive_minimum and value <= self.minimum:
+                self.raise_validation_error(
+                    self.TYPE, value, 'minimum', 'exclusive_minimum'
+                )
+            if value < self.minimum:
+                self.raise_validation_error(self.TYPE, value, 'minimum')
 
 
 class JsonSchemaValidationError(Exception):

@@ -114,6 +114,20 @@ class TestInteger(SchemaAttrTestCase):
         with self.assertFailsValidation(message):
             Person().age = 23
 
+    def test_minimum_validation(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(minimum=18)
+        message = "invalid integer [minimum=18]: 10"
+        with self.assertFailsValidation(message):
+            Person().age = 10
+
+    def test_exclusive_minimum_validation(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(minimum=18, exclusive_minimum=True)
+        message = "invalid integer [minimum=18, exclusive_minimum=True]: 18"
+        with self.assertFailsValidation(message):
+            Person().age = 18
+
     def test_schema_with_no_validation_fields(self):
         class Person(jschema.Class):
             age = jschema.Integer()
@@ -138,6 +152,21 @@ class TestInteger(SchemaAttrTestCase):
         schema = Person().jschema['properties']['age']
         self.assertEqual(
             {'exclusiveMaximum': True, 'maximum': 23, 'type': 'integer'},
+            schema
+        )
+
+    def test_schema_with_minimum(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(minimum=18)
+        schema = Person().jschema['properties']['age']
+        self.assertEqual({'minimum': 18, 'type': 'integer'}, schema)
+
+    def test_schema_with_exclusive_minimum(self):
+        class Person(jschema.Class):
+            age = jschema.Integer(minimum=18, exclusive_minimum=True)
+        schema = Person().jschema['properties']['age']
+        self.assertEqual(
+            {'exclusiveMinimum': True, 'minimum': 18, 'type': 'integer'},
             schema
         )
 
