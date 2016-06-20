@@ -60,6 +60,7 @@ class String(SchemaAttr):
 
     def __init__(self, **kwargs):
         self.max_length = kwargs.pop('max_length', None)
+        self.validate_max_length_definition()
         self.min_length = kwargs.pop('min_length', None)
         self.pattern = kwargs.pop('pattern', None)
         super(String, self).__init__(self.TYPE, **kwargs)
@@ -69,6 +70,14 @@ class String(SchemaAttr):
             self.jschema['minLength'] = self.min_length
         if self.pattern is not None:
             self.jschema['pattern'] = self.pattern
+
+    def validate_max_length_definition(self):
+        if self.max_length is None:
+            return
+        if not isinstance(self.max_length, int):
+            raise JsonSchemaDefinitionError(
+                'max_length must be int', self.max_length
+            )
 
     def validate(self, value):
         if not isinstance(value, str):
@@ -135,6 +144,13 @@ class JsonSchemaValidationError(Exception):
                 ),
                 repr(value)
             )
+        )
+
+
+class JsonSchemaDefinitionError(Exception):
+    def __init__(self, reason, value):
+        super(JsonSchemaDefinitionError, self).__init__(
+            'invalid definition [{0}]: {1}'.format(reason, repr(value))
         )
 
 

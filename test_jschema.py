@@ -10,6 +10,11 @@ class SchemaAttrTestCase(unittest.TestCase):
             jschema.JsonSchemaValidationError, re.escape(message)
         )
 
+    def assertInvalidDefinition(self, message):
+        return self.assertRaisesRegexp(
+            jschema.JsonSchemaDefinitionError, re.escape(message)
+        )
+
 
 class TestString(SchemaAttrTestCase):
     def test_init_with_value(self):
@@ -28,6 +33,12 @@ class TestString(SchemaAttrTestCase):
         message = "invalid string: 12"
         with self.assertFailsValidation(message):
             Person().name = 12
+
+    def test_max_length_invalid_definition(self):
+        message = "invalid definition [max_length must be int]: 'Bob'"
+        with self.assertInvalidDefinition(message):
+            class Person(jschema.Class):
+                name = jschema.String(max_length='Bob')
 
     def test_max_length_validation(self):
         class Person(jschema.Class):
