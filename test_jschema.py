@@ -47,6 +47,12 @@ class TestString(SchemaAttrTestCase):
         with self.assertFailsValidation(message):
             Person().name = 'Michaelangelo'
 
+    def test_min_length_invalid_definition(self):
+        message = "invalid definition [min_length must be int]: 'Bob'"
+        with self.assertInvalidDefinition(message):
+            class Person(jschema.Class):
+                name = jschema.String(min_length='Bob')
+
     def test_min_length_validation(self):
         class Person(jschema.Class):
             name = jschema.String(min_length=5)
