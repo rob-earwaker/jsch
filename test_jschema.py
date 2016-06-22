@@ -16,6 +16,17 @@ class SchemaPropTestCase(unittest.TestCase):
         )
 
 
+class TestObject(SchemaPropTestCase):
+    def test_init_with_value(self):
+        class Engine(jschema.Class):
+            pass
+
+        class Car(jschema.Class):
+            engine = jschema.Object(Engine)
+        engine = Engine()
+        self.assertEqual(engine, Car(engine=engine).engine)
+
+
 class TestString(SchemaPropTestCase):
     def test_init_with_value(self):
         class Person(jschema.Class):

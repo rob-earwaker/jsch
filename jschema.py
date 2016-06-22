@@ -15,9 +15,14 @@ class Schema(dict):
 
 
 class SchemaProp(property):
-    def __init__(self, type, **kwargs):
+    def __init__(self, type, prop_names={}, **kwargs):
         self.name = None
         self.jschema = Schema({'type': type})
+        for def_name, schema_name in prop_names.iteritems():
+            value = kwargs.pop(def_name, None)
+            setattr(self, def_name, value)
+            if value is not None:
+                self.jschema[schema_name] = value
         super(SchemaProp, self).__init__(fget=self.getprop, fset=self.setprop)
 
     def getprop(self, obj):
@@ -38,38 +43,39 @@ class SchemaProp(property):
 
 class Object(SchemaProp):
     TYPE = 'object'
+    SCHEMA_PROPS = {'max_properties': 'maxProperties'}
 
     def __init__(self, cls):
-        kwargs = {}
-        self.max_properties = getattr(cls, 'max_properties', None)
-        super(Object, self).__init__(self.TYPE, **kwargs)
-        if self.max_properties is not None:
-            self.jschema['maxProperties'] = self.max_properties
-        properties = [
+        schema_props = [
             (key, value) for key, value in cls.__dict__.iteritems()
-            if isinstance(value, SchemaProp)
+            if key in self.SCHEMA_PROPS
         ]
-        if properties:
+        super(Object, self).__init__(
+            self.TYPE, self.SCHEMA_PROPS, **dict(schema_props)
+        )
+        props = [
+            (key, val) for key, val in cls.__dict__.iteritems()
+            if isinstance(val, SchemaProp)
+        ]
+        if props:
             self.jschema['properties'] = {}
-        for name, prop in properties:
+        for name, prop in props:
             self.jschema['properties'][name] = prop.jschema
+
+    def validate(self, value):
+        pass
 
 
 class String(SchemaProp):
     TYPE = 'string'
-    PROPS = {
+    SCHEMA_PROPS = {
         'max_length': 'maxLength',
         'min_length': 'minLength',
         'pattern': 'pattern'
     }
 
     def __init__(self, **kwargs):
-        super(String, self).__init__(self.TYPE, **kwargs)
-        for prop in self.PROPS:
-            value = kwargs.pop(prop, None)
-            setattr(self, prop, value)
-            if value is not None:
-                self.jschema[self.PROPS[prop]] = value
+        super(String, self).__init__(self.TYPE, self.SCHEMA_PROPS, **kwargs)
         self.validate_max_length_definition()
         self.validate_min_length_definition()
 
@@ -110,7 +116,7 @@ class String(SchemaProp):
 
 class Integer(SchemaProp):
     TYPE = 'integer'
-    PROPS = {
+    SCHEMA_PROPS = {
         'exclusive_maximum': 'exclusiveMaximum',
         'exclusive_minimum': 'exclusiveMinimum',
         'maximum': 'maximum',
@@ -119,12 +125,7 @@ class Integer(SchemaProp):
     }
 
     def __init__(self, **kwargs):
-        super(Integer, self).__init__(self.TYPE, **kwargs)
-        for prop in self.PROPS:
-            value = kwargs.pop(prop, None)
-            setattr(self, prop, value)
-            if value is not None:
-                self.jschema[self.PROPS[prop]] = value
+        super(Integer, self).__init__(self.TYPE, self.SCHEMA_PROPS, **kwargs)
 
     def validate(self, value):
         if not isinstance(value, int):
