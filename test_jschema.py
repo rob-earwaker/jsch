@@ -34,11 +34,17 @@ class TestString(SchemaAttrTestCase):
         with self.assertFailsValidation(message):
             Person().name = 12
 
-    def test_max_length_invalid_definition(self):
+    def test_max_length_invalid_type_definition(self):
         message = "invalid definition [max_length must be int]: 'Bob'"
         with self.assertInvalidDefinition(message):
             class Person(jschema.Class):
                 name = jschema.String(max_length='Bob')
+
+    def test_max_length_invalid_value_definition(self):
+        message = "invalid definition [max_length must be >= 0]: -1"
+        with self.assertInvalidDefinition(message):
+            class Person(jschema.Class):
+                name = jschema.String(max_length=-1)
 
     def test_max_length_validation(self):
         class Person(jschema.Class):
@@ -47,11 +53,17 @@ class TestString(SchemaAttrTestCase):
         with self.assertFailsValidation(message):
             Person().name = 'Michaelangelo'
 
-    def test_min_length_invalid_definition(self):
+    def test_min_length_invalid_type_definition(self):
         message = "invalid definition [min_length must be int]: 'Bob'"
         with self.assertInvalidDefinition(message):
             class Person(jschema.Class):
                 name = jschema.String(min_length='Bob')
+
+    def test_min_length_invalid_value_definition(self):
+        message = "invalid definition [min_length must be >= 0]: -1"
+        with self.assertInvalidDefinition(message):
+            class Person(jschema.Class):
+                name = jschema.String(min_length=-1)
 
     def test_min_length_validation(self):
         class Person(jschema.Class):

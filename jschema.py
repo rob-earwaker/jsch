@@ -79,6 +79,10 @@ class String(SchemaAttr):
             raise JsonSchemaDefinitionError(
                 'max_length must be int', self.max_length
             )
+        if not self.max_length >= 0:
+            raise JsonSchemaDefinitionError(
+                'max_length must be >= 0', self.max_length
+            )
 
     def validate_min_length_definition(self):
         if self.min_length is None:
@@ -86,6 +90,10 @@ class String(SchemaAttr):
         if not isinstance(self.min_length, int):
             raise JsonSchemaDefinitionError(
                 'min_length must be int', self.min_length
+            )
+        if not self.min_length >= 0:
+            raise JsonSchemaDefinitionError(
+                'min_length must be >= 0', self.min_length
             )
 
     def validate(self, value):
