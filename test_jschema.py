@@ -4,7 +4,7 @@ import unittest
 import jschema
 
 
-class SchemaAttrTestCase(unittest.TestCase):
+class SchemaPropTestCase(unittest.TestCase):
     def assertFailsValidation(self, message):
         return self.assertRaisesRegexp(
             jschema.JsonSchemaValidationError, re.escape(message)
@@ -16,7 +16,7 @@ class SchemaAttrTestCase(unittest.TestCase):
         )
 
 
-class TestString(SchemaAttrTestCase):
+class TestString(SchemaPropTestCase):
     def test_init_with_value(self):
         class Person(jschema.Class):
             name = jschema.String()
@@ -104,7 +104,7 @@ class TestString(SchemaAttrTestCase):
         self.assertEqual({'pattern': '^B', 'type': 'string'}, schema)
 
 
-class TestInteger(SchemaAttrTestCase):
+class TestInteger(SchemaPropTestCase):
     def test_init_with_value(self):
         class Person(jschema.Class):
             age = jschema.Integer()

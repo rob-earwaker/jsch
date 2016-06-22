@@ -14,11 +14,11 @@ class Schema(dict):
         )
 
 
-class SchemaAttr(property):
+class SchemaProp(property):
     def __init__(self, type, **kwargs):
         self.name = None
         self.jschema = Schema({'type': type})
-        super(SchemaAttr, self).__init__(fget=self.getprop, fset=self.setprop)
+        super(SchemaProp, self).__init__(fget=self.getprop, fset=self.setprop)
 
     def getprop(self, obj):
         return getattr(obj, self.name, None)
@@ -36,7 +36,7 @@ class SchemaAttr(property):
         )
 
 
-class Object(SchemaAttr):
+class Object(SchemaProp):
     TYPE = 'object'
 
     def __init__(self, cls):
@@ -45,17 +45,17 @@ class Object(SchemaAttr):
         super(Object, self).__init__(self.TYPE, **kwargs)
         if self.max_properties is not None:
             self.jschema['maxProperties'] = self.max_properties
-        attrs = [
+        properties = [
             (key, value) for key, value in cls.__dict__.iteritems()
-            if isinstance(value, SchemaAttr)
+            if isinstance(value, SchemaProp)
         ]
-        if attrs:
+        if properties:
             self.jschema['properties'] = {}
-        for key, value in attrs:
-            self.jschema['properties'][key] = value.jschema
+        for name, prop in properties:
+            self.jschema['properties'][name] = prop.jschema
 
 
-class String(SchemaAttr):
+class String(SchemaProp):
     TYPE = 'string'
 
     def __init__(self, **kwargs):
@@ -107,7 +107,7 @@ class String(SchemaAttr):
             self.raise_validation_error(self.TYPE, value, 'pattern')
 
 
-class Integer(SchemaAttr):
+class Integer(SchemaProp):
     TYPE = 'integer'
 
     def __init__(self, **kwargs):
@@ -174,7 +174,7 @@ class JsonSchemaDefinitionError(Exception):
 class ClassMeta(type):
     def __init__(cls, name, bases, dict):
         for key, value in dict.iteritems():
-            if isinstance(value, SchemaAttr):
+            if isinstance(value, SchemaProp):
                 value.name = '_' + key
         cls.jschema = Object(cls).jschema
         super(ClassMeta, cls).__init__(name, bases, dict)
