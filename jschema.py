@@ -57,20 +57,21 @@ class Object(SchemaProp):
 
 class String(SchemaProp):
     TYPE = 'string'
+    PROPS = {
+        'max_length': 'maxLength',
+        'min_length': 'minLength',
+        'pattern': 'pattern'
+    }
 
     def __init__(self, **kwargs):
-        self.max_length = kwargs.pop('max_length', None)
-        self.validate_max_length_definition()
-        self.min_length = kwargs.pop('min_length', None)
-        self.validate_min_length_definition()
-        self.pattern = kwargs.pop('pattern', None)
         super(String, self).__init__(self.TYPE, **kwargs)
-        if self.max_length is not None:
-            self.jschema['maxLength'] = self.max_length
-        if self.min_length is not None:
-            self.jschema['minLength'] = self.min_length
-        if self.pattern is not None:
-            self.jschema['pattern'] = self.pattern
+        for prop in self.PROPS:
+            value = kwargs.pop(prop, None)
+            setattr(self, prop, value)
+            if value is not None:
+                self.jschema[self.PROPS[prop]] = value
+        self.validate_max_length_definition()
+        self.validate_min_length_definition()
 
     def validate_max_length_definition(self):
         if self.max_length is None:
@@ -109,24 +110,21 @@ class String(SchemaProp):
 
 class Integer(SchemaProp):
     TYPE = 'integer'
+    PROPS = {
+        'exclusive_maximum': 'exclusiveMaximum',
+        'exclusive_minimum': 'exclusiveMinimum',
+        'maximum': 'maximum',
+        'minimum': 'minimum',
+        'multiple_of': 'multipleOf'
+    }
 
     def __init__(self, **kwargs):
-        self.exclusive_maximum = kwargs.pop('exclusive_maximum', None)
-        self.exclusive_minimum = kwargs.pop('exclusive_minimum', None)
-        self.maximum = kwargs.pop('maximum', None)
-        self.minimum = kwargs.pop('minimum', None)
-        self.multiple_of = kwargs.pop('multiple_of', None)
         super(Integer, self).__init__(self.TYPE, **kwargs)
-        if self.exclusive_maximum is not None:
-            self.jschema['exclusiveMaximum'] = self.exclusive_maximum
-        if self.exclusive_minimum is not None:
-            self.jschema['exclusiveMinimum'] = self.exclusive_minimum
-        if self.maximum is not None:
-            self.jschema['maximum'] = self.maximum
-        if self.minimum is not None:
-            self.jschema['minimum'] = self.minimum
-        if self.multiple_of is not None:
-            self.jschema['multipleOf'] = self.multiple_of
+        for prop in self.PROPS:
+            value = kwargs.pop(prop, None)
+            setattr(self, prop, value)
+            if value is not None:
+                self.jschema[self.PROPS[prop]] = value
 
     def validate(self, value):
         if not isinstance(value, int):
