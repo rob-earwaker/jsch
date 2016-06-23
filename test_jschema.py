@@ -36,6 +36,18 @@ class TestClass(JSchemaTestCase):
             class Engine(jschema.Class):
                 max_properties = -1
 
+    def test_min_properties_invalid_type_definition(self):
+        message = "invalid definition [min_properties must be int]: 'fuel'"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                min_properties = 'fuel'
+
+    def test_min_properties_invalid_value_definition(self):
+        message = "invalid definition [min_properties must be >= 0]: -1"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                min_properties = -1
+
 
 class TestObject(JSchemaTestCase):
     def test_init_with_value(self):

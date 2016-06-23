@@ -43,7 +43,10 @@ class SchemaProp(property):
 
 class Object(SchemaProp):
     TYPE = 'object'
-    SCHEMA_PROPS = {'max_properties': 'maxProperties'}
+    SCHEMA_PROPS = {
+        'max_properties': 'maxProperties',
+        'min_properties': 'minProperties'
+    }
 
     def __init__(self, cls):
         schema_props = [
@@ -54,6 +57,7 @@ class Object(SchemaProp):
             self.TYPE, self.SCHEMA_PROPS, **dict(schema_props)
         )
         self.validate_max_properties_definition()
+        self.validate_min_properties_definition()
         props = [
             (key, val) for key, val in cls.__dict__.iteritems()
             if isinstance(val, SchemaProp)
@@ -72,6 +76,17 @@ class Object(SchemaProp):
             if not self.max_properties >= 0:
                 raise JsonSchemaDefinitionError(
                     'max_properties must be >= 0', self.max_properties
+                )
+
+    def validate_min_properties_definition(self):
+        if self.min_properties is not None:
+            if not isinstance(self.min_properties, int):
+                raise JsonSchemaDefinitionError(
+                    'min_properties must be int', self.min_properties
+                )
+            if not self.min_properties >= 0:
+                raise JsonSchemaDefinitionError(
+                    'min_properties must be >= 0', self.min_properties
                 )
 
     def validate(self, value):
