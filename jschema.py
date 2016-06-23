@@ -69,6 +69,10 @@ class Object(SchemaProp):
                 raise JsonSchemaDefinitionError(
                     'max_properties must be int', self.max_properties
                 )
+            if not self.max_properties >= 0:
+                raise JsonSchemaDefinitionError(
+                    'max_properties must be >= 0', self.max_properties
+                )
 
     def validate(self, value):
         pass

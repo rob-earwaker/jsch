@@ -30,6 +30,12 @@ class TestClass(JSchemaTestCase):
             class Engine(jschema.Class):
                 max_properties = 'fuel'
 
+    def test_max_properties_invalid_value_definition(self):
+        message = "invalid definition [max_properties must be >= 0]: -1"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                max_properties = -1
+
 
 class TestObject(JSchemaTestCase):
     def test_init_with_value(self):
