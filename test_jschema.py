@@ -4,7 +4,7 @@ import unittest
 import jschema
 
 
-class SchemaPropTestCase(unittest.TestCase):
+class JSchemaTestCase(unittest.TestCase):
     def assertFailsValidation(self, message):
         return self.assertRaisesRegexp(
             jschema.JsonSchemaValidationError, re.escape(message)
@@ -16,7 +16,16 @@ class SchemaPropTestCase(unittest.TestCase):
         )
 
 
-class TestObject(SchemaPropTestCase):
+class TestClass(JSchemaTestCase):
+    def test_schema_with_max_properties(self):
+        class Engine(jschema.Class):
+            max_properties = 1
+        self.assertEqual(
+            {'maxProperties': 1, 'type': 'object'}, Engine.jschema
+        )
+
+
+class TestObject(JSchemaTestCase):
     def test_init_with_value(self):
         class Engine(jschema.Class):
             pass
@@ -35,8 +44,17 @@ class TestObject(SchemaPropTestCase):
         schema = Car.jschema['properties']['engine']
         self.assertEqual({'type': 'object'}, schema)
 
+    def test_schema_with_max_properties(self):
+        class Engine(jschema.Class):
+            max_properties = 2
 
-class TestString(SchemaPropTestCase):
+        class Car(jschema.Class):
+            engine = jschema.Object(Engine)
+        schema = Car.jschema['properties']['engine']
+        self.assertEqual({'maxProperties': 2, 'type': 'object'}, schema)
+
+
+class TestString(JSchemaTestCase):
     def test_init_with_value(self):
         class Person(jschema.Class):
             name = jschema.String()
@@ -124,7 +142,7 @@ class TestString(SchemaPropTestCase):
         self.assertEqual({'pattern': '^B', 'type': 'string'}, schema)
 
 
-class TestInteger(SchemaPropTestCase):
+class TestInteger(JSchemaTestCase):
     def test_init_with_value(self):
         class Person(jschema.Class):
             age = jschema.Integer()
