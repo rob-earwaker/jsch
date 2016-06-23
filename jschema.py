@@ -29,15 +29,15 @@ class SchemaProp(property):
         return getattr(obj, self.name, None)
 
     def setprop(self, obj, value):
-        self.validate(value)
+        self.validate(self.name, value)
         setattr(obj, self.name, value)
 
-    def validate(self, value):
+    def validate(self, name, value):
         raise NotImplementedError()
 
     def raise_validation_error(self, type, value, *args):
         raise JsonSchemaValidationError(
-            type, value, *[(key, getattr(self, key)) for key in args]
+            type, value, [(key, getattr(self, key)) for key in args]
         )
 
 
@@ -89,7 +89,7 @@ class Object(SchemaProp):
                     'min_properties must be >= 0', self.min_properties
                 )
 
-    def validate(self, value):
+    def validate(self, name, value):
         pass
 
 
@@ -128,7 +128,7 @@ class String(SchemaProp):
                     'min_length must be >= 0', self.min_length
                 )
 
-    def validate(self, value):
+    def validate(self, name, value):
         if not isinstance(value, str):
             self.raise_validation_error(self.TYPE, value)
         if self.max_length is not None and len(value) > self.max_length:
@@ -152,7 +152,7 @@ class Integer(SchemaProp):
     def __init__(self, **kwargs):
         super(Integer, self).__init__(self.TYPE, self.SCHEMA_PROPS, **kwargs)
 
-    def validate(self, value):
+    def validate(self, name, value):
         if not isinstance(value, int):
             self.raise_validation_error(self.TYPE, value)
         if self.multiple_of is not None and not value % self.multiple_of == 0:
@@ -174,16 +174,16 @@ class Integer(SchemaProp):
 
 
 class JsonSchemaValidationError(Exception):
-    def __init__(self, type, value, *args):
+    def __init__(self, type, value=None, args=[]):
         super(JsonSchemaValidationError, self).__init__(
-            'invalid {0}{1}: {2}'.format(
+            'invalid {0}{1}{2}'.format(
                 type,
                 '' if not args else ' [{0}]'.format(
                     ', '.join(
                         ['{0}={1}'.format(key, repr(val)) for key, val in args]
                     )
                 ),
-                repr(value)
+                ': {0}'.format(repr(value)) if value else ''
             )
         )
 
@@ -207,6 +207,24 @@ class ClassMeta(type):
 class Class(object):
     __metaclass__ = ClassMeta
 
+    TYPE = 'object'
+
+    max_properties = None
+    min_properties = None
+
     def __init__(self, **kwargs):
+        if len(kwargs) < self.min_properties:
+            raise JsonSchemaValidationError(
+                self.TYPE, args=[('min_properties', self.min_properties)]
+            )
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
+
+    def __setattr__(self, name, value):
+        if self.max_properties is not None:
+            props = [key for key in self.__dict__ if not key.startswith('_')]
+            if len(props) == self.max_properties and name not in props:
+                raise JsonSchemaValidationError(
+                    self.TYPE, args=[('max_properties', self.max_properties)]
+                )
+        super(Class, self).__setattr__(name, value)

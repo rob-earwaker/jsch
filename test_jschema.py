@@ -17,13 +17,6 @@ class JSchemaTestCase(unittest.TestCase):
 
 
 class TestClass(JSchemaTestCase):
-    def test_schema_with_max_properties(self):
-        class Engine(jschema.Class):
-            max_properties = 1
-        self.assertEqual(
-            {'maxProperties': 1, 'type': 'object'}, Engine.jschema
-        )
-
     def test_max_properties_invalid_type_definition(self):
         message = "invalid definition [max_properties must be int]: 'fuel'"
         with self.assertInvalidDefinition(message):
@@ -36,6 +29,15 @@ class TestClass(JSchemaTestCase):
             class Engine(jschema.Class):
                 max_properties = -1
 
+    def test_max_properties_validation(self):
+        class Engine(jschema.Class):
+            max_properties = 1
+        engine = Engine()
+        engine.piston = 'solid'
+        message = "invalid object [max_properties=1]"
+        with self.assertFailsValidation(message):
+            engine.crank = 'twist'
+
     def test_min_properties_invalid_type_definition(self):
         message = "invalid definition [min_properties must be int]: 'fuel'"
         with self.assertInvalidDefinition(message):
@@ -47,6 +49,27 @@ class TestClass(JSchemaTestCase):
         with self.assertInvalidDefinition(message):
             class Engine(jschema.Class):
                 min_properties = -1
+
+    def test_min_properties_validation(self):
+        class Engine(jschema.Class):
+            min_properties = 1
+        message = "invalid object [min_properties=1]"
+        with self.assertFailsValidation(message):
+            Engine()
+
+    def test_schema_with_max_properties(self):
+        class Engine(jschema.Class):
+            max_properties = 1
+        self.assertEqual(
+            {'maxProperties': 1, 'type': 'object'}, Engine.jschema
+        )
+
+    def test_schema_with_min_properties(self):
+        class Engine(jschema.Class):
+            min_properties = 1
+        self.assertEqual(
+            {'minProperties': 1, 'type': 'object'}, Engine.jschema
+        )
 
 
 class TestObject(JSchemaTestCase):
