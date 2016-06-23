@@ -231,6 +231,12 @@ class Class(object):
             raise JsonSchemaValidationError(
                 self.TYPE, args=[('min_properties', self.min_properties)]
             )
+        if self.required is not None:
+            for prop in self.required:
+                if prop not in kwargs:
+                    raise JsonSchemaValidationError(
+                        self.TYPE, args=[('required', self.required)]
+                    )
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 

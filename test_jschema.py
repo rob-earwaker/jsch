@@ -69,6 +69,13 @@ class TestClass(JSchemaTestCase):
             class Engine(jschema.Class):
                 required = ['piston', 2]
 
+    def test_required_validation(self):
+        class Engine(jschema.Class):
+            required = ['piston']
+        message = "invalid object [required=['piston']]"
+        with self.assertFailsValidation(message):
+            Engine()
+
     def test_schema_with_max_properties(self):
         class Engine(jschema.Class):
             max_properties = 1
