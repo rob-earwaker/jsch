@@ -26,6 +26,15 @@ class TestObject(SchemaPropTestCase):
         engine = Engine()
         self.assertEqual(engine, Car(engine=engine).engine)
 
+    def test_schema_with_no_validation_fields(self):
+        class Engine(jschema.Class):
+            pass
+
+        class Car(jschema.Class):
+            engine = jschema.Object(Engine)
+        schema = Car.jschema['properties']['engine']
+        self.assertEqual({'type': 'object'}, schema)
+
 
 class TestString(SchemaPropTestCase):
     def test_init_with_value(self):
@@ -93,25 +102,25 @@ class TestString(SchemaPropTestCase):
     def test_schema_with_no_validation_fields(self):
         class Person(jschema.Class):
             name = jschema.String()
-        schema = Person().jschema['properties']['name']
+        schema = Person.jschema['properties']['name']
         self.assertEqual({'type': 'string'}, schema)
 
     def test_schema_with_max_length(self):
         class Person(jschema.Class):
             name = jschema.String(max_length=10)
-        schema = Person().jschema['properties']['name']
+        schema = Person.jschema['properties']['name']
         self.assertEqual({'maxLength': 10, 'type': 'string'}, schema)
 
     def test_schema_with_min_length(self):
         class Person(jschema.Class):
             name = jschema.String(min_length=5)
-        schema = Person().jschema['properties']['name']
+        schema = Person.jschema['properties']['name']
         self.assertEqual({'minLength': 5, 'type': 'string'}, schema)
 
     def test_schema_with_pattern(self):
         class Person(jschema.Class):
             name = jschema.String(pattern='^B')
-        schema = Person().jschema['properties']['name']
+        schema = Person.jschema['properties']['name']
         self.assertEqual({'pattern': '^B', 'type': 'string'}, schema)
 
 
@@ -171,25 +180,25 @@ class TestInteger(SchemaPropTestCase):
     def test_schema_with_no_validation_fields(self):
         class Person(jschema.Class):
             age = jschema.Integer()
-        schema = Person().jschema['properties']['age']
+        schema = Person.jschema['properties']['age']
         self.assertEqual({'type': 'integer'}, schema)
 
     def test_schema_with_multiple_of(self):
         class Person(jschema.Class):
             age = jschema.Integer(multiple_of=7)
-        schema = Person().jschema['properties']['age']
+        schema = Person.jschema['properties']['age']
         self.assertEqual({'multipleOf': 7, 'type': 'integer'}, schema)
 
     def test_schema_with_maximum(self):
         class Person(jschema.Class):
             age = jschema.Integer(maximum=23)
-        schema = Person().jschema['properties']['age']
+        schema = Person.jschema['properties']['age']
         self.assertEqual({'maximum': 23, 'type': 'integer'}, schema)
 
     def test_schema_with_exclusive_maximum(self):
         class Person(jschema.Class):
             age = jschema.Integer(maximum=23, exclusive_maximum=True)
-        schema = Person().jschema['properties']['age']
+        schema = Person.jschema['properties']['age']
         self.assertEqual(
             {'exclusiveMaximum': True, 'maximum': 23, 'type': 'integer'},
             schema
@@ -198,13 +207,13 @@ class TestInteger(SchemaPropTestCase):
     def test_schema_with_minimum(self):
         class Person(jschema.Class):
             age = jschema.Integer(minimum=18)
-        schema = Person().jschema['properties']['age']
+        schema = Person.jschema['properties']['age']
         self.assertEqual({'minimum': 18, 'type': 'integer'}, schema)
 
     def test_schema_with_exclusive_minimum(self):
         class Person(jschema.Class):
             age = jschema.Integer(minimum=18, exclusive_minimum=True)
-        schema = Person().jschema['properties']['age']
+        schema = Person.jschema['properties']['age']
         self.assertEqual(
             {'exclusiveMinimum': True, 'minimum': 18, 'type': 'integer'},
             schema
