@@ -24,6 +24,12 @@ class TestClass(JSchemaTestCase):
             {'maxProperties': 1, 'type': 'object'}, Engine.jschema
         )
 
+    def test_max_properties_invalid_type_definition(self):
+        message = "invalid definition [max_properties must be int]: 'fuel'"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                max_properties = 'fuel'
+
 
 class TestObject(JSchemaTestCase):
     def test_init_with_value(self):
