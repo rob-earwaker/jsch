@@ -71,22 +71,22 @@ class Object(SchemaProp):
         if self.max_properties is not None:
             if not isinstance(self.max_properties, int):
                 raise JsonSchemaDefinitionError(
-                    'max_properties must be int', self.max_properties
+                    "'max_properties' must be int", self.max_properties
                 )
             if not self.max_properties >= 0:
                 raise JsonSchemaDefinitionError(
-                    'max_properties must be >= 0', self.max_properties
+                    "'max_properties' must be >= 0", self.max_properties
                 )
 
     def validate_min_properties_definition(self):
         if self.min_properties is not None:
             if not isinstance(self.min_properties, int):
                 raise JsonSchemaDefinitionError(
-                    'min_properties must be int', self.min_properties
+                    "'min_properties' must be int", self.min_properties
                 )
             if not self.min_properties >= 0:
                 raise JsonSchemaDefinitionError(
-                    'min_properties must be >= 0', self.min_properties
+                    "'min_properties' must be >= 0", self.min_properties
                 )
 
     def validate(self, name, value):
@@ -110,22 +110,22 @@ class String(SchemaProp):
         if self.max_length is not None:
             if not isinstance(self.max_length, int):
                 raise JsonSchemaDefinitionError(
-                    'max_length must be int', self.max_length
+                    "'max_length' must be int", self.max_length
                 )
             if not self.max_length >= 0:
                 raise JsonSchemaDefinitionError(
-                    'max_length must be >= 0', self.max_length
+                    "'max_length' must be >= 0", self.max_length
                 )
 
     def validate_min_length_definition(self):
         if self.min_length is not None:
             if not isinstance(self.min_length, int):
                 raise JsonSchemaDefinitionError(
-                    'min_length must be int', self.min_length
+                    "'min_length' must be int", self.min_length
                 )
             if not self.min_length >= 0:
                 raise JsonSchemaDefinitionError(
-                    'min_length must be >= 0', self.min_length
+                    "'min_length' must be >= 0", self.min_length
                 )
 
     def validate(self, name, value):
@@ -197,11 +197,24 @@ class JsonSchemaDefinitionError(Exception):
 
 class ClassMeta(type):
     def __init__(cls, name, bases, dict):
+        cls.validate_required_definition(dict.get('required', None))
         for key, value in dict.iteritems():
             if isinstance(value, SchemaProp):
                 value.name = '_' + key
         cls.jschema = Object(cls).jschema
         super(ClassMeta, cls).__init__(name, bases, dict)
+
+    def validate_required_definition(self, required):
+        if required is not None:
+            if not isinstance(required, list):
+                raise JsonSchemaDefinitionError(
+                    "'required' must be list", required
+                )
+            for item in required:
+                if not isinstance(item, str):
+                    raise JsonSchemaDefinitionError(
+                        "'required' items must be str", item
+                    )
 
 
 class Class(object):
@@ -211,6 +224,7 @@ class Class(object):
 
     max_properties = None
     min_properties = None
+    required = None
 
     def __init__(self, **kwargs):
         if len(kwargs) < self.min_properties:

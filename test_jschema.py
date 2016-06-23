@@ -18,13 +18,13 @@ class JSchemaTestCase(unittest.TestCase):
 
 class TestClass(JSchemaTestCase):
     def test_max_properties_invalid_type_definition(self):
-        message = "invalid definition [max_properties must be int]: 'fuel'"
+        message = "invalid definition ['max_properties' must be int]: 'fuel'"
         with self.assertInvalidDefinition(message):
             class Engine(jschema.Class):
                 max_properties = 'fuel'
 
     def test_max_properties_invalid_value_definition(self):
-        message = "invalid definition [max_properties must be >= 0]: -1"
+        message = "invalid definition ['max_properties' must be >= 0]: -1"
         with self.assertInvalidDefinition(message):
             class Engine(jschema.Class):
                 max_properties = -1
@@ -39,13 +39,13 @@ class TestClass(JSchemaTestCase):
             engine.crank = 'twist'
 
     def test_min_properties_invalid_type_definition(self):
-        message = "invalid definition [min_properties must be int]: 'fuel'"
+        message = "invalid definition ['min_properties' must be int]: 'fuel'"
         with self.assertInvalidDefinition(message):
             class Engine(jschema.Class):
                 min_properties = 'fuel'
 
     def test_min_properties_invalid_value_definition(self):
-        message = "invalid definition [min_properties must be >= 0]: -1"
+        message = "invalid definition ['min_properties' must be >= 0]: -1"
         with self.assertInvalidDefinition(message):
             class Engine(jschema.Class):
                 min_properties = -1
@@ -56,6 +56,18 @@ class TestClass(JSchemaTestCase):
         message = "invalid object [min_properties=1]"
         with self.assertFailsValidation(message):
             Engine()
+
+    def test_required_invalid_type_definition(self):
+        message = "invalid definition ['required' must be list]: 1"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                required = 1
+
+    def test_required_invalid_item_type_definition(self):
+        message = "invalid definition ['required' items must be str]: 2"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                required = ['piston', 2]
 
     def test_schema_with_max_properties(self):
         class Engine(jschema.Class):
@@ -120,13 +132,13 @@ class TestString(JSchemaTestCase):
             Person().name = 12
 
     def test_max_length_invalid_type_definition(self):
-        message = "invalid definition [max_length must be int]: 'Bob'"
+        message = "invalid definition ['max_length' must be int]: 'Bob'"
         with self.assertInvalidDefinition(message):
             class Person(jschema.Class):
                 name = jschema.String(max_length='Bob')
 
     def test_max_length_invalid_value_definition(self):
-        message = "invalid definition [max_length must be >= 0]: -1"
+        message = "invalid definition ['max_length' must be >= 0]: -1"
         with self.assertInvalidDefinition(message):
             class Person(jschema.Class):
                 name = jschema.String(max_length=-1)
@@ -139,13 +151,13 @@ class TestString(JSchemaTestCase):
             Person().name = 'Michaelangelo'
 
     def test_min_length_invalid_type_definition(self):
-        message = "invalid definition [min_length must be int]: 'Bob'"
+        message = "invalid definition ['min_length' must be int]: 'Bob'"
         with self.assertInvalidDefinition(message):
             class Person(jschema.Class):
                 name = jschema.String(min_length='Bob')
 
     def test_min_length_invalid_value_definition(self):
-        message = "invalid definition [min_length must be >= 0]: -1"
+        message = "invalid definition ['min_length' must be >= 0]: -1"
         with self.assertInvalidDefinition(message):
             class Person(jschema.Class):
                 name = jschema.String(min_length=-1)
