@@ -210,11 +210,19 @@ class ClassMeta(type):
                 raise JsonSchemaDefinitionError(
                     "'required' must be list", required
                 )
+            if not len(required) >= 1:
+                raise JsonSchemaDefinitionError(
+                    "length of 'required' must be >= 1", required
+                )
             for item in required:
                 if not isinstance(item, str):
                     raise JsonSchemaDefinitionError(
                         "'required' items must be str", item
                     )
+            if not len(set(required)) == len(required):
+                raise JsonSchemaDefinitionError(
+                    "'required' items must be unique", required
+                )
 
 
 class Class(object):

@@ -69,6 +69,21 @@ class TestClass(JSchemaTestCase):
             class Engine(jschema.Class):
                 required = ['piston', 2]
 
+    def test_empty_required_list_invalid_definition(self):
+        message = "invalid definition [length of 'required' must be >= 1]: []"
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                required = []
+
+    def test_required_duplicate_items_invalid_definition(self):
+        message = (
+            "invalid definition ['required' items must be unique]: "
+            "['piston', 'crank', 'piston']"
+        )
+        with self.assertInvalidDefinition(message):
+            class Engine(jschema.Class):
+                required = ['piston', 'crank', 'piston']
+
     def test_required_validation(self):
         class Engine(jschema.Class):
             required = ['piston']
