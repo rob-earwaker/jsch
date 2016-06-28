@@ -12,7 +12,6 @@ class TestArray(unittest.TestCase):
     default                 # meta
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
@@ -24,20 +23,31 @@ class TestArray(unittest.TestCase):
     uniqueItems             # array
 
     """
-    pass
+    def test_schema_type_definition(self):
+        class Person(jschema.Object):
+            siblings = jschema.Array()
+        self.assertEqual(
+            {'type': 'array'}, Person.jschema()['properties']['siblings']
+        )
 
 
 class TestBoolean(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
     not                     # all
 
     """
+    def test_schema_type_definition(self):
+        class Person(jschema.Object):
+            only_child = jschema.Boolean()
+        self.assertEqual(
+            {'type': 'boolean'}, Person.jschema()['properties']['only_child']
+        )
+
     def test_schema_id_definition(self):
         class Person(jschema.Object):
             only_child = jschema.Boolean(id='only-child')
@@ -95,7 +105,6 @@ class TestInteger(unittest.TestCase):
     default                 # meta
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
@@ -107,7 +116,12 @@ class TestInteger(unittest.TestCase):
     exclusiveMinimum        # number, integer
 
     """
-    pass
+    def test_schema_type_definition(self):
+        class Person(jschema.Object):
+            age = jschema.Integer()
+        self.assertEqual(
+            {'type': 'integer'}, Person.jschema()['properties']['age']
+        )
 
 
 class TestNull(unittest.TestCase):
@@ -119,14 +133,18 @@ class TestNull(unittest.TestCase):
     default                 # meta
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
     not                     # all
 
     """
-    pass
+    def test_schema_type_definition(self):
+        class Person(jschema.Object):
+            brain = jschema.Null()
+        self.assertEqual(
+            {'type': 'null'}, Person.jschema()['properties']['brain']
+        )
 
 
 class TestNumber(unittest.TestCase):
@@ -138,7 +156,6 @@ class TestNumber(unittest.TestCase):
     default                 # meta
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
@@ -150,7 +167,12 @@ class TestNumber(unittest.TestCase):
     exclusiveMinimum        # number, integer
 
     """
-    pass
+    def test_schema_type_definition(self):
+        class Person(jschema.Object):
+            height = jschema.Number()
+        self.assertEqual(
+            {'type': 'number'}, Person.jschema()['properties']['height']
+        )
 
 
 class TestObject(unittest.TestCase):
@@ -162,7 +184,6 @@ class TestObject(unittest.TestCase):
     default                 # meta
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
@@ -176,7 +197,15 @@ class TestObject(unittest.TestCase):
     dependencies            # object
 
     """
-    pass
+    def test_schema_type_definition(self):
+        class Hat(jschema.Object):
+            pass
+
+        class Person(jschema.Object):
+            hat = jschema.Object(Hat)
+        self.assertEqual(
+            {'type': 'object'}, Person.jschema()['properties']['hat']
+        )
 
 
 class TestString(unittest.TestCase):
@@ -188,7 +217,6 @@ class TestString(unittest.TestCase):
     default                 # meta
     definitions             # all
     enum                    # all
-    type                    # all
     allOf                   # all
     anyOf                   # all
     oneOf                   # all
@@ -198,7 +226,12 @@ class TestString(unittest.TestCase):
     pattern                 # string
 
     """
-    pass
+    def test_schema_type_definition(self):
+        class Person(jschema.Object):
+            name = jschema.String()
+        self.assertEqual(
+            {'type': 'string'}, Person.jschema()['properties']['name']
+        )
 
 
 if __name__ == '__main__':
