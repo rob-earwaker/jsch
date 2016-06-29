@@ -5,7 +5,6 @@ import jschema
 
 class TestArray(unittest.TestCase):
     """
-    id                      # meta
     $schema                 # meta
     title                   # meta
     description             # meta
@@ -28,6 +27,14 @@ class TestArray(unittest.TestCase):
             siblings = jschema.Array()
         self.assertEqual(
             {'type': 'array'}, Person.jschema()['properties']['siblings']
+        )
+
+    def test_schema_id_definition(self):
+        class Person(jschema.Object):
+            siblings = jschema.Array(id='siblings')
+        self.assertEqual(
+            {'id': 'siblings', 'type': 'array'},
+            Person.jschema()['properties']['siblings']
         )
 
 
@@ -98,7 +105,6 @@ class TestBoolean(unittest.TestCase):
 
 class TestInteger(unittest.TestCase):
     """
-    id                      # meta
     $schema                 # meta
     title                   # meta
     description             # meta
@@ -123,10 +129,17 @@ class TestInteger(unittest.TestCase):
             {'type': 'integer'}, Person.jschema()['properties']['age']
         )
 
+    def test_schema_id_definition(self):
+        class Person(jschema.Object):
+            age = jschema.Integer(id='age')
+        self.assertEqual(
+            {'id': 'age', 'type': 'integer'},
+            Person.jschema()['properties']['age']
+        )
+
 
 class TestNull(unittest.TestCase):
     """
-    id                      # meta
     $schema                 # meta
     title                   # meta
     description             # meta
@@ -146,10 +159,17 @@ class TestNull(unittest.TestCase):
             {'type': 'null'}, Person.jschema()['properties']['brain']
         )
 
+    def test_schema_id_definition(self):
+        class Person(jschema.Object):
+            brain = jschema.Null(id='brain')
+        self.assertEqual(
+            {'id': 'brain', 'type': 'null'},
+            Person.jschema()['properties']['brain']
+        )
+
 
 class TestNumber(unittest.TestCase):
     """
-    id                      # meta
     $schema                 # meta
     title                   # meta
     description             # meta
@@ -174,10 +194,17 @@ class TestNumber(unittest.TestCase):
             {'type': 'number'}, Person.jschema()['properties']['height']
         )
 
+    def test_schema_id_definition(self):
+        class Person(jschema.Object):
+            height = jschema.Number(id='height')
+        self.assertEqual(
+            {'id': 'height', 'type': 'number'},
+            Person.jschema()['properties']['height']
+        )
+
 
 class TestObject(unittest.TestCase):
     """
-    id                      # meta
     $schema                 # meta
     title                   # meta
     description             # meta
@@ -207,10 +234,20 @@ class TestObject(unittest.TestCase):
             {'type': 'object'}, Person.jschema()['properties']['hat']
         )
 
+    def test_schema_id_definition(self):
+        class Hat(jschema.Object):
+            jschema_id = 'hat'
+
+        class Person(jschema.Object):
+            hat = jschema.Object(Hat)
+        self.assertEqual(
+            {'id': 'hat', 'type': 'object'},
+            Person.jschema()['properties']['hat']
+        )
+
 
 class TestString(unittest.TestCase):
     """
-    id                      # meta
     $schema                 # meta
     title                   # meta
     description             # meta
@@ -231,6 +268,14 @@ class TestString(unittest.TestCase):
             name = jschema.String()
         self.assertEqual(
             {'type': 'string'}, Person.jschema()['properties']['name']
+        )
+
+    def test_schema_id_definition(self):
+        class Person(jschema.Object):
+            name = jschema.String(id='name')
+        self.assertEqual(
+            {'id': 'name', 'type': 'string'},
+            Person.jschema()['properties']['name']
         )
 
 

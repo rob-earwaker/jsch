@@ -11,7 +11,9 @@ class JSchema(object):
 
     def __init__(self, **kwargs):
         for prop in self.PROPS:
-            setattr(self, prop, kwargs.get(prop, None))
+            kwarg = kwargs.get(prop, None)
+            if kwarg:
+                setattr(self, prop, kwarg)
 
     def __call__(self):
         schema = {}
@@ -23,11 +25,13 @@ class JSchema(object):
 
 class ObjectMeta(type):
     def __init__(cls, name, bases, dict):
-        props = {}
-        for prop in dict:
-            if hasattr(dict[prop], 'jschema'):
-                props[prop] = dict[prop].jschema()
         kwargs = {'type': 'object'}
+        props = {}
+        for name, value in dict.iteritems():
+            if hasattr(value, 'jschema'):
+                props[name] = value.jschema()
+            if name.startswith('jschema_'):
+                kwargs[name[8:]] = value
         if props:
             kwargs['properties'] = props
         cls.jschema = JSchema(**kwargs)
