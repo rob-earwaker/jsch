@@ -23,18 +23,13 @@ class TestArray(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Person(jschema.Object):
-            siblings = jschema.Array()
-        self.assertEqual(
-            {'type': 'array'}, Person.jschema()['properties']['siblings']
-        )
+        Siblings = jschema.Array()
+        self.assertEqual({'type': 'array'}, Siblings.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Person(jschema.Object):
-            siblings = jschema.Array(id='siblings')
+        Siblings = jschema.Array(id='Siblings')
         self.assertEqual(
-            {'id': 'siblings', 'type': 'array'},
-            Person.jschema()['properties']['siblings']
+            {'id': 'Siblings', 'type': 'array'}, Siblings.jschema.asdict()
         )
 
 
@@ -49,57 +44,40 @@ class TestBoolean(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Person(jschema.Object):
-            only_child = jschema.Boolean()
-        self.assertEqual(
-            {'type': 'boolean'}, Person.jschema()['properties']['only_child']
-        )
+        OnlyChild = jschema.Boolean()
+        self.assertEqual({'type': 'boolean'}, OnlyChild.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Person(jschema.Object):
-            only_child = jschema.Boolean(id='only-child')
+        OnlyChild = jschema.Boolean(id='OnlyChild')
         self.assertEqual(
-            {'id': 'only-child', 'type': 'boolean'},
-            Person.jschema()['properties']['only_child']
+            {'id': 'OnlyChild', 'type': 'boolean'}, OnlyChild.jschema.asdict()
         )
 
     def test_schema_definition(self):
-        class Person(jschema.Object):
-            only_child = jschema.Boolean(
-                schema='http://json-schema.org/schema#'
-            )
+        OnlyChild = jschema.Boolean(schema='http://json-schema.org/schema#')
         self.assertEqual(
             {'$schema': 'http://json-schema.org/schema#', 'type': 'boolean'},
-            Person.jschema()['properties']['only_child']
+            OnlyChild.jschema.asdict()
         )
 
     def test_schema_title_definition(self):
-        class Person(jschema.Object):
-            only_child = jschema.Boolean(title='Only child')
+        OnlyChild = jschema.Boolean(title='Only child')
         self.assertEqual(
             {'title': 'Only child', 'type': 'boolean'},
-            Person.jschema()['properties']['only_child']
+            OnlyChild.jschema.asdict()
         )
 
     def test_schema_description_definition(self):
-        class Person(jschema.Object):
-            only_child = jschema.Boolean(
-                description='Indicates whether the person is an only child'
-            )
-        expected_schema = {
-            'description': 'Indicates whether the person is an only child',
-            'type': 'boolean'
-        }
+        OnlyChild = jschema.Boolean(description='Indicates if only child')
         self.assertEqual(
-            expected_schema, Person.jschema()['properties']['only_child']
+            {'description': 'Indicates if only child', 'type': 'boolean'},
+            OnlyChild.jschema.asdict()
         )
 
     def test_schema_default_definition(self):
-        class Person(jschema.Object):
-            only_child = jschema.Boolean(default=True)
+        OnlyChild = jschema.Boolean(default=True)
         self.assertEqual(
-            {'default': True, 'type': 'boolean'},
-            Person.jschema()['properties']['only_child']
+            {'default': True, 'type': 'boolean'}, OnlyChild.jschema.asdict()
         )
 
 
@@ -123,18 +101,13 @@ class TestInteger(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Person(jschema.Object):
-            age = jschema.Integer()
-        self.assertEqual(
-            {'type': 'integer'}, Person.jschema()['properties']['age']
-        )
+        Age = jschema.Integer()
+        self.assertEqual({'type': 'integer'}, Age.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Person(jschema.Object):
-            age = jschema.Integer(id='age')
+        Age = jschema.Integer(id='Age')
         self.assertEqual(
-            {'id': 'age', 'type': 'integer'},
-            Person.jschema()['properties']['age']
+            {'id': 'Age', 'type': 'integer'}, Age.jschema.asdict()
         )
 
 
@@ -153,18 +126,13 @@ class TestNull(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Person(jschema.Object):
-            brain = jschema.Null()
-        self.assertEqual(
-            {'type': 'null'}, Person.jschema()['properties']['brain']
-        )
+        Brain = jschema.Null()
+        self.assertEqual({'type': 'null'}, Brain.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Person(jschema.Object):
-            brain = jschema.Null(id='brain')
+        Brain = jschema.Null(id='Brain')
         self.assertEqual(
-            {'id': 'brain', 'type': 'null'},
-            Person.jschema()['properties']['brain']
+            {'id': 'Brain', 'type': 'null'}, Brain.jschema.asdict()
         )
 
 
@@ -188,18 +156,13 @@ class TestNumber(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Person(jschema.Object):
-            height = jschema.Number()
-        self.assertEqual(
-            {'type': 'number'}, Person.jschema()['properties']['height']
-        )
+        Height = jschema.Number()
+        self.assertEqual({'type': 'number'}, Height.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Person(jschema.Object):
-            height = jschema.Number(id='height')
+        Height = jschema.Number(id='Height')
         self.assertEqual(
-            {'id': 'height', 'type': 'number'},
-            Person.jschema()['properties']['height']
+            {'id': 'Height', 'type': 'number'}, Height.jschema.asdict()
         )
 
 
@@ -225,25 +188,12 @@ class TestObject(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Hat(jschema.Object):
-            pass
-
-        class Person(jschema.Object):
-            hat = jschema.Object(Hat)
-        self.assertEqual(
-            {'type': 'object'}, Person.jschema()['properties']['hat']
-        )
+        Hat = jschema.Object()
+        self.assertEqual({'type': 'object'}, Hat.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Hat(jschema.Object):
-            jschema_id = 'hat'
-
-        class Person(jschema.Object):
-            hat = jschema.Object(Hat)
-        self.assertEqual(
-            {'id': 'hat', 'type': 'object'},
-            Person.jschema()['properties']['hat']
-        )
+        Hat = jschema.Object(id='Hat')
+        self.assertEqual({'id': 'Hat', 'type': 'object'}, Hat.jschema.asdict())
 
 
 class TestString(unittest.TestCase):
@@ -264,18 +214,13 @@ class TestString(unittest.TestCase):
 
     """
     def test_schema_type_definition(self):
-        class Person(jschema.Object):
-            name = jschema.String()
-        self.assertEqual(
-            {'type': 'string'}, Person.jschema()['properties']['name']
-        )
+        Name = jschema.String()
+        self.assertEqual({'type': 'string'}, Name.jschema.asdict())
 
     def test_schema_id_definition(self):
-        class Person(jschema.Object):
-            name = jschema.String(id='name')
+        Name = jschema.String(id='Name')
         self.assertEqual(
-            {'id': 'name', 'type': 'string'},
-            Person.jschema()['properties']['name']
+            {'id': 'Name', 'type': 'string'}, Name.jschema.asdict()
         )
 
 

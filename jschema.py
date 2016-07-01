@@ -1,81 +1,87 @@
+import uuid
+
+
+def uname():
+    return uuid.uuid4().get_hex()
+
+
 class JSchema(object):
-    PROPS = {
-        'default': 'default',
-        'description': 'description',
-        'id': 'id',
-        'properties': 'properties',
-        'schema': '$schema',
-        'type': 'type',
-        'title': 'title'
-    }
-
     def __init__(self, **kwargs):
-        for prop in self.PROPS:
-            kwarg = kwargs.get(prop, None)
-            if kwarg:
-                setattr(self, prop, kwarg)
+        self._dict = {'type': kwargs['type']}
+        id = kwargs.get('id', None)
+        if id is not None:
+            self._dict['id'] = id
+        title = kwargs.get('title', None)
+        if title is not None:
+            self._dict['title'] = title
+        description = kwargs.get('description', None)
+        if description is not None:
+            self._dict['description'] = description
+        schema = kwargs.get('schema', None)
+        if schema is not None:
+            self._dict['$schema'] = schema
+        default = kwargs.get('default', None)
+        if default is not None:
+            self._dict['default'] = default
 
-    def __call__(self):
-        schema = {}
-        for prop in self.PROPS:
-            if getattr(self, prop, None) is not None:
-                schema[self.PROPS[prop]] = getattr(self, prop)
-        return schema
-
-
-class ObjectMeta(type):
-    def __init__(cls, name, bases, dict):
-        kwargs = {'type': 'object'}
-        props = {}
-        for name, value in dict.iteritems():
-            if hasattr(value, 'jschema'):
-                props[name] = value.jschema()
-            if name.startswith('jschema_'):
-                kwargs[name[8:]] = value
-        if props:
-            kwargs['properties'] = props
-        cls.jschema = JSchema(**kwargs)
-        super(ObjectMeta, cls).__init__(name, bases, dict)
+    def asdict(self):
+        return self._dict
 
 
-class Object(object):
-    __metaclass__ = ObjectMeta
-
-    def __init__(self, cls):
-        self.jschema = cls.jschema
-
-
-class Array(object):
-    def __init__(self, **kwargs):
-        kwargs['type'] = 'array'
-        self.jschema = JSchema(**kwargs)
-
-
-class Boolean(object):
-    def __init__(self, **kwargs):
-        kwargs['type'] = 'boolean'
-        self.jschema = JSchema(**kwargs)
+def Array(id=None, title=None, description=None, schema=None, default=None):
+    jschema = JSchema(
+        type='array',
+        id=id,
+        title=title,
+        description=description,
+        schema=schema,
+        default=default
+    )
+    return type(uname(), (object,), {'jschema': jschema})
 
 
-class Null(object):
-    def __init__(self, **kwargs):
-        kwargs['type'] = 'null'
-        self.jschema = JSchema(**kwargs)
+def Boolean(id=None, title=None, description=None, schema=None, default=None):
+    jschema = JSchema(
+        type='boolean',
+        id=id,
+        title=title,
+        description=description,
+        schema=schema,
+        default=default
+    )
+    return type(uname(), (object,), {'jschema': jschema})
 
 
-class Integer(object):
-    def __init__(self, **kwargs):
-        kwargs['type'] = 'integer'
-        self.jschema = JSchema(**kwargs)
+def Integer(id=None):
+    jschema = JSchema(
+        type='integer', id=id, title=None, description=None, schema=None
+    )
+    return type(uname(), (object,), {'jschema': jschema})
 
 
-class Number(object):
-    def __init__(self, **kwargs):
-        kwargs['type'] = 'number'
-        self.jschema = JSchema(**kwargs)
+def Null(id=None):
+    jschema = JSchema(
+        type='null', id=id, title=None, description=None, schema=None
+    )
+    return type(uname(), (object,), {'jschema': jschema})
 
 
-class String(object):
-    def __init__(self, **kwargs):
-        kwargs['type'] = 'string'
-        self.jschema = JSchema(**kwargs)
+def Number(id=None):
+    jschema = JSchema(
+        type='number', id=id, title=None, description=None, schema=None
+    )
+    return type(uname(), (object,), {'jschema': jschema})
+
+
+def Object(id=None):
+    jschema = JSchema(
+        type='object', id=id, title=None, description=None, schema=None
+    )
+    return type(uname(), (object,), {'jschema': jschema})
+
+
+def String(id=None):
+    jschema = JSchema(
+        type='string', id=id, title=None, description=None, schema=None
+    )
+    return type(uname(), (object,), {'jschema': jschema})
