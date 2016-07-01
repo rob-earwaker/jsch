@@ -6,8 +6,8 @@ def uname():
 
 
 class JSchema(object):
-    def __init__(self, **kwargs):
-        self._dict = {'type': kwargs['type']}
+    def __init__(self, type, **kwargs):
+        self._dict = {'type': type}
         id = kwargs.get('id', None)
         if id is not None:
             self._dict['id'] = id
@@ -24,64 +24,61 @@ class JSchema(object):
         if default is not None:
             self._dict['default'] = default
 
+    @classmethod
+    def array(cls, **kwargs):
+        return cls('array', **kwargs)
+
+    @classmethod
+    def boolean(cls, **kwargs):
+        return cls('boolean', **kwargs)
+
+    @classmethod
+    def integer(cls, **kwargs):
+        return cls('integer', **kwargs)
+
+    @classmethod
+    def null(cls, **kwargs):
+        return cls('null', **kwargs)
+
+    @classmethod
+    def number(cls, **kwargs):
+        return cls('number', **kwargs)
+
+    @classmethod
+    def object(cls, **kwargs):
+        return cls('object', **kwargs)
+
+    @classmethod
+    def string(cls, **kwargs):
+        return cls('string', **kwargs)
+
     def asdict(self):
         return self._dict
 
 
-def Array(id=None, title=None, description=None, schema=None, default=None):
-    jschema = JSchema(
-        type='array',
-        id=id,
-        title=title,
-        description=description,
-        schema=schema,
-        default=default
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def Array(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.array(**kwargs)})
 
 
-def Boolean(id=None, title=None, description=None, schema=None, default=None):
-    jschema = JSchema(
-        type='boolean',
-        id=id,
-        title=title,
-        description=description,
-        schema=schema,
-        default=default
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def Boolean(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.boolean(**kwargs)})
 
 
-def Integer(id=None):
-    jschema = JSchema(
-        type='integer', id=id, title=None, description=None, schema=None
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def Integer(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.integer(**kwargs)})
 
 
-def Null(id=None):
-    jschema = JSchema(
-        type='null', id=id, title=None, description=None, schema=None
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def Null(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.null(**kwargs)})
 
 
-def Number(id=None):
-    jschema = JSchema(
-        type='number', id=id, title=None, description=None, schema=None
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def Number(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.number(**kwargs)})
 
 
-def Object(id=None):
-    jschema = JSchema(
-        type='object', id=id, title=None, description=None, schema=None
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def Object(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.object(**kwargs)})
 
 
-def String(id=None):
-    jschema = JSchema(
-        type='string', id=id, title=None, description=None, schema=None
-    )
-    return type(uname(), (object,), {'jschema': jschema})
+def String(**kwargs):
+    return type(uname(), (object,), {'jschema': JSchema.string(**kwargs)})
