@@ -278,11 +278,6 @@ class TestNumber(unittest.TestCase):
     anyOf                   # all
     oneOf                   # all
     not                     # all
-    multipleOf              # number, integer
-    maximum                 # number, integer
-    exclusiveMaximum        # number, integer
-    minimum                 # number, integer
-    exclusiveMinimum        # number, integer
 
     """
     def test_type_field(self):
@@ -319,6 +314,38 @@ class TestNumber(unittest.TestCase):
         Height = jschema.Number(default=176.2)
         self.assertEqual(
             {'default': 176.2, 'type': 'number'}, Height.jschema.asdict()
+        )
+
+    def test_multiple_of_field(self):
+        Height = jschema.Number(multiple_of=5.)
+        self.assertEqual(
+            {'multipleOf': 5., 'type': 'number'}, Height.jschema.asdict()
+        )
+
+    def test_maximum_field(self):
+        Height = jschema.Number(maximum=200.)
+        self.assertEqual(
+            {'maximum': 200., 'type': 'number'}, Height.jschema.asdict()
+        )
+
+    def test_exclusive_maximum_field(self):
+        Height = jschema.Number(maximum=200., exclusive_maximum=True)
+        self.assertEqual(
+            {'maximum': 200., 'exclusiveMaximum': True, 'type': 'number'},
+            Height.jschema.asdict()
+        )
+
+    def test_minimum_field(self):
+        Height = jschema.Number(minimum=10.)
+        self.assertEqual(
+            {'minimum': 10., 'type': 'number'}, Height.jschema.asdict()
+        )
+
+    def test_exclusive_minimum_field(self):
+        Height = jschema.Number(minimum=10., exclusive_minimum=False)
+        self.assertEqual(
+            {'minimum': 10., 'exclusiveMinimum': False, 'type': 'number'},
+            Height.jschema.asdict()
         )
 
 
