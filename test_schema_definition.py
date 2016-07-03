@@ -152,11 +152,6 @@ class TestInteger(unittest.TestCase):
     anyOf                   # all
     oneOf                   # all
     not                     # all
-    multipleOf              # number, integer
-    maximum                 # number, integer
-    exclusiveMaximum        # number, integer
-    minimum                 # number, integer
-    exclusiveMinimum        # number, integer
 
     """
     def test_type_field(self):
@@ -193,6 +188,38 @@ class TestInteger(unittest.TestCase):
         Age = jschema.Integer(default=0)
         self.assertEqual(
             {'default': 0, 'type': 'integer'}, Age.jschema.asdict()
+        )
+
+    def test_multiple_of_field(self):
+        Age = jschema.Integer(multiple_of=1)
+        self.assertEqual(
+            {'multipleOf': 1, 'type': 'integer'}, Age.jschema.asdict()
+        )
+
+    def test_maximum_field(self):
+        Age = jschema.Integer(maximum=100)
+        self.assertEqual(
+            {'maximum': 100, 'type': 'integer'}, Age.jschema.asdict()
+        )
+
+    def test_exclusive_maximum_field(self):
+        Age = jschema.Integer(maximum=100, exclusive_maximum=True)
+        self.assertEqual(
+            {'maximum': 100, 'exclusiveMaximum': True, 'type': 'integer'},
+            Age.jschema.asdict()
+        )
+
+    def test_minimum_field(self):
+        Age = jschema.Integer(minimum=1)
+        self.assertEqual(
+            {'minimum': 1, 'type': 'integer'}, Age.jschema.asdict()
+        )
+
+    def test_exclusive_minimum_field(self):
+        Age = jschema.Integer(minimum=1, exclusive_minimum=False)
+        self.assertEqual(
+            {'minimum': 1, 'exclusiveMinimum': False, 'type': 'integer'},
+            Age.jschema.asdict()
         )
 
 

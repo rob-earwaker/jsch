@@ -16,7 +16,12 @@ class JSchema(object):
         'items': 'items',
         'max_items': 'maxItems',
         'min_items': 'minItems',
-        'unique_items': 'uniqueItems'
+        'unique_items': 'uniqueItems',
+        'multiple_of': 'multipleOf',
+        'maximum': 'maximum',
+        'exclusive_maximum': 'exclusiveMaximum',
+        'minimum': 'minimum',
+        'exclusive_minimum': 'exclusiveMinimum'
     }
 
     def __init__(self, type, **kwargs):
