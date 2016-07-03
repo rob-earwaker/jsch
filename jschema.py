@@ -1,10 +1,3 @@
-import uuid
-
-
-def uname():
-    return uuid.uuid4().get_hex()
-
-
 class JSchema(object):
     FIELD_NAMES = {
         'id': 'id',
@@ -106,6 +99,10 @@ class JSchema(object):
         return self._dict
 
 
+class JSchemaDefinitionError(Exception):
+    pass
+
+
 def Properties(**kwargs):
     return kwargs
 
@@ -115,28 +112,48 @@ def Dependencies(**kwargs):
 
 
 def Array(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.array(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(
+        kwargs['id'], (object,), {'jschema': JSchema.array(**kwargs)}
+    )
 
 
 def Boolean(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.boolean(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(
+        kwargs['id'], (object,), {'jschema': JSchema.boolean(**kwargs)}
+    )
 
 
 def Integer(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.integer(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(
+        kwargs['id'], (object,), {'jschema': JSchema.integer(**kwargs)}
+        )
 
 
 def Null(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.null(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(kwargs['id'], (object,), {'jschema': JSchema.null(**kwargs)})
 
 
 def Number(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.number(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(kwargs['id'], (object,), {'jschema': JSchema.number(**kwargs)})
 
 
 def Object(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.object(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(kwargs['id'], (object,), {'jschema': JSchema.object(**kwargs)})
 
 
 def String(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.string(**kwargs)})
+    if 'id' not in kwargs:
+        raise JSchemaDefinitionError("'id' field is required")
+    return type(kwargs['id'], (object,), {'jschema': JSchema.string(**kwargs)})
