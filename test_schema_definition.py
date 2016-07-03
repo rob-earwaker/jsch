@@ -11,11 +11,6 @@ class TestArray(unittest.TestCase):
     anyOf                   # all
     oneOf                   # all
     not                     # all
-    additionalItems         # array
-    items                   # array
-    maxItems                # array
-    minItems                # array
-    uniqueItems             # array
 
     """
     def test_type_field(self):
@@ -52,6 +47,52 @@ class TestArray(unittest.TestCase):
         Siblings = jschema.Array(default=[])
         self.assertEqual(
             {'default': [], 'type': 'array'}, Siblings.jschema.asdict()
+        )
+
+    def test_additional_items_field_as_boolean(self):
+        Siblings = jschema.Array(additional_items=True)
+        self.assertEqual(
+            {'additionalItems': True, 'type': 'array'},
+            Siblings.jschema.asdict()
+        )
+
+    def test_additional_items_field_as_object(self):
+        Siblings = jschema.Array(additional_items=jschema.Object())
+        self.assertEqual(
+            {'additionalItems': {'type': 'object'}, 'type': 'array'},
+            Siblings.jschema.asdict()
+        )
+
+    def test_items_field_as_array(self):
+        Siblings = jschema.Array(items=[jschema.Object(), jschema.Null()])
+        self.assertEqual(
+            {'items': [{'type': 'object'}, {'type': 'null'}], 'type': 'array'},
+            Siblings.jschema.asdict()
+        )
+
+    def test_items_field_as_object(self):
+        Siblings = jschema.Array(items=jschema.Object())
+        self.assertEqual(
+            {'items': {'type': 'object'}, 'type': 'array'},
+            Siblings.jschema.asdict()
+        )
+
+    def test_max_items_field(self):
+        Siblings = jschema.Array(max_items=4)
+        self.assertEqual(
+            {'maxItems': 4, 'type': 'array'}, Siblings.jschema.asdict()
+        )
+
+    def test_min_items_field(self):
+        Siblings = jschema.Array(min_items=1)
+        self.assertEqual(
+            {'minItems': 1, 'type': 'array'}, Siblings.jschema.asdict()
+        )
+
+    def test_unique_items_field(self):
+        Siblings = jschema.Array(unique_items=True)
+        self.assertEqual(
+            {'uniqueItems': True, 'type': 'array'}, Siblings.jschema.asdict()
         )
 
 

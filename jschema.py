@@ -11,11 +11,26 @@ class JSchema(object):
         'title': 'title',
         'description': 'description',
         'schema': '$schema',
-        'default': 'default'
+        'default': 'default',
+        'additional_items': 'additionalItems',
+        'items': 'items',
+        'max_items': 'maxItems',
+        'min_items': 'minItems',
+        'unique_items': 'uniqueItems'
     }
 
     def __init__(self, type, **kwargs):
         self._dict = {'type': type}
+        if 'additional_items' in kwargs:
+            additional_items = kwargs['additional_items']
+            if hasattr(additional_items, 'jschema'):
+                kwargs['additional_items'] = additional_items.jschema.asdict()
+        if 'items' in kwargs:
+            items = kwargs['items']
+            if isinstance(items, list):
+                kwargs['items'] = [item.jschema.asdict() for item in items]
+            if hasattr(items, 'jschema'):
+                kwargs['items'] = items.jschema.asdict()
         for field in self.FIELD_NAMES:
             if field in kwargs:
                 self._dict[self.FIELD_NAMES[field]] = kwargs[field]
