@@ -478,9 +478,6 @@ class TestString(unittest.TestCase):
     anyOf                   # all
     oneOf                   # all
     not                     # all
-    maxLength               # string
-    minLength               # string
-    pattern                 # string
 
     """
     def test_type_field(self):
@@ -517,6 +514,24 @@ class TestString(unittest.TestCase):
         Name = jschema.String(default='Foo')
         self.assertEqual(
             {'default': 'Foo', 'type': 'string'}, Name.jschema.asdict()
+        )
+
+    def test_max_length_field(self):
+        Name = jschema.String(max_length=32)
+        self.assertEqual(
+            {'maxLength': 32, 'type': 'string'}, Name.jschema.asdict()
+        )
+
+    def test_min_length_field(self):
+        Name = jschema.String(min_length=1)
+        self.assertEqual(
+            {'minLength': 1, 'type': 'string'}, Name.jschema.asdict()
+        )
+
+    def test_pattern_field(self):
+        Name = jschema.String(pattern='.*')
+        self.assertEqual(
+            {'pattern': '.*', 'type': 'string'}, Name.jschema.asdict()
         )
 
 

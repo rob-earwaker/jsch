@@ -28,7 +28,10 @@ class JSchema(object):
         'additional_properties': 'additionalProperties',
         'properties': 'properties',
         'pattern_properties': 'patternProperties',
-        'dependencies': 'dependencies'
+        'dependencies': 'dependencies',
+        'max_length': 'maxLength',
+        'min_length': 'minLength',
+        'pattern': 'pattern'
     }
 
     def __init__(self, type, **kwargs):
