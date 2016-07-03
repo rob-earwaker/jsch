@@ -6,23 +6,19 @@ def uname():
 
 
 class JSchema(object):
+    FIELD_NAMES = {
+        'id': 'id',
+        'title': 'title',
+        'description': 'description',
+        'schema': '$schema',
+        'default': 'default'
+    }
+
     def __init__(self, type, **kwargs):
         self._dict = {'type': type}
-        id = kwargs.get('id', None)
-        if id is not None:
-            self._dict['id'] = id
-        title = kwargs.get('title', None)
-        if title is not None:
-            self._dict['title'] = title
-        description = kwargs.get('description', None)
-        if description is not None:
-            self._dict['description'] = description
-        schema = kwargs.get('schema', None)
-        if schema is not None:
-            self._dict['$schema'] = schema
-        default = kwargs.get('default', None)
-        if default is not None:
-            self._dict['default'] = default
+        for field in self.FIELD_NAMES:
+            if field in kwargs:
+                self._dict[self.FIELD_NAMES[field]] = kwargs[field]
 
     @classmethod
     def array(cls, **kwargs):
