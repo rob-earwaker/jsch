@@ -357,13 +357,6 @@ class TestObject(unittest.TestCase):
     anyOf                   # all
     oneOf                   # all
     not                     # all
-    maxProperties           # object
-    minProperties           # object
-    required                # object
-    additionalProperties    # object
-    properties              # object
-    patternProperties       # object
-    dependencies            # object
 
     """
     def test_type_field(self):
@@ -391,6 +384,88 @@ class TestObject(unittest.TestCase):
         Hat = jschema.Object(description='A type of hat')
         self.assertEqual(
             {'description': 'A type of hat', 'type': 'object'},
+            Hat.jschema.asdict()
+        )
+
+    def test_max_properties_field(self):
+        Hat = jschema.Object(max_properties=2)
+        self.assertEqual(
+            {'maxProperties': 2, 'type': 'object'}, Hat.jschema.asdict()
+        )
+
+    def test_min_properties_field(self):
+        Hat = jschema.Object(min_properties=1)
+        self.assertEqual(
+            {'minProperties': 1, 'type': 'object'}, Hat.jschema.asdict()
+        )
+
+    def test_required_field(self):
+        Hat = jschema.Object(
+            properties=jschema.Properties(size=jschema.Integer(required=True))
+        )
+        expected_schema = {
+            'required': ['size'],
+            'properties': {'size': {'type': 'integer'}},
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_additional_properties_field_as_boolean(self):
+        Hat = jschema.Object(additional_properties=True)
+        self.assertEqual(
+            {'additionalProperties': True, 'type': 'object'},
+            Hat.jschema.asdict()
+        )
+
+    def test_additional_properties_field_as_object(self):
+        Hat = jschema.Object(additional_properties=jschema.Object())
+        self.assertEqual(
+            {'additionalProperties': {'type': 'object'}, 'type': 'object'},
+            Hat.jschema.asdict()
+        )
+
+    def test_properties_field(self):
+        Hat = jschema.Object(
+            properties=jschema.Properties(size=jschema.Object())
+        )
+        self.assertEqual(
+            {'properties': {'size': {'type': 'object'}}, 'type': 'object'},
+            Hat.jschema.asdict()
+        )
+
+    def test_pattern_properties_field(self):
+        Hat = jschema.Object(
+            pattern_properties={'^hat_.*$': jschema.Object()}
+        )
+        expected_schema = {
+            'patternProperties': {'^hat_.*$': {'type': 'object'}},
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_dependencies_field_as_schema_dependency(self):
+        Hat = jschema.Object(
+            dependencies=jschema.Dependencies(
+                color=jschema.Object(
+                    properties=jschema.Properties(size=jschema.Integer())
+                )
+            )
+        )
+        expected_schema = {
+            'dependencies': {
+                'color': {
+                    'type': 'object',
+                    'properties': {'size': {'type': 'integer'}}
+                }
+            },
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_dependencies_field_as_property_dependency(self):
+        Hat = jschema.Object(dependencies=jschema.Dependencies(color=['size']))
+        self.assertEqual(
+            {'dependencies': {'color': ['size']}, 'type': 'object'},
             Hat.jschema.asdict()
         )
 

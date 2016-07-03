@@ -21,7 +21,14 @@ class JSchema(object):
         'maximum': 'maximum',
         'exclusive_maximum': 'exclusiveMaximum',
         'minimum': 'minimum',
-        'exclusive_minimum': 'exclusiveMinimum'
+        'exclusive_minimum': 'exclusiveMinimum',
+        'max_properties': 'maxProperties',
+        'min_properties': 'minProperties',
+        'required': 'required',
+        'additional_properties': 'additionalProperties',
+        'properties': 'properties',
+        'pattern_properties': 'patternProperties',
+        'dependencies': 'dependencies'
     }
 
     def __init__(self, type, **kwargs):
@@ -36,6 +43,30 @@ class JSchema(object):
                 kwargs['items'] = [item.jschema.asdict() for item in items]
             if hasattr(items, 'jschema'):
                 kwargs['items'] = items.jschema.asdict()
+        if 'additional_properties' in kwargs:
+            additional_properties = kwargs['additional_properties']
+            if hasattr(additional_properties, 'jschema'):
+                kwargs['additional_properties'] = \
+                    additional_properties.jschema.asdict()
+        if 'properties' in kwargs:
+            properties = kwargs['properties']
+            for property_name in properties:
+                property_schema = properties[property_name].jschema.asdict()
+                kwargs['properties'][property_name] = property_schema
+                if property_schema.pop('required', False):
+                    if not 'required' in self._dict:
+                        self._dict['required'] = []
+                    self._dict['required'].append(property_name)
+        if 'pattern_properties' in kwargs:
+            pattern_properties = kwargs['pattern_properties']
+            for property_name in pattern_properties:
+                kwargs['pattern_properties'][property_name] = \
+                    pattern_properties[property_name].jschema.asdict()
+        if 'dependencies' in kwargs: 
+            for name in kwargs['dependencies']:
+                dependency = kwargs['dependencies'][name]
+                if hasattr(dependency, 'jschema'):
+                    kwargs['dependencies'][name] = dependency.jschema.asdict()
         for field in self.FIELD_NAMES:
             if field in kwargs:
                 self._dict[self.FIELD_NAMES[field]] = kwargs[field]
@@ -70,6 +101,14 @@ class JSchema(object):
 
     def asdict(self):
         return self._dict
+
+
+def Properties(**kwargs):
+    return kwargs
+
+
+def Dependencies(**kwargs):
+    return kwargs
 
 
 def Array(**kwargs):
