@@ -21,103 +21,78 @@ class TestArray(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.Array()
+    def test_type_field(self):
+        Siblings = jschema.Array()
+        expected_schema = {'type': 'array'}
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
+    def test_id_field(self):
+        Siblings = jschema.Array(id='siblings')
+        expected_schema = {'id': 'siblings', 'type': 'array'}
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_schema_field(self):
         Siblings = jschema.Array(
-            id='siblings', schema='http://json-schema.org/draft-04/schema#'
+            schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'siblings',
             'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_title_field(self):
-        Siblings = jschema.Array(id='siblings', title='Siblings')
-        expected_schema = {
-            'title': 'Siblings', 'id': 'siblings', 'type': 'array'
-        }
+        Siblings = jschema.Array(title='Siblings')
+        expected_schema = {'title': 'Siblings', 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_description_field(self):
-        Siblings = jschema.Array(id='siblings', description='List of siblings')
-        expected_schema = {
-            'description': 'List of siblings',
-            'id': 'siblings',
-            'type': 'array'
-        }
+        Siblings = jschema.Array(description='List of siblings')
+        expected_schema = {'description': 'List of siblings', 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_default_field(self):
-        Siblings = jschema.Array(id='siblings', default=[])
-        expected_schema = {'default': [], 'id': 'siblings', 'type': 'array'}
+        Siblings = jschema.Array(default=[])
+        expected_schema = {'default': [], 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_additional_items_field_as_boolean(self):
-        Siblings = jschema.Array(id='siblings', additional_items=True)
-        expected_schema = {
-            'additionalItems': True, 'id': 'siblings', 'type': 'array'
-        }
+        Siblings = jschema.Array(additional_items=True)
+        expected_schema = {'additionalItems': True, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_additional_items_field_as_object(self):
-        Siblings = jschema.Array(
-            id='siblings', additional_items=jschema.Object(id='sibling')
-        )
+        Siblings = jschema.Array(additional_items=jschema.Object())
         expected_schema = {
-            'additionalItems': {'id': 'sibling', 'type': 'object'},
-            'id': 'siblings',
-            'type': 'array'
+            'additionalItems': {'type': 'object'}, 'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_items_field_as_array(self):
-        Siblings = jschema.Array(
-            id='siblings',
-            items=[
-                jschema.Object(id='sibling'), jschema.Null(id='unknownSibling')
-            ]
-        )
+        Siblings = jschema.Array(items=[jschema.Object(), jschema.Null()])
         expected_schema = {
-            'items': [
-                {'id': 'sibling', 'type': 'object'},
-                {'id': 'unknownSibling', 'type': 'null'}
-            ],
-            'id': 'siblings',
-            'type': 'array'
+            'items': [{'type': 'object'}, {'type': 'null'}], 'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_items_field_as_object(self):
-        Siblings = jschema.Array(
-            id='siblings', items=jschema.Object(id='sibling')
-        )
-        expected_schema = {
-            'items': {'id': 'sibling', 'type': 'object'},
-            'id': 'siblings',
-            'type': 'array'
-        }
+        Siblings = jschema.Array(items=jschema.Object())
+        expected_schema = {'items': {'type': 'object'}, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_max_items_field(self):
-        Siblings = jschema.Array(id='siblings', max_items=4)
-        expected_schema = {'maxItems': 4, 'id': 'siblings', 'type': 'array'}
+        Siblings = jschema.Array(max_items=4)
+        expected_schema = {'maxItems': 4, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_min_items_field(self):
-        Siblings = jschema.Array(id='siblings', min_items=1)
-        expected_schema = {'minItems': 1, 'id': 'siblings', 'type': 'array'}
+        Siblings = jschema.Array(min_items=1)
+        expected_schema = {'minItems': 1, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_unique_items_field(self):
-        Siblings = jschema.Array(id='siblings', unique_items=True)
-        expected_schema = {
-            'uniqueItems': True, 'id': 'siblings', 'type': 'array'
-        }
+        Siblings = jschema.Array(unique_items=True)
+        expected_schema = {'uniqueItems': True, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
 
@@ -131,44 +106,41 @@ class TestBoolean(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.Boolean()
+    def test_type_field(self):
+        OnlyChild = jschema.Boolean()
+        expected_schema = {'type': 'boolean'}
+        self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
+
+    def test_id_field(self):
+        OnlyChild = jschema.Boolean(id='onlyChild')
+        expected_schema = {'id': 'onlyChild', 'type': 'boolean'}
+        self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
     def test_schema_field(self):
         OnlyChild = jschema.Boolean(
-            id='onlyChild', schema='http://json-schema.org/draft-04/schema#'
+            schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'onlyChild',
             'type': 'boolean'
         }
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
     def test_title_field(self):
-        OnlyChild = jschema.Boolean(id='onlyChild', title='Only child')
-        expected_schema = {
-            'title': 'Only child', 'id': 'onlyChild', 'type': 'boolean'
-        }
+        OnlyChild = jschema.Boolean(title='Only child')
+        expected_schema = {'title': 'Only child', 'type': 'boolean'}
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
     def test_description_field(self):
-        OnlyChild = jschema.Boolean(
-            id='onlyChild', description='Indicates if only child'
-        )
+        OnlyChild = jschema.Boolean(description='Indicates if only child')
         expected_schema = {
-            'description': 'Indicates if only child',
-            'id': 'onlyChild',
-            'type': 'boolean'
+            'description': 'Indicates if only child', 'type': 'boolean'
         }
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
     def test_default_field(self):
-        OnlyChild = jschema.Boolean(id='onlyChild', default=True)
-        expected_schema = {
-            'default': True, 'id': 'onlyChild', 'type': 'boolean'
-        }
+        OnlyChild = jschema.Boolean(default=True)
+        expected_schema = {'default': True, 'type': 'boolean'}
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
 
@@ -182,70 +154,65 @@ class TestInteger(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.Integer()
+    def test_type_field(self):
+        Age = jschema.Integer()
+        expected_schema = {'type': 'integer'}
+        self.assertEqual(expected_schema, Age.jschema.asdict())
+
+    def test_id_field(self):
+        Age = jschema.Integer(id='age')
+        expected_schema = {'id': 'age', 'type': 'integer'}
+        self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_schema_field(self):
-        Age = jschema.Integer(
-            id='age', schema='http://json-schema.org/draft-04/schema#'
-        )
+        Age = jschema.Integer(schema='http://json-schema.org/draft-04/schema#')
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'age',
             'type': 'integer'
         }
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_title_field(self):
-        Age = jschema.Integer(id='age', title='Age')
-        expected_schema = {'title': 'Age', 'id': 'age', 'type': 'integer'}
+        Age = jschema.Integer(title='Age')
+        expected_schema = {'title': 'Age', 'type': 'integer'}
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_description_field(self):
-        Age = jschema.Integer(id='age', description='Age in years')
-        expected_schema = {
-            'description': 'Age in years', 'id': 'age', 'type': 'integer'
-        }
+        Age = jschema.Integer(description='Age in years')
+        expected_schema = {'description': 'Age in years', 'type': 'integer'}
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_default_field(self):
-        Age = jschema.Integer(id='age', default=0)
-        expected_schema = {'default': 0, 'id': 'age', 'type': 'integer'}
+        Age = jschema.Integer(default=0)
+        expected_schema = {'default': 0, 'type': 'integer'}
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_multiple_of_field(self):
-        Age = jschema.Integer(id='age', multiple_of=1)
-        expected_schema = {'multipleOf': 1, 'id': 'age', 'type': 'integer'}
+        Age = jschema.Integer(multiple_of=1)
+        expected_schema = {'multipleOf': 1, 'type': 'integer'}
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_maximum_field(self):
-        Age = jschema.Integer(id='age', maximum=100)
-        expected_schema = {'maximum': 100, 'id': 'age', 'type': 'integer'}
+        Age = jschema.Integer(maximum=100)
+        expected_schema = {'maximum': 100, 'type': 'integer'}
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_exclusive_maximum_field(self):
-        Age = jschema.Integer(id='age', maximum=100, exclusive_maximum=True)
+        Age = jschema.Integer(maximum=100, exclusive_maximum=True)
         expected_schema = {
-            'maximum': 100,
-            'exclusiveMaximum': True,
-            'id': 'age',
-            'type': 'integer'
+            'maximum': 100, 'exclusiveMaximum': True, 'type': 'integer'
         }
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_minimum_field(self):
-        Age = jschema.Integer(id='age', minimum=1)
-        expected_schema = {'minimum': 1, 'id': 'age', 'type': 'integer'}
+        Age = jschema.Integer(minimum=1)
+        expected_schema = {'minimum': 1, 'type': 'integer'}
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_exclusive_minimum_field(self):
-        Age = jschema.Integer(id='age', minimum=1, exclusive_minimum=False)
+        Age = jschema.Integer(minimum=1, exclusive_minimum=False)
         expected_schema = {
-            'minimum': 1,
-            'exclusiveMinimum': False,
-            'id': 'age',
-            'type': 'integer'
+            'minimum': 1, 'exclusiveMinimum': False, 'type': 'integer'
         }
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
@@ -260,38 +227,39 @@ class TestNull(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.Null()
+    def test_type_field(self):
+        Brain = jschema.Null()
+        expected_schema = {'type': 'null'}
+        self.assertEqual(expected_schema, Brain.jschema.asdict())
+
+    def test_id_field(self):
+        Brain = jschema.Null(id='brain')
+        expected_schema = {'id': 'brain', 'type': 'null'}
+        self.assertEqual(expected_schema, Brain.jschema.asdict())
 
     def test_schema_field(self):
-        Brain = jschema.Null(
-            id='brain', schema='http://json-schema.org/draft-04/schema#'
-        )
+        Brain = jschema.Null(schema='http://json-schema.org/draft-04/schema#')
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'brain',
             'type': 'null'
         }
         self.assertEqual(expected_schema, Brain.jschema.asdict())
 
     def test_title_field(self):
-        Brain = jschema.Null(id='brain', title='Brain')
-        expected_schema = {'title': 'Brain', 'id': 'brain', 'type': 'null'}
+        Brain = jschema.Null(title='Brain')
+        expected_schema = {'title': 'Brain', 'type': 'null'}
         self.assertEqual(expected_schema, Brain.jschema.asdict())
 
     def test_description_field(self):
-        Brain = jschema.Null(id='brain', description='Represents the brain')
+        Brain = jschema.Null(description='Represents the brain')
         expected_schema = {
-            'description': 'Represents the brain',
-            'id': 'brain',
-            'type': 'null'
+            'description': 'Represents the brain', 'type': 'null'
         }
         self.assertEqual(expected_schema, Brain.jschema.asdict())
 
     def test_default_field(self):
-        Brain = jschema.Null(id='brain', default=None)
-        expected_schema = {'default': None, 'id': 'brain', 'type': 'null'}
+        Brain = jschema.Null(default=None)
+        expected_schema = {'default': None, 'type': 'null'}
         self.assertEqual(expected_schema, Brain.jschema.asdict())
 
 
@@ -305,74 +273,67 @@ class TestNumber(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.Number()
+    def test_type_field(self):
+        Height = jschema.Number()
+        expected_schema = {'type': 'number'}
+        self.assertEqual(expected_schema, Height.jschema.asdict())
+
+    def test_id_field(self):
+        Height = jschema.Number(id='height')
+        expected_schema = {'id': 'height', 'type': 'number'}
+        self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_schema_field(self):
         Height = jschema.Number(
-            id='height', schema='http://json-schema.org/draft-04/schema#'
+            schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'height',
             'type': 'number'
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_title_field(self):
-        Height = jschema.Number(id='height', title='Height')
-        expected_schema = {'title': 'Height', 'id': 'height', 'type': 'number'}
+        Height = jschema.Number(title='Height')
+        expected_schema = {'title': 'Height', 'type': 'number'}
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_description_field(self):
-        Height = jschema.Number(id='height', description='Height in cm')
-        expected_schema = {
-            'description': 'Height in cm', 'id': 'height', 'type': 'number'
-        }
+        Height = jschema.Number(description='Height in cm')
+        expected_schema = {'description': 'Height in cm', 'type': 'number'}
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_default_field(self):
-        Height = jschema.Number(id='height', default=176.2)
-        expected_schema = {'default': 176.2, 'id': 'height', 'type': 'number'}
+        Height = jschema.Number(default=176.2)
+        expected_schema = {'default': 176.2, 'type': 'number'}
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_multiple_of_field(self):
-        Height = jschema.Number(id='height', multiple_of=5.)
-        expected_schema = {'multipleOf': 5., 'id': 'height', 'type': 'number'}
+        Height = jschema.Number(multiple_of=5.)
+        expected_schema = {'multipleOf': 5., 'type': 'number'}
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_maximum_field(self):
-        Height = jschema.Number(id='height', maximum=200.)
-        expected_schema = {'maximum': 200., 'id': 'height', 'type': 'number'}
+        Height = jschema.Number(maximum=200.)
+        expected_schema = {'maximum': 200., 'type': 'number'}
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_exclusive_maximum_field(self):
-        Height = jschema.Number(
-            id='height', maximum=200., exclusive_maximum=True
-        )
+        Height = jschema.Number(maximum=200., exclusive_maximum=True)
         expected_schema = {
-            'maximum': 200.,
-            'exclusiveMaximum': True,
-            'id': 'height',
-            'type': 'number'
+            'maximum': 200., 'exclusiveMaximum': True, 'type': 'number'
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_minimum_field(self):
-        Height = jschema.Number(id='height', minimum=10.)
-        expected_schema = {'minimum': 10., 'id': 'height', 'type': 'number'}
+        Height = jschema.Number(minimum=10.)
+        expected_schema = {'minimum': 10., 'type': 'number'}
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_exclusive_minimum_field(self):
-        Height = jschema.Number(
-            id='height', minimum=10., exclusive_minimum=False
-        )
+        Height = jschema.Number(minimum=10., exclusive_minimum=False)
         expected_schema = {
-            'minimum': 10.,
-            'exclusiveMinimum': False,
-            'id': 'height',
-            'type': 'number'
+            'minimum': 10., 'exclusiveMinimum': False, 'type': 'number'
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
@@ -387,136 +348,107 @@ class TestObject(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.Object()
+    def test_type_field(self):
+        Hat = jschema.Object()
+        expected_schema = {'type': 'object'}
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_id_field(self):
+        Hat = jschema.Object(id='hat')
+        expected_schema = {'id': 'hat', 'type': 'object'}
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_schema_field(self):
-        Hat = jschema.Object(
-            id='hat', schema='http://json-schema.org/draft-04/schema#'
-        )
+        Hat = jschema.Object(schema='http://json-schema.org/draft-04/schema#')
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'hat',
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_title_field(self):
-        Hat = jschema.Object(id='hat', title='Hat')
-        expected_schema = {'title': 'Hat', 'id': 'hat', 'type': 'object'}
+        Hat = jschema.Object(title='Hat')
+        expected_schema = {'title': 'Hat', 'type': 'object'}
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_description_field(self):
-        Hat = jschema.Object(id='hat', description='A type of hat')
-        expected_schema = {
-            'description': 'A type of hat', 'id': 'hat', 'type': 'object'
-        }
+        Hat = jschema.Object(description='A type of hat')
+        expected_schema = {'description': 'A type of hat', 'type': 'object'}
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_max_properties_field(self):
-        Hat = jschema.Object(id='hat', max_properties=2)
-        expected_schema = {'maxProperties': 2, 'id': 'hat', 'type': 'object'}
+        Hat = jschema.Object(max_properties=2)
+        expected_schema = {'maxProperties': 2, 'type': 'object'}
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_min_properties_field(self):
-        Hat = jschema.Object(id='hat', min_properties=1)
-        expected_schema = {'minProperties': 1, 'id': 'hat', 'type': 'object'}
+        Hat = jschema.Object(min_properties=1)
+        expected_schema = {'minProperties': 1, 'type': 'object'}
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_required_field(self):
         Hat = jschema.Object(
-            id='hat',
-            properties=jschema.Properties(
-                size=jschema.Integer(id='size', required=True)
-            )
+            properties=jschema.Properties(size=jschema.Integer(required=True))
         )
         expected_schema = {
             'required': ['size'],
-            'properties': {'size': {'id': 'size', 'type': 'integer'}},
-            'id': 'hat',
+            'properties': {'size': {'type': 'integer'}},
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_additional_properties_field_as_boolean(self):
-        Hat = jschema.Object(id='hat', additional_properties=True)
-        expected_schema = {
-            'additionalProperties': True, 'id': 'hat', 'type': 'object'
-        }
+        Hat = jschema.Object(additional_properties=True)
+        expected_schema = {'additionalProperties': True, 'type': 'object'}
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_additional_properties_field_as_object(self):
-        Hat = jschema.Object(
-            id='hat',
-            additional_properties=jschema.Object(id='additionalHatProperties')
-        )
+        Hat = jschema.Object(additional_properties=jschema.Object())
         expected_schema = {
-            'additionalProperties': {
-                'id': 'additionalHatProperties', 'type': 'object'
-            },
-            'id': 'hat',
-            'type': 'object'
+            'additionalProperties': {'type': 'object'}, 'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_properties_field(self):
         Hat = jschema.Object(
-            id='hat',
-            properties=jschema.Properties(size=jschema.Object(id='size'))
+            properties=jschema.Properties(size=jschema.Object())
         )
         expected_schema = {
-            'properties': {'size': {'id': 'size', 'type': 'object'}},
-            'id': 'hat',
-            'type': 'object'
+            'properties': {'size': {'type': 'object'}}, 'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_pattern_properties_field(self):
-        Hat = jschema.Object(
-            id='hat',
-            pattern_properties={'^hat_.*$': jschema.Object(id='hatProperty')}
-        )
+        Hat = jschema.Object(pattern_properties={'^hat_.*$': jschema.Object()})
         expected_schema = {
-            'patternProperties': {
-                '^hat_.*$': {'id': 'hatProperty', 'type': 'object'}
-            },
-            'id': 'hat',
+            'patternProperties': {'^hat_.*$': {'type': 'object'}},
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_dependencies_field_as_schema_dependency(self):
         Hat = jschema.Object(
-            id='hat',
             dependencies=jschema.Dependencies(
                 color=jschema.Object(
-                    id='color',
-                    properties=jschema.Properties(
-                        size=jschema.Integer(id='size')
-                    )
+                    properties=jschema.Properties(size=jschema.Integer())
                 )
             )
         )
         expected_schema = {
             'dependencies': {
                 'color': {
-                    'properties': {'size': {'id': 'size', 'type': 'integer'}},
-                    'id': 'color',
+                    'properties': {'size': {'type': 'integer'}},
                     'type': 'object'
                 }
             },
-            'id': 'hat',
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_dependencies_field_as_property_dependency(self):
-        Hat = jschema.Object(
-            id='hat', dependencies=jschema.Dependencies(color=['size'])
-        )
+        Hat = jschema.Object(dependencies=jschema.Dependencies(color=['size']))
         expected_schema = {
-            'dependencies': {'color': ['size']}, 'id': 'hat', 'type': 'object'
+            'dependencies': {'color': ['size']}, 'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
@@ -531,53 +463,52 @@ class TestString(JSchemaTestCase):
     not                     # all
 
     """
-    def test_id_field_required(self):
-        with self.assertRaisesDefinitionError("'id' field is required"):
-            jschema.String()
+    def test_type_field(self):
+        Name = jschema.String()
+        expected_schema = {'type': 'string'}
+        self.assertEqual(expected_schema, Name.jschema.asdict())
+
+    def test_id_field(self):
+        Name = jschema.String(id='name')
+        expected_schema = {'id': 'name', 'type': 'string'}
+        self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_schema_field(self):
-        Name = jschema.String(
-            id='name', schema='http://json-schema.org/draft-04/schema#'
-        )
+        Name = jschema.String(schema='http://json-schema.org/draft-04/schema#')
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'name',
             'type': 'string'
         }
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_title_field(self):
-        Name = jschema.String(id='name', title='Name')
-        expected_schema = {'title': 'Name', 'id': 'name', 'type': 'string'}
+        Name = jschema.String(title='Name')
+        expected_schema = {'title': 'Name', 'type': 'string'}
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_description_field(self):
-        Name = jschema.String(id='name', description='Name or nickname')
-        expected_schema = {
-            'description': 'Name or nickname', 'id': 'name', 'type': 'string'
-        }
+        Name = jschema.String(description='Name or nickname')
+        expected_schema = {'description': 'Name or nickname', 'type': 'string'}
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_default_field(self):
-        Name = jschema.String(id='name', default='Anonymous')
-        expected_schema = {
-            'default': 'Anonymous', 'id': 'name', 'type': 'string'
-        }
+        Name = jschema.String(default='Anonymous')
+        expected_schema = {'default': 'Anonymous', 'type': 'string'}
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_max_length_field(self):
-        Name = jschema.String(id='name', max_length=32)
-        expected_schema = {'maxLength': 32, 'id': 'name', 'type': 'string'}
+        Name = jschema.String(max_length=32)
+        expected_schema = {'maxLength': 32, 'type': 'string'}
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_min_length_field(self):
-        Name = jschema.String(id='name', min_length=1)
-        expected_schema = {'minLength': 1, 'id': 'name', 'type': 'string'}
+        Name = jschema.String(min_length=1)
+        expected_schema = {'minLength': 1, 'type': 'string'}
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_pattern_field(self):
-        Name = jschema.String(id='name', pattern='.*')
-        expected_schema = {'pattern': '.*', 'id': 'name', 'type': 'string'}
+        Name = jschema.String(pattern='.*')
+        expected_schema = {'pattern': '.*', 'type': 'string'}
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
 
