@@ -27,10 +27,10 @@ class TestArray(JSchemaTestCase):
 
     def test_schema_field(self):
         Siblings = jschema.Array(
-            id='siblings', schema='http://json-schema.org/schema#'
+            id='siblings', schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'siblings',
             'type': 'array'
         }
@@ -137,10 +137,10 @@ class TestBoolean(JSchemaTestCase):
 
     def test_schema_field(self):
         OnlyChild = jschema.Boolean(
-            id='onlyChild', schema='http://json-schema.org/schema#'
+            id='onlyChild', schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'onlyChild',
             'type': 'boolean'
         }
@@ -188,10 +188,10 @@ class TestInteger(JSchemaTestCase):
 
     def test_schema_field(self):
         Age = jschema.Integer(
-            id='age', schema='http://json-schema.org/schema#'
+            id='age', schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'age',
             'type': 'integer'
         }
@@ -266,10 +266,10 @@ class TestNull(JSchemaTestCase):
 
     def test_schema_field(self):
         Brain = jschema.Null(
-            id='brain', schema='http://json-schema.org/schema#'
+            id='brain', schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'brain',
             'type': 'null'
         }
@@ -311,10 +311,10 @@ class TestNumber(JSchemaTestCase):
 
     def test_schema_field(self):
         Height = jschema.Number(
-            id='height', schema='http://json-schema.org/schema#'
+            id='height', schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'height',
             'type': 'number'
         }
@@ -392,9 +392,11 @@ class TestObject(JSchemaTestCase):
             jschema.Object()
 
     def test_schema_field(self):
-        Hat = jschema.Object(id='hat', schema='http://json-schema.org/schema#')
+        Hat = jschema.Object(
+            id='hat', schema='http://json-schema.org/draft-04/schema#'
+        )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'hat',
             'type': 'object'
         }
@@ -535,10 +537,10 @@ class TestString(JSchemaTestCase):
 
     def test_schema_field(self):
         Name = jschema.String(
-            id='name', schema='http://json-schema.org/schema#'
+            id='name', schema='http://json-schema.org/draft-04/schema#'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/schema#',
+            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'name',
             'type': 'string'
         }
