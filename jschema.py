@@ -119,13 +119,17 @@ class JSchema(object):
                         self._dict['dependencies'][name] = schema.asdict()
 
     def add_definition(self, name, schema):
-        if 'definitions' not in self._dict:
+        if self.definitions is None:
             self._dict['definitions'] = {}
         self._dict['definitions'][name] = schema
 
     @property
     def ref(self):
         return self._ref
+
+    @property
+    def definitions(self):
+        return self._dict.get('definitions', None)
 
     @classmethod
     def array(cls, **kwargs):
@@ -171,29 +175,56 @@ def Dependencies(**kwargs):
     return kwargs
 
 
-def Array(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.array(**kwargs)})
+class JSchemaMeta(type):
+    def __call__(cls, *args, **kwargs):
+        jschema = super(JSchemaMeta, cls).__call__(*args, **kwargs)
+        return type(uname(), (object,), {'jschema': jschema})
 
 
-def Boolean(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.boolean(**kwargs)})
+class Array(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(Array, self).__init__('array', **kwargs)
 
 
-def Integer(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.integer(**kwargs)})
+class Boolean(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(Boolean, self).__init__('boolean', **kwargs)
 
 
-def Null(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.null(**kwargs)})
+class Integer(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(Integer, self).__init__('integer', **kwargs)
 
 
-def Number(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.number(**kwargs)})
+class Null(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(Null, self).__init__('null', **kwargs)
 
 
-def Object(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.object(**kwargs)})
+class Number(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(Number, self).__init__('number', **kwargs)
 
 
-def String(**kwargs):
-    return type(uname(), (object,), {'jschema': JSchema.string(**kwargs)})
+class Object(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(Object, self).__init__('object', **kwargs)
+
+
+class String(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        super(String, self).__init__('string', **kwargs)
