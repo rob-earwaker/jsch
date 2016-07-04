@@ -1,6 +1,18 @@
 import uuid
 
 
+class Reference(object):
+    def __init__(self, name):
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    def asdict(self):
+        return {'$ref': '#/definitions/{0}'.format(self.name)}
+
+
 class JSchema(object):
     FIELD_NAMES = {
         'id': 'id',
@@ -32,7 +44,7 @@ class JSchema(object):
     }
 
     def __init__(self, type, **kwargs):
-        self._ref = kwargs.pop('ref', None)
+        self._ref = Reference(kwargs['ref']) if 'ref' in kwargs else None
         self._dict = {'type': type}
         for field in self.FIELD_NAMES:
             if field in kwargs:
@@ -42,12 +54,8 @@ class JSchema(object):
             if hasattr(additional_items, 'jschema'):
                 schema = additional_items.jschema
                 if schema.ref is not None:
-                    self._dict['additionalItems'] = {
-                        '$ref': '#/definitions/{0}'.format(schema.ref)
-                    }
-                    if 'definitions' not in self._dict:
-                        self._dict['definitions'] = {}
-                    self._dict['definitions'][schema.ref] = schema.asdict()
+                    self._dict['additionalItems'] = schema.ref.asdict()
+                    self.add_definition(schema.ref.name, schema.asdict())
                 else:
                     self._dict['additionalItems'] = schema.asdict()
         if 'items' in self._dict:
@@ -57,36 +65,24 @@ class JSchema(object):
                 for item in items:
                     schema = item.jschema
                     if schema.ref is not None:
-                        self._dict['items'].append(
-                            {'$ref': '#/definitions/{0}'.format(schema.ref)}
-                        )
-                        if 'definitions' not in self._dict:
-                            self._dict['definitions'] = {}
-                        self._dict['definitions'][schema.ref] = schema.asdict()
+                        self._dict['items'].append(schema.ref.asdict())
+                        self.add_definition(schema.ref.name, schema.asdict())
                     else:
                         self._dict['items'].append(schema.asdict())
             if hasattr(items, 'jschema'):
                 schema = items.jschema
                 if schema.ref is not None:
-                    self._dict['items'] = {
-                        '$ref': '#/definitions/{0}'.format(schema.ref)
-                    }
-                    if 'definitions' not in self._dict:
-                        self._dict['definitions'] = {}
-                    self._dict['definitions'][schema.ref] = schema.asdict()
+                    self._dict['items'] = schema.ref.asdict()
+                    self.add_definition(schema.ref.name, schema.asdict())
                 else:
                     self._dict['items'] = schema.asdict()
         if 'additionalProperties' in self._dict:
-            additional_properties = self._dict['additionalProperties']
-            if hasattr(additional_properties, 'jschema'):
-                schema = additional_properties.jschema
+            properties = self._dict['additionalProperties']
+            if hasattr(properties, 'jschema'):
+                schema = properties.jschema
                 if schema.ref is not None:
-                    self._dict['additionalProperties'] = {
-                        '$ref': '#/definitions/{0}'.format(schema.ref)
-                    }
-                    if 'definitions' not in self._dict:
-                        self._dict['definitions'] = {}
-                    self._dict['definitions'][schema.ref] = schema.asdict()
+                    self._dict['additionalProperties'] = schema.ref.asdict()
+                    self.add_definition(schema.ref.name, schema.asdict())
                 else:
                     self._dict['additionalProperties'] = schema.asdict()
         if 'properties' in self._dict:
@@ -98,12 +94,8 @@ class JSchema(object):
                         self._dict['required'] = []
                     self._dict['required'].append(name)
                 if schema.ref is not None:
-                    self._dict['properties'][name] = {
-                        '$ref': '#/definitions/{0}'.format(schema.ref)
-                    }
-                    if 'definitions' not in self._dict:
-                        self._dict['definitions'] = {}
-                    self._dict['definitions'][schema.ref] = schema.asdict()
+                    self._dict['properties'][name] = schema.ref.asdict()
+                    self.add_definition(schema.ref.name, schema.asdict())
                 else:
                     self._dict['properties'][name] = schema.asdict()
         if 'patternProperties' in self._dict:
@@ -111,12 +103,8 @@ class JSchema(object):
             for name in properties:
                 schema = properties[name].jschema
                 if schema.ref is not None:
-                    self._dict['patternProperties'][name] = {
-                        '$ref': '#/definitions/{0}'.format(schema.ref)
-                    }
-                    if 'definitions' not in self._dict:
-                        self._dict['definitions'] = {}
-                    self._dict['definitions'][schema.ref] = schema.asdict()
+                    self._dict['patternProperties'][name] = schema.ref.asdict()
+                    self.add_definition(schema.ref.name, schema.asdict())
                 else:
                     self._dict['patternProperties'][name] = schema.asdict()
         if 'dependencies' in self._dict:
@@ -125,14 +113,15 @@ class JSchema(object):
                 if hasattr(dependency, 'jschema'):
                     schema = dependency.jschema
                     if schema.ref is not None:
-                        self._dict['dependencies'][name] = {
-                            '$ref': '#/definitions/{0}'.format(schema.ref)
-                        }
-                        if 'definitions' not in self._dict:
-                            self._dict['definitions'] = {}
-                        self._dict['definitions'][schema.ref] = schema.asdict()
+                        self._dict['dependencies'][name] = schema.ref.asdict()
+                        self.add_definition(schema.ref.name, schema.asdict())
                     else:
                         self._dict['dependencies'][name] = schema.asdict()
+
+    def add_definition(self, name, schema):
+        if 'definitions' not in self._dict:
+            self._dict['definitions'] = {}
+        self._dict['definitions'][name] = schema
 
     @property
     def ref(self):
