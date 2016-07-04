@@ -68,10 +68,32 @@ class TestArray(JSchemaTestCase):
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
+    def test_additional_items_field_as_object_with_ref(self):
+        Siblings = jschema.Array(
+            additional_items=jschema.Object(ref='sibling')
+        )
+        expected_schema = {
+            'definitions': {'sibling': {'type': 'object'}},
+            'additionalItems': {'$ref': '#/definitions/sibling'},
+            'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
     def test_items_field_as_array(self):
         Siblings = jschema.Array(items=[jschema.Object(), jschema.Null()])
         expected_schema = {
             'items': [{'type': 'object'}, {'type': 'null'}], 'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
+    def test_items_field_as_array_with_ref(self):
+        Siblings = jschema.Array(
+            items=[jschema.Object(ref='sibling'), jschema.Null()]
+        )
+        expected_schema = {
+            'definitions': {'sibling': {'type': 'object'}},
+            'items': [{'$ref': '#/definitions/sibling'}, {'type': 'null'}],
+            'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
@@ -80,7 +102,7 @@ class TestArray(JSchemaTestCase):
         expected_schema = {'items': {'type': 'object'}, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
-    def test_items_field_with_ref(self):
+    def test_items_field_as_object_with_ref(self):
         Siblings = jschema.Array(items=jschema.Object(ref='sibling'))
         expected_schema = {
             'definitions': {'sibling': {'type': 'object'}},
@@ -418,12 +440,36 @@ class TestObject(JSchemaTestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
+    def test_additional_properties_field_as_object_with_ref(self):
+        Hat = jschema.Object(
+            additional_properties=jschema.Object(ref='additionalHatProperties')
+        )
+        expected_schema = {
+            'definitions': {'additionalHatProperties': {'type': 'object'}},
+            'additionalProperties': {
+                '$ref': '#/definitions/additionalHatProperties'
+            },
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
     def test_properties_field(self):
         Hat = jschema.Object(
             properties=jschema.Properties(size=jschema.Object())
         )
         expected_schema = {
             'properties': {'size': {'type': 'object'}}, 'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_properties_field_with_ref(self):
+        Hat = jschema.Object(
+            properties=jschema.Properties(size=jschema.Object(ref='size'))
+        )
+        expected_schema = {
+            'definitions': {'size': {'type': 'object'}},
+            'properties': {'size': {'$ref': '#/definitions/size'}},
+            'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
@@ -435,21 +481,39 @@ class TestObject(JSchemaTestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
+    def test_pattern_properties_field_with_ref(self):
+        Hat = jschema.Object(
+            pattern_properties={
+                '^hat_.*$': jschema.Object(ref='hatPatternProperties')
+            }
+        )
+        expected_schema = {
+            'definitions': {'hatPatternProperties': {'type': 'object'}},
+            'patternProperties': {
+                '^hat_.*$': {'$ref': '#/definitions/hatPatternProperties'}
+            },
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
     def test_dependencies_field_as_schema_dependency(self):
         Hat = jschema.Object(
+            dependencies=jschema.Dependencies(color=jschema.Object())
+        )
+        expected_schema = {
+            'dependencies': {'color': {'type': 'object'}}, 'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_dependencies_field_as_schema_dependency_with_ref(self):
+        Hat = jschema.Object(
             dependencies=jschema.Dependencies(
-                color=jschema.Object(
-                    properties=jschema.Properties(size=jschema.Integer())
-                )
+                color=jschema.Object(ref='color')
             )
         )
         expected_schema = {
-            'dependencies': {
-                'color': {
-                    'properties': {'size': {'type': 'integer'}},
-                    'type': 'object'
-                }
-            },
+            'definitions': {'color': {'type': 'object'}},
+            'dependencies': {'color': {'$ref': '#/definitions/color'}},
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
