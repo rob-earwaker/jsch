@@ -27,11 +27,11 @@ class JSchema(object):
         'dependencies': 'dependencies',
         'max_length': 'maxLength',
         'min_length': 'minLength',
-        'pattern': 'pattern'
+        'pattern': 'pattern',
+        'definitions': 'definitions'
     }
 
     def __init__(self, type, **kwargs):
-        self._dict = {'type': type}
         if 'additional_items' in kwargs:
             additional_items = kwargs['additional_items']
             if hasattr(additional_items, 'jschema'):
@@ -41,7 +41,16 @@ class JSchema(object):
             if isinstance(items, list):
                 kwargs['items'] = [item.jschema.asdict() for item in items]
             if hasattr(items, 'jschema'):
-                kwargs['items'] = items.jschema.asdict()
+                ref = items.jschema.ref
+                if ref is not None:
+                    kwargs['items'] = {
+                        '$ref': '#/definitions/{0}'.format(ref)
+                    }
+                    if 'definitions' not in kwargs:
+                        kwargs['definitions'] = {}
+                    kwargs['definitions'][ref] = items.jschema.asdict()
+                else:
+                    kwargs['items'] = items.jschema.asdict()
         if 'additional_properties' in kwargs:
             additional_properties = kwargs['additional_properties']
             if hasattr(additional_properties, 'jschema'):
@@ -53,9 +62,9 @@ class JSchema(object):
                 property_schema = properties[property_name].jschema.asdict()
                 kwargs['properties'][property_name] = property_schema
                 if property_schema.pop('required', False):
-                    if 'required' not in self._dict:
-                        self._dict['required'] = []
-                    self._dict['required'].append(property_name)
+                    if 'required' not in kwargs:
+                        kwargs['required'] = []
+                    kwargs['required'].append(property_name)
         if 'pattern_properties' in kwargs:
             pattern_properties = kwargs['pattern_properties']
             for property_name in pattern_properties:
@@ -66,9 +75,15 @@ class JSchema(object):
                 dependency = kwargs['dependencies'][name]
                 if hasattr(dependency, 'jschema'):
                     kwargs['dependencies'][name] = dependency.jschema.asdict()
+        self._ref = kwargs.pop('ref', None)
+        self._dict = {'type': type}
         for field in self.FIELD_NAMES:
             if field in kwargs:
                 self._dict[self.FIELD_NAMES[field]] = kwargs[field]
+
+    @property
+    def ref(self):
+        return self._ref
 
     @classmethod
     def array(cls, **kwargs):

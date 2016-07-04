@@ -80,6 +80,15 @@ class TestArray(JSchemaTestCase):
         expected_schema = {'items': {'type': 'object'}, 'type': 'array'}
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
+    def test_items_field_with_ref(self):
+        Siblings = jschema.Array(items=jschema.Object(ref='sibling'))
+        expected_schema = {
+            'definitions': {'sibling': {'type': 'object'}},
+            'items': {'$ref': '#/definitions/sibling'},
+            'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
     def test_max_items_field(self):
         Siblings = jschema.Array(max_items=4)
         expected_schema = {'maxItems': 4, 'type': 'array'}
