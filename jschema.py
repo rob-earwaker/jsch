@@ -60,38 +60,6 @@ class JSchema(object):
     def ref(self):
         return self._ref
 
-    @property
-    def definitions(self):
-        return self._dict.get('definitions', None)
-
-    @classmethod
-    def array(cls, **kwargs):
-        return cls('array', **kwargs)
-
-    @classmethod
-    def boolean(cls, **kwargs):
-        return cls('boolean', **kwargs)
-
-    @classmethod
-    def integer(cls, **kwargs):
-        return cls('integer', **kwargs)
-
-    @classmethod
-    def null(cls, **kwargs):
-        return cls('null', **kwargs)
-
-    @classmethod
-    def number(cls, **kwargs):
-        return cls('number', **kwargs)
-
-    @classmethod
-    def object(cls, **kwargs):
-        return cls('object', **kwargs)
-
-    @classmethod
-    def string(cls, **kwargs):
-        return cls('string', **kwargs)
-
     def asdict(self):
         return self._dict
 
