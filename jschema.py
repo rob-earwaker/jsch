@@ -163,10 +163,6 @@ def uname():
     return uuid.uuid4().get_hex()
 
 
-class JSchemaDefinitionError(Exception):
-    pass
-
-
 def Properties(**kwargs):
     return kwargs
 

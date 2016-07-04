@@ -1,17 +1,9 @@
-import re
 import unittest
 
 import jschema
 
 
-class JSchemaTestCase(unittest.TestCase):
-    def assertRaisesDefinitionError(self, message):
-        return self.assertRaisesRegexp(
-            jschema.JSchemaDefinitionError, re.escape(message)
-        )
-
-
-class TestArray(JSchemaTestCase):
+class TestArray(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
@@ -127,7 +119,7 @@ class TestArray(JSchemaTestCase):
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
 
-class TestBoolean(JSchemaTestCase):
+class TestBoolean(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
@@ -175,7 +167,7 @@ class TestBoolean(JSchemaTestCase):
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
 
-class TestInteger(JSchemaTestCase):
+class TestInteger(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
@@ -248,7 +240,7 @@ class TestInteger(JSchemaTestCase):
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
 
-class TestNull(JSchemaTestCase):
+class TestNull(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
@@ -294,7 +286,7 @@ class TestNull(JSchemaTestCase):
         self.assertEqual(expected_schema, Brain.jschema.asdict())
 
 
-class TestNumber(JSchemaTestCase):
+class TestNumber(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
@@ -369,7 +361,7 @@ class TestNumber(JSchemaTestCase):
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
 
-class TestObject(JSchemaTestCase):
+class TestObject(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
@@ -526,7 +518,7 @@ class TestObject(JSchemaTestCase):
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
 
-class TestString(JSchemaTestCase):
+class TestString(unittest.TestCase):
     """
     definitions             # all
     enum                    # all
