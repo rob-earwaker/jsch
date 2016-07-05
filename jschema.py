@@ -48,10 +48,7 @@ class JSchema(object):
     }
 
     def __init__(self, type, **kwargs):
-        self._required = False
-        if 'required' in kwargs:
-            if isinstance(kwargs['required'], bool):
-                self._required = kwargs.pop('required')
+        self._optional = kwargs.pop('optional', False)
         self._ref = Reference(kwargs['ref']) if 'ref' in kwargs else None
         self._dict = {'type': type}
         for field in self.FIELD_NAMES:
@@ -59,8 +56,8 @@ class JSchema(object):
                 self._dict[self.FIELD_NAMES[field]] = kwargs[field]
 
     @property
-    def required(self):
-        return self._required
+    def optional(self):
+        return self._optional
 
     @property
     def ref(self):
@@ -192,7 +189,7 @@ class Object(JSchema):
         for name in properties:
             schema = properties[name].jschema
             ref = schema.ref
-            if schema.required:
+            if not schema.optional:
                 if 'required' not in kwargs:
                     kwargs['required'] = []
                 kwargs['required'].append(name)

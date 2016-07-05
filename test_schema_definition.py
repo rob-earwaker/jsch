@@ -99,8 +99,9 @@ class TestArray(unittest.TestCase):
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {
-                    'type': 'object',
-                    'properties': {'hat': {'$ref': '#/definitions/hat'}}
+                    'properties': {'hat': {'$ref': '#/definitions/hat'}},
+                    'required': ['hat'],
+                    'type': 'object'
                 },
                 'hat': {'type': 'object'}
             },
@@ -557,13 +558,12 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
-    def test_required_field(self):
+    def test_optional_field(self):
         Hat = jschema.Object(
-            properties=jschema.Properties(size=jschema.Integer(required=True))
+            properties=jschema.Properties(size=jschema.Integer(optional=True))
         )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'required': ['size'],
             'properties': {'size': {'type': 'integer'}},
             'type': 'object'
         }
@@ -608,6 +608,7 @@ class TestObject(unittest.TestCase):
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'properties': {'size': {'type': 'object'}},
+            'required': ['size'],
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
@@ -620,6 +621,7 @@ class TestObject(unittest.TestCase):
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'size': {'type': 'object'}},
             'properties': {'size': {'$ref': '#/definitions/size'}},
+            'required': ['size'],
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
