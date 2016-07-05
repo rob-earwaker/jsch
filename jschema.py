@@ -106,12 +106,12 @@ class Array(JSchema):
         additional_items = kwargs.get('additional_items', None)
         if hasattr(additional_items, 'jschema'):
             schema = additional_items.jschema
-            if schema.ref is not None:
-                kwargs['additional_items'] = schema.ref.asdict()
+            ref = schema.ref
+            if ref is not None:
+                kwargs['additional_items'] = ref.asdict()
                 if 'definitions' not in kwargs:
                     kwargs['definitions'] = {}
-                kwargs['definitions'][schema.ref.name] = \
-                    schema.asdict(root=False)
+                kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['additional_items'] = schema.asdict(root=False)
             if schema.definitions is not None:
@@ -124,22 +124,22 @@ class Array(JSchema):
             kwargs['items'] = []
             for item in items:
                 schema = item.jschema
-                if schema.ref is not None:
-                    kwargs['items'].append(schema.ref.asdict())
+                ref = schema.ref
+                if ref is not None:
+                    kwargs['items'].append(ref.asdict())
                     if 'definitions' not in kwargs:
                         kwargs['definitions'] = {}
-                    kwargs['definitions'][schema.ref.name] = \
-                        schema.asdict(root=False)
+                    kwargs['definitions'][ref.name] = schema.asdict(root=False)
                 else:
                     kwargs['items'].append(schema.asdict(root=False))
         if hasattr(items, 'jschema'):
             schema = items.jschema
-            if schema.ref is not None:
-                kwargs['items'] = schema.ref.asdict()
+            ref = schema.ref
+            if ref is not None:
+                kwargs['items'] = ref.asdict()
                 if 'definitions' not in kwargs:
                     kwargs['definitions'] = {}
-                kwargs['definitions'][schema.ref.name] = \
-                    schema.asdict(root=False)
+                kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['items'] = schema.asdict(root=False)
         super(Array, self).__init__('array', **kwargs)
@@ -180,50 +180,49 @@ class Object(JSchema):
         additional_properties = kwargs.get('additional_properties', None)
         if hasattr(additional_properties, 'jschema'):
             schema = additional_properties.jschema
-            if schema.ref is not None:
-                kwargs['additional_properties'] = schema.ref.asdict()
+            ref = schema.ref
+            if ref is not None:
+                kwargs['additional_properties'] = ref.asdict()
                 if 'definitions' not in kwargs:
                     kwargs['definitions'] = {}
-                kwargs['definitions'][schema.ref.name] = \
-                    schema.asdict(root=False)
+                kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['additional_properties'] = schema.asdict(root=False)
         properties = kwargs.get('properties', {})
         for name in properties:
             schema = properties[name].jschema
+            ref = schema.ref
             if schema.required:
                 if 'required' not in kwargs:
                     kwargs['required'] = []
                 kwargs['required'].append(name)
-            if schema.ref is not None:
-                kwargs['properties'][name] = schema.ref.asdict()
+            if ref is not None:
+                kwargs['properties'][name] = ref.asdict()
                 if 'definitions' not in kwargs:
                     kwargs['definitions'] = {}
-                kwargs['definitions'][schema.ref.name] = \
-                    schema.asdict(root=False)
+                kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['properties'][name] = schema.asdict(root=False)
         pattern_properties = kwargs.get('pattern_properties', {})
         for name in pattern_properties:
             schema = pattern_properties[name].jschema
-            if schema.ref is not None:
-                kwargs['pattern_properties'][name] = schema.ref.asdict()
+            ref = schema.ref
+            if ref is not None:
+                kwargs['pattern_properties'][name] = ref.asdict()
                 if 'definitions' not in kwargs:
                     kwargs['definitions'] = {}
-                kwargs['definitions'][schema.ref.name] = \
-                    schema.asdict(root=False)
+                kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['pattern_properties'][name] = schema.asdict(root=False)
-        for name in kwargs.get('dependencies', {}):
-            dependency = kwargs['dependencies'][name]
+        for name, dependency in kwargs.get('dependencies', {}).iteritems():
             if hasattr(dependency, 'jschema'):
                 schema = dependency.jschema
-                if schema.ref is not None:
-                    kwargs['dependencies'][name] = schema.ref.asdict()
+                ref = schema.ref
+                if ref is not None:
+                    kwargs['dependencies'][name] = ref.asdict()
                     if 'definitions' not in kwargs:
                         kwargs['definitions'] = {}
-                    kwargs['definitions'][schema.ref.name] = \
-                        schema.asdict(root=False)
+                    kwargs['definitions'][ref.name] = schema.asdict(root=False)
                 else:
                     kwargs['dependencies'][name] = schema.asdict(root=False)
         super(Object, self).__init__('object', **kwargs)
