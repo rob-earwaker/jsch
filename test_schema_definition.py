@@ -71,6 +71,26 @@ class TestArray(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
+    def test_additional_items_field_as_object_with_nested_ref(self):
+        Siblings = jschema.Array(
+            additional_items=jschema.Object(
+                ref='sibling',
+                properties=jschema.Properties(hat=jschema.Object(ref='hat'))
+            )
+        )
+        expected_schema = {
+            'definitions': {
+                'sibling': {
+                    'type': 'object',
+                    'properties': {'hat': {'$ref': '#/definitions/hat'}}
+                },
+                'hat': {'type': 'object'}
+            },
+            'additionalItems': {'$ref': '#/definitions/sibling'},
+            'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
     def test_items_field_as_array(self):
         Siblings = jschema.Array(items=[jschema.Object(), jschema.Null()])
         expected_schema = {
