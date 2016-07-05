@@ -16,10 +16,8 @@ class Reference(object):
 class JSchema(object):
     FIELD_NAMES = {
         # meta
-        'id': 'id',
         'title': 'title',
         'description': 'description',
-        'schema': '$schema',
         'default': 'default',
         # array
         'additional_items': 'additionalItems',
@@ -72,12 +70,14 @@ class JSchema(object):
     def definitions(self):
         return self._dict.get('definitions', None)
 
-    def asdict(self, root=True):
+    def asdict(self, root=True, id=None):
         dict = self._dict.copy()
         if not root:
             dict.pop('definitions', None)
         else:
             dict['$schema'] = 'http://json-schema.org/draft-04/schema#'
+        if id:
+            dict['id'] = id
         return dict
 
 

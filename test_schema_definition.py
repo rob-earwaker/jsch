@@ -22,13 +22,15 @@ class TestArray(unittest.TestCase):
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
     def test_id_field(self):
-        Siblings = jschema.Array(id='siblings')
+        schema = jschema.Array().jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'siblings',
+            'id': 'http://py.jschema/schemas/',
             'type': 'array'
         }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         Siblings = jschema.Array(title='Siblings')
@@ -195,13 +197,15 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
 
     def test_id_field(self):
-        OnlyChild = jschema.Boolean(id='onlyChild')
+        schema = jschema.Boolean().jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'onlyChild',
+            'id': 'http://py.jschema/schemas/',
             'type': 'boolean'
         }
-        self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         OnlyChild = jschema.Boolean(title='Only child')
@@ -250,13 +254,15 @@ class TestInteger(unittest.TestCase):
         self.assertEqual(expected_schema, Age.jschema.asdict())
 
     def test_id_field(self):
-        Age = jschema.Integer(id='age')
+        schema = jschema.Integer().jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'age',
+            'id': 'http://py.jschema/schemas/',
             'type': 'integer'
         }
-        self.assertEqual(expected_schema, Age.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         Age = jschema.Integer(title='Age')
@@ -352,13 +358,13 @@ class TestNull(unittest.TestCase):
         self.assertEqual(expected_schema, Brain.jschema.asdict())
 
     def test_id_field(self):
-        Brain = jschema.Null(id='brain')
+        schema = jschema.Null().jschema.asdict(id='http://py.jschema/schemas/')
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'brain',
+            'id': 'http://py.jschema/schemas/',
             'type': 'null'
         }
-        self.assertEqual(expected_schema, Brain.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         Brain = jschema.Null(title='Brain')
@@ -407,13 +413,15 @@ class TestNumber(unittest.TestCase):
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
     def test_id_field(self):
-        Height = jschema.Number(id='height')
+        schema = jschema.Number().jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'height',
+            'id': 'http://py.jschema/schemas/',
             'type': 'number'
         }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         Height = jschema.Number(title='Height')
@@ -509,13 +517,15 @@ class TestObject(unittest.TestCase):
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
     def test_id_field(self):
-        Hat = jschema.Object(id='hat')
+        schema = jschema.Object().jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'hat',
+            'id': 'http://py.jschema/schemas/',
             'type': 'object'
         }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         Hat = jschema.Object(title='Hat')
@@ -699,13 +709,15 @@ class TestString(unittest.TestCase):
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
     def test_id_field(self):
-        Name = jschema.String(id='name')
+        schema = jschema.String().jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'id': 'name',
+            'id': 'http://py.jschema/schemas/',
             'type': 'string'
         }
-        self.assertEqual(expected_schema, Name.jschema.asdict())
+        self.assertEqual(expected_schema, schema)
 
     def test_title_field(self):
         Name = jschema.String(title='Name')
