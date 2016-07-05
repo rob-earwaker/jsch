@@ -5,7 +5,6 @@ import jschema
 
 class TestArray(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
@@ -180,7 +179,6 @@ class TestArray(unittest.TestCase):
 
 class TestBoolean(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
@@ -237,7 +235,6 @@ class TestBoolean(unittest.TestCase):
 
 class TestInteger(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
@@ -341,7 +338,6 @@ class TestInteger(unittest.TestCase):
 
 class TestNull(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
@@ -396,7 +392,6 @@ class TestNull(unittest.TestCase):
 
 class TestNumber(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
@@ -500,7 +495,6 @@ class TestNumber(unittest.TestCase):
 
 class TestObject(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
@@ -692,7 +686,6 @@ class TestObject(unittest.TestCase):
 
 class TestString(unittest.TestCase):
     """
-    definitions             # all
     enum                    # all
     allOf                   # all
     anyOf                   # all
