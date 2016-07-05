@@ -76,6 +76,8 @@ class JSchema(object):
         dict = self._dict.copy()
         if not root:
             dict.pop('definitions', None)
+        else:
+            dict['$schema'] = 'http://json-schema.org/draft-04/schema#'
         return dict
 
 
