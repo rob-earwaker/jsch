@@ -96,10 +96,7 @@ class Array(JSchema):
             schema = additional_items.jschema
             kwargs['additional_items'] = schema.asdict(root=False)
             if schema.definitions:
-                if 'definitions' not in kwargs:
-                    kwargs['definitions'] = {}
-                for name in schema.definitions:
-                    kwargs['definitions'][name] = schema.definitions[name]
+                kwargs['definitions'] = schema.definitions
         items = kwargs.get('items', None)
         if isinstance(items, list):
             kwargs['items'] = []
@@ -107,18 +104,12 @@ class Array(JSchema):
                 schema = item.jschema
                 kwargs['items'].append(schema.asdict(root=False))
                 if schema.definitions:
-                    if 'definitions' not in kwargs:
-                        kwargs['definitions'] = {}
-                    for name in schema.definitions:
-                        kwargs['definitions'][name] = schema.definitions[name]
+                    kwargs['definitions'] = schema.definitions
         if hasattr(items, 'jschema'):
             schema = items.jschema
             kwargs['items'] = schema.asdict(root=False)
             if schema.definitions:
-                if 'definitions' not in kwargs:
-                    kwargs['definitions'] = {}
-                for name in schema.definitions:
-                    kwargs['definitions'][name] = schema.definitions[name]
+                kwargs['definitions'] = schema.definitions
         super(Array, self).__init__('array', **kwargs)
 
 
@@ -159,10 +150,7 @@ class Object(JSchema):
             schema = additional_properties.jschema
             kwargs['additional_properties'] = schema.asdict(root=False)
             if schema.definitions:
-                if 'definitions' not in kwargs:
-                    kwargs['definitions'] = {}
-                for name in schema.definitions:
-                    kwargs['definitions'][name] = schema.definitions[name]
+                kwargs['definitions'] = schema.definitions
         properties = kwargs.get('properties', {})
         for name in properties:
             schema = properties[name].jschema
@@ -172,28 +160,19 @@ class Object(JSchema):
                     kwargs['required'] = []
                 kwargs['required'].append(name)
             if schema.definitions:
-                if 'definitions' not in kwargs:
-                    kwargs['definitions'] = {}
-                for name in schema.definitions:
-                    kwargs['definitions'][name] = schema.definitions[name]
+                kwargs['definitions'] = schema.definitions
         pattern_properties = kwargs.get('pattern_properties', {})
         for name in pattern_properties:
             schema = pattern_properties[name].jschema
             kwargs['pattern_properties'][name] = schema.asdict(root=False)
             if schema.definitions:
-                if 'definitions' not in kwargs:
-                    kwargs['definitions'] = {}
-                for name in schema.definitions:
-                    kwargs['definitions'][name] = schema.definitions[name]
+                kwargs['definitions'] = schema.definitions
         for name, dependency in kwargs.get('dependencies', {}).iteritems():
             if hasattr(dependency, 'jschema'):
                 schema = dependency.jschema
                 kwargs['dependencies'][name] = schema.asdict(root=False)
                 if schema.definitions:
-                    if 'definitions' not in kwargs:
-                        kwargs['definitions'] = {}
-                    for name in schema.definitions:
-                        kwargs['definitions'][name] = schema.definitions[name]
+                    kwargs['definitions'] = schema.definitions
         super(Object, self).__init__('object', **kwargs)
 
 
