@@ -638,13 +638,34 @@ class TestObject(unittest.TestCase):
 
     def test_additional_properties_field_as_object_with_ref(self):
         Hat = jschema.Object(
-            additional_properties=jschema.Object(ref='additionalHatProperties')
+            additional_properties=jschema.Object(ref='otherProps')
         )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'definitions': {'additionalHatProperties': {'type': 'object'}},
+            'definitions': {'otherProps': {'type': 'object'}},
+            'additionalProperties': {'$ref': '#/definitions/otherProps'},
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_additional_properties_field_as_object_with_nested_ref(self):
+        Hat = jschema.Object(
+            additional_properties=jschema.Object(
+                ref='otherProps',
+                properties=jschema.Properties(name=jschema.String(ref='name'))
+            )
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'otherProps': {
+                    'properties': {'name': {'$ref': '#/definitions/name'}},
+                    'required': ['name'],
+                    'type': 'object'},
+                'name': {'type': 'string'}
+            },
             'additionalProperties': {
-                '$ref': '#/definitions/additionalHatProperties'
+                '$ref': '#/definitions/otherProps'
             },
             'type': 'object'
         }
