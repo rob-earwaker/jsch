@@ -4,6 +4,7 @@ import uuid
 class JSchema(object):
     FIELD_NAMES = {
         # meta
+        'type': 'type',
         'title': 'title',
         'description': 'description',
         'default': 'default',
@@ -32,12 +33,13 @@ class JSchema(object):
         'min_length': 'minLength',
         'pattern': 'pattern',
         # all
-        'definitions': 'definitions'
+        'definitions': 'definitions',
+        'all_of': 'allOf'
     }
 
-    def __init__(self, type, **kwargs):
+    def __init__(self, **kwargs):
         self._optional = kwargs.pop('optional', False)
-        schema = {'type': type}
+        schema = {}
         for field, field_name in self.FIELD_NAMES.iteritems():
             if field in kwargs:
                 schema[field_name] = kwargs[field]
@@ -113,35 +115,40 @@ class Array(JSchema):
                 definitions[name] = schema.definitions[name]
         if definitions:
             kwargs['definitions'] = definitions
-        super(Array, self).__init__('array', **kwargs)
+        kwargs['type'] = 'array'
+        super(Array, self).__init__(**kwargs)
 
 
 class Boolean(JSchema):
     __metaclass__ = JSchemaMeta
 
     def __init__(self, **kwargs):
-        super(Boolean, self).__init__('boolean', **kwargs)
+        kwargs['type'] = 'boolean'
+        super(Boolean, self).__init__(**kwargs)
 
 
 class Integer(JSchema):
     __metaclass__ = JSchemaMeta
 
     def __init__(self, **kwargs):
-        super(Integer, self).__init__('integer', **kwargs)
+        kwargs['type'] = 'integer'
+        super(Integer, self).__init__(**kwargs)
 
 
 class Null(JSchema):
     __metaclass__ = JSchemaMeta
 
     def __init__(self, **kwargs):
-        super(Null, self).__init__('null', **kwargs)
+        kwargs['type'] = 'null'
+        super(Null, self).__init__(**kwargs)
 
 
 class Number(JSchema):
     __metaclass__ = JSchemaMeta
 
     def __init__(self, **kwargs):
-        super(Number, self).__init__('number', **kwargs)
+        kwargs['type'] = 'number'
+        super(Number, self).__init__(**kwargs)
 
 
 class Object(JSchema):
@@ -180,11 +187,30 @@ class Object(JSchema):
                     definitions[name] = schema.definitions[name]
         if definitions:
             kwargs['definitions'] = definitions
-        super(Object, self).__init__('object', **kwargs)
+        kwargs['type'] = 'object'
+        super(Object, self).__init__(**kwargs)
 
 
 class String(JSchema):
     __metaclass__ = JSchemaMeta
 
     def __init__(self, **kwargs):
-        super(String, self).__init__('string', **kwargs)
+        kwargs['type'] = 'string'
+        super(String, self).__init__(**kwargs)
+
+
+class AllOf(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        types = kwargs.pop('types')
+        kwargs['all_of'] = []
+        definitions = {}
+        for type in types:
+            schema = type.jschema
+            kwargs['all_of'].append(schema.asdict(root=False))
+            for name in schema.definitions:
+                definitions[name] = schema.definitions[name]
+        if definitions:
+            kwargs['definitions'] = definitions
+        super(AllOf, self).__init__(**kwargs)
