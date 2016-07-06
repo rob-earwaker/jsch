@@ -734,15 +734,40 @@ class TestObject(unittest.TestCase):
 
     def test_pattern_properties_field_with_ref(self):
         Hat = jschema.Object(
+            pattern_properties={'^hat_.*$': jschema.Object(ref='otherProps')}
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {'otherProps': {'type': 'object'}},
+            'patternProperties': {
+                '^hat_.*$': {'$ref': '#/definitions/otherProps'}
+            },
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_pattern_properties_field_with_nested_ref(self):
+        Hat = jschema.Object(
             pattern_properties={
-                '^hat_.*$': jschema.Object(ref='hatPatternProperties')
+                '^hat_.*$': jschema.Object(
+                    ref='otherProps',
+                    properties=jschema.Properties(
+                        name=jschema.String(ref='name')
+                    )
+                )
             }
         )
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
-            'definitions': {'hatPatternProperties': {'type': 'object'}},
+            'definitions': {
+                'otherProps': {
+                    'properties': {'name': {'$ref': '#/definitions/name'}},
+                    'required': ['name'],
+                    'type': 'object'},
+                'name': {'type': 'string'}
+            },
             'patternProperties': {
-                '^hat_.*$': {'$ref': '#/definitions/hatPatternProperties'}
+                '^hat_.*$': {'$ref': '#/definitions/otherProps'}
             },
             'type': 'object'
         }
