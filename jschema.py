@@ -201,52 +201,35 @@ class String(JSchema):
         super(String, self).__init__(**kwargs)
 
 
-class AllOf(JSchema):
+class Empty(JSchema):
     __metaclass__ = JSchemaMeta
 
     def __init__(self, **kwargs):
-        types = kwargs.pop('types')
-        kwargs['all_of'] = []
         definitions = {}
-        for type in types:
+        all_of = kwargs.pop('all_of', [])
+        for type in all_of:
             schema = type.jschema
+            if 'all_of' not in kwargs:
+                kwargs['all_of'] = []
             kwargs['all_of'].append(schema.asdict(root=False))
             for name in schema.definitions:
                 definitions[name] = schema.definitions[name]
-        if definitions:
-            kwargs['definitions'] = definitions
-        super(AllOf, self).__init__(**kwargs)
-
-
-class AnyOf(JSchema):
-    __metaclass__ = JSchemaMeta
-
-    def __init__(self, **kwargs):
-        types = kwargs.pop('types')
-        kwargs['any_of'] = []
-        definitions = {}
-        for type in types:
+        any_of = kwargs.pop('any_of', [])
+        for type in any_of:
             schema = type.jschema
+            if 'any_of' not in kwargs:
+                kwargs['any_of'] = []
             kwargs['any_of'].append(schema.asdict(root=False))
             for name in schema.definitions:
                 definitions[name] = schema.definitions[name]
-        if definitions:
-            kwargs['definitions'] = definitions
-        super(AnyOf, self).__init__(**kwargs)
-
-
-class OneOf(JSchema):
-    __metaclass__ = JSchemaMeta
-
-    def __init__(self, **kwargs):
-        types = kwargs.pop('types')
-        kwargs['one_of'] = []
-        definitions = {}
-        for type in types:
+        one_of = kwargs.pop('one_of', [])
+        for type in one_of:
             schema = type.jschema
+            if 'one_of' not in kwargs:
+                kwargs['one_of'] = []
             kwargs['one_of'].append(schema.asdict(root=False))
             for name in schema.definitions:
                 definitions[name] = schema.definitions[name]
         if definitions:
             kwargs['definitions'] = definitions
-        super(OneOf, self).__init__(**kwargs)
+        super(Empty, self).__init__(**kwargs)
