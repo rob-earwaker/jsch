@@ -38,9 +38,9 @@ class JSchema(object):
     def __init__(self, type, **kwargs):
         self._optional = kwargs.pop('optional', False)
         schema = {'type': type}
-        for field in self.FIELD_NAMES:
+        for field, field_name in self.FIELD_NAMES.iteritems():
             if field in kwargs:
-                schema[self.FIELD_NAMES[field]] = kwargs[field]
+                schema[field_name] = kwargs[field]
         if 'ref' in kwargs:
             self._dict = {
                 'definitions': schema.pop('definitions', {}),
