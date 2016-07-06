@@ -215,6 +215,11 @@ class Object(JSchema):
                 kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['properties'][name] = schema.asdict(root=False)
+            if schema.definitions is not None:
+                if 'definitions' not in kwargs:
+                    kwargs['definitions'] = {}
+                for name in schema.definitions:
+                    kwargs['definitions'][name] = schema.definitions[name]
         pattern_properties = kwargs.get('pattern_properties', {})
         for name in pattern_properties:
             schema = pattern_properties[name].jschema

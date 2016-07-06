@@ -696,6 +696,33 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
+    def test_properties_field_with_nested_ref(self):
+        Hat = jschema.Object(
+            properties=jschema.Properties(
+                ribbon=jschema.Object(
+                    ref='ribbon',
+                    properties=jschema.Properties(
+                        color=jschema.Integer(ref='color')
+                    )
+                )
+            )
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'ribbon': {
+                    'properties': {'color': {'$ref': '#/definitions/color'}},
+                    'required': ['color'],
+                    'type': 'object'
+                },
+                'color': {'type': 'integer'}
+            },
+            'properties': {'ribbon': {'$ref': '#/definitions/ribbon'}},
+            'required': ['ribbon'],
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
     def test_pattern_properties_field(self):
         Hat = jschema.Object(pattern_properties={'^hat_.*$': jschema.Object()})
         expected_schema = {
