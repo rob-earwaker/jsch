@@ -105,7 +105,7 @@ class Array(JSchema):
                 kwargs['items'].append(schema.asdict(root=False))
                 if schema.definitions:
                     kwargs['definitions'] = schema.definitions
-        if hasattr(items, 'jschema'):
+        elif hasattr(items, 'jschema'):
             schema = items.jschema
             kwargs['items'] = schema.asdict(root=False)
             if schema.definitions:
@@ -167,7 +167,8 @@ class Object(JSchema):
             kwargs['pattern_properties'][name] = schema.asdict(root=False)
             if schema.definitions:
                 kwargs['definitions'] = schema.definitions
-        for name, dependency in kwargs.get('dependencies', {}).iteritems():
+        dependencies = kwargs.get('dependencies', {})
+        for name, dependency in dependencies.iteritems():
             if hasattr(dependency, 'jschema'):
                 schema = dependency.jschema
                 kwargs['dependencies'][name] = schema.asdict(root=False)
