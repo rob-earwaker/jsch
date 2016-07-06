@@ -35,7 +35,8 @@ class JSchema(object):
         # all
         'definitions': 'definitions',
         'all_of': 'allOf',
-        'any_of': 'anyOf'
+        'any_of': 'anyOf',
+        'one_of': 'oneOf'
     }
 
     def __init__(self, **kwargs):
@@ -232,3 +233,20 @@ class AnyOf(JSchema):
         if definitions:
             kwargs['definitions'] = definitions
         super(AnyOf, self).__init__(**kwargs)
+
+
+class OneOf(JSchema):
+    __metaclass__ = JSchemaMeta
+
+    def __init__(self, **kwargs):
+        types = kwargs.pop('types')
+        kwargs['one_of'] = []
+        definitions = {}
+        for type in types:
+            schema = type.jschema
+            kwargs['one_of'].append(schema.asdict(root=False))
+            for name in schema.definitions:
+                definitions[name] = schema.definitions[name]
+        if definitions:
+            kwargs['definitions'] = definitions
+        super(OneOf, self).__init__(**kwargs)
