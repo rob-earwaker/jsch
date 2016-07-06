@@ -798,6 +798,30 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
+    def test_dependencies_field_as_schema_dependency_with_nested_ref(self):
+        Hat = jschema.Object(
+            dependencies=jschema.Dependencies(
+                color=jschema.Object(
+                    ref='color',
+                    properties=jschema.Properties(rgb=jschema.Array(ref='rgb'))
+                )
+            )
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'color': {
+                    'properties': {'rgb': {'$ref': '#/definitions/rgb'}},
+                    'required': ['rgb'],
+                    'type': 'object'
+                },
+                'rgb': {'type': 'array'}
+            },
+            'dependencies': {'color': {'$ref': '#/definitions/color'}},
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
     def test_dependencies_field_as_property_dependency(self):
         Hat = jschema.Object(dependencies=jschema.Dependencies(color=['size']))
         expected_schema = {
