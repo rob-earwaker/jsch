@@ -88,6 +88,23 @@ class TestArray(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
+    def test_additional_items_field_as_object_with_refs(self):
+        Siblings = jschema.Array(
+            additional_items=jschema.Object(ref='otherSibling'),
+            items=jschema.Object(ref='sibling')
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'sibling': {'type': 'object'},
+                'otherSibling': {'type': 'object'}
+            },
+            'items': {'$ref': '#/definitions/sibling'},
+            'additionalItems': {'$ref': '#/definitions/otherSibling'},
+            'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
     def test_additional_items_field_as_object_with_nested_ref(self):
         Siblings = jschema.Array(
             additional_items=jschema.Object(
@@ -127,6 +144,27 @@ class TestArray(unittest.TestCase):
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'sibling': {'type': 'object'}},
             'items': [{'$ref': '#/definitions/sibling'}, {'type': 'null'}],
+            'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
+    def test_items_field_as_array_with_refs(self):
+        Siblings = jschema.Array(
+            items=[
+                jschema.Object(ref='sibling'),
+                jschema.Null(ref='unknownSibling')
+            ]
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'sibling': {'type': 'object'},
+                'unknownSibling': {'type': 'null'}
+            },
+            'items': [
+                {'$ref': '#/definitions/sibling'},
+                {'$ref': '#/definitions/unknownSibling'}
+            ],
             'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
@@ -173,6 +211,23 @@ class TestArray(unittest.TestCase):
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'sibling': {'type': 'object'}},
             'items': {'$ref': '#/definitions/sibling'},
+            'type': 'array'
+        }
+        self.assertEqual(expected_schema, Siblings.jschema.asdict())
+
+    def test_items_field_as_object_with_refs(self):
+        Siblings = jschema.Array(
+            items=jschema.Object(ref='sibling'),
+            additional_items=jschema.Object(ref='otherSibling')
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'sibling': {'type': 'object'},
+                'otherSibling': {'type': 'object'}
+            },
+            'items': {'$ref': '#/definitions/sibling'},
+            'additionalItems': {'$ref': '#/definitions/otherSibling'},
             'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
@@ -648,6 +703,24 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
+    def test_additional_properties_field_as_object_with_refs(self):
+        Hat = jschema.Object(
+            additional_properties=jschema.Object(ref='otherProps'),
+            properties=jschema.Properties(color=jschema.Integer(ref='color'))
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'otherProps': {'type': 'object'},
+                'color': {'type': 'integer'}
+            },
+            'properties': {'color': {'$ref': '#/definitions/color'}},
+            'required': ['color'],
+            'additionalProperties': {'$ref': '#/definitions/otherProps'},
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
     def test_additional_properties_field_as_object_with_nested_ref(self):
         Hat = jschema.Object(
             additional_properties=jschema.Object(
@@ -692,6 +765,27 @@ class TestObject(unittest.TestCase):
             'definitions': {'size': {'type': 'object'}},
             'properties': {'size': {'$ref': '#/definitions/size'}},
             'required': ['size'],
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_properties_field_with_refs(self):
+        Hat = jschema.Object(
+            properties=jschema.Properties(
+                size=jschema.Object(ref='size'),
+                color=jschema.Number(ref='color')
+            )
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'size': {'type': 'object'}, 'color': {'type': 'number'}
+            },
+            'properties': {
+                'size': {'$ref': '#/definitions/size'},
+                'color': {'$ref': '#/definitions/color'}
+            },
+            'required': ['color', 'size'],
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
@@ -746,6 +840,27 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
+    def test_pattern_properties_field_with_refs(self):
+        Hat = jschema.Object(
+            pattern_properties={
+                '^hat_.*$': jschema.Object(ref='otherProps'),
+                '^meta_.*$': jschema.Object(ref='metaProps')
+            }
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'otherProps': {'type': 'object'},
+                'metaProps': {'type': 'object'}
+            },
+            'patternProperties': {
+                '^hat_.*$': {'$ref': '#/definitions/otherProps'},
+                '^meta_.*$': {'$ref': '#/definitions/metaProps'}
+            },
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
     def test_pattern_properties_field_with_nested_ref(self):
         Hat = jschema.Object(
             pattern_properties={
@@ -794,6 +909,26 @@ class TestObject(unittest.TestCase):
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'color': {'type': 'object'}},
             'dependencies': {'color': {'$ref': '#/definitions/color'}},
+            'type': 'object'
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_dependencies_field_as_schema_dependency_with_refs(self):
+        Hat = jschema.Object(
+            dependencies=jschema.Dependencies(
+                color=jschema.Object(ref='color'),
+                size=jschema.Object(ref='size')
+            )
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'color': {'type': 'object'}, 'size': {'type': 'object'}
+            },
+            'dependencies': {
+                'color': {'$ref': '#/definitions/color'},
+                'size': {'$ref': '#/definitions/size'}
+            },
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
