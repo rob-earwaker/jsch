@@ -129,6 +129,11 @@ class Array(JSchema):
                     kwargs['definitions'][ref.name] = schema.asdict(root=False)
                 else:
                     kwargs['items'].append(schema.asdict(root=False))
+                if schema.definitions is not None:
+                    if 'definitions' not in kwargs:
+                        kwargs['definitions'] = {}
+                    for name in schema.definitions:
+                        kwargs['definitions'][name] = schema.definitions[name]
         if hasattr(items, 'jschema'):
             schema = items.jschema
             ref = schema.ref
@@ -139,6 +144,11 @@ class Array(JSchema):
                 kwargs['definitions'][ref.name] = schema.asdict(root=False)
             else:
                 kwargs['items'] = schema.asdict(root=False)
+            if schema.definitions is not None:
+                if 'definitions' not in kwargs:
+                    kwargs['definitions'] = {}
+                for name in schema.definitions:
+                    kwargs['definitions'][name] = schema.definitions[name]
         super(Array, self).__init__('array', **kwargs)
 
 
