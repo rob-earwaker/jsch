@@ -6,7 +6,6 @@ import jschema
 class TestArray(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -284,7 +283,6 @@ class TestArray(unittest.TestCase):
 class TestBoolean(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -339,7 +337,6 @@ class TestBoolean(unittest.TestCase):
 class TestInteger(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -441,7 +438,6 @@ class TestInteger(unittest.TestCase):
 class TestNull(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -494,7 +490,6 @@ class TestNull(unittest.TestCase):
 class TestNumber(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -596,7 +591,6 @@ class TestNumber(unittest.TestCase):
 class TestObject(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -964,7 +958,6 @@ class TestObject(unittest.TestCase):
 class TestString(unittest.TestCase):
     """
     enum                    # all
-    anyOf                   # all
     oneOf                   # all
     not                     # all
 
@@ -1044,7 +1037,7 @@ class TestString(unittest.TestCase):
 
 
 class TestAllOf(unittest.TestCase):
-    def test_items_field(self):
+    def test_types(self):
         Height = jschema.AllOf(types=[jschema.Integer(), jschema.Number()])
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
@@ -1052,7 +1045,7 @@ class TestAllOf(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_items_field_with_ref(self):
+    def test_types_with_ref(self):
         Height = jschema.AllOf(types=[jschema.Integer(ref='cm')])
         expected_schema = {
             '$schema': 'http://json-schema.org/draft-04/schema#',
@@ -1061,7 +1054,7 @@ class TestAllOf(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_items_field_with_refs(self):
+    def test_types_with_refs(self):
         Height = jschema.AllOf(
             types=[
                 jschema.Number(ref='maxHeight', maximum=200),
@@ -1081,7 +1074,7 @@ class TestAllOf(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_items_field_with_nested_ref(self):
+    def test_types_with_nested_ref(self):
         Hat = jschema.AllOf(
             types=[
                 jschema.Object(
@@ -1143,6 +1136,110 @@ class TestAllOf(unittest.TestCase):
             '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': {},
             'allOf': [{'type': 'object'}]
+        }
+        self.assertEqual(expected_schema, Name.jschema.asdict())
+
+
+class TestAnyOf(unittest.TestCase):
+    def test_types(self):
+        Height = jschema.AnyOf(types=[jschema.Integer(), jschema.Number()])
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'anyOf': [{'type': 'integer'}, {'type': 'number'}]
+        }
+        self.assertEqual(expected_schema, Height.jschema.asdict())
+
+    def test_types_with_ref(self):
+        Height = jschema.AnyOf(types=[jschema.Integer(ref='cm')])
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {'cm': {'type': 'integer'}},
+            'anyOf': [{'$ref': '#/definitions/cm'}]
+        }
+        self.assertEqual(expected_schema, Height.jschema.asdict())
+
+    def test_types_with_refs(self):
+        Height = jschema.AnyOf(
+            types=[
+                jschema.Number(ref='maxHeight', maximum=200),
+                jschema.Number(ref='minHeight', minimum=50)
+            ]
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'maxHeight': {'maximum': 200, 'type': 'number'},
+                'minHeight': {'minimum': 50, 'type': 'number'},
+            },
+            'anyOf': [
+                {'$ref': '#/definitions/maxHeight'},
+                {'$ref': '#/definitions/minHeight'}
+            ]
+        }
+        self.assertEqual(expected_schema, Height.jschema.asdict())
+
+    def test_types_with_nested_ref(self):
+        Hat = jschema.AnyOf(
+            types=[
+                jschema.Object(
+                    ref='size',
+                    properties=jschema.Properties(
+                        cm=jschema.Integer(ref='cm')
+                    )
+                )
+            ]
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'definitions': {
+                'size': {
+                    'properties': {'cm': {'$ref': '#/definitions/cm'}},
+                    'required': ['cm'],
+                    'type': 'object'
+                },
+                'cm': {'type': 'integer'}
+            },
+            'anyOf': [{'$ref': '#/definitions/size'}]
+        }
+        self.assertEqual(expected_schema, Hat.jschema.asdict())
+
+    def test_id_field(self):
+        schema = jschema.AnyOf(types=[jschema.Object()]).jschema.asdict(
+            id='http://py.jschema/schemas/'
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'id': 'http://py.jschema/schemas/',
+            'anyOf': [{'type': 'object'}]
+        }
+        self.assertEqual(expected_schema, schema)
+
+    def test_title_field(self):
+        Name = jschema.AnyOf(types=[jschema.Object()], title='Name')
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'title': 'Name',
+            'anyOf': [{'type': 'object'}]
+        }
+        self.assertEqual(expected_schema, Name.jschema.asdict())
+
+    def test_description_field(self):
+        Name = jschema.AnyOf(
+            types=[jschema.Object()], description='Name or nickname'
+        )
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'description': 'Name or nickname',
+            'anyOf': [{'type': 'object'}]
+        }
+        self.assertEqual(expected_schema, Name.jschema.asdict())
+
+    def test_default_field(self):
+        Name = jschema.AnyOf(types=[jschema.Object()], default={})
+        expected_schema = {
+            '$schema': 'http://json-schema.org/draft-04/schema#',
+            'default': {},
+            'anyOf': [{'type': 'object'}]
         }
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
