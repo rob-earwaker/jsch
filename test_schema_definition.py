@@ -4,11 +4,6 @@ import jschema
 
 
 class TestArray(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         Siblings = jschema.Array()
         expected_schema = {
@@ -280,11 +275,6 @@ class TestArray(unittest.TestCase):
 
 
 class TestBoolean(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         OnlyChild = jschema.Boolean()
         expected_schema = {
@@ -333,11 +323,6 @@ class TestBoolean(unittest.TestCase):
 
 
 class TestInteger(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         Age = jschema.Integer()
         expected_schema = {
@@ -433,11 +418,6 @@ class TestInteger(unittest.TestCase):
 
 
 class TestNull(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         Brain = jschema.Null()
         expected_schema = {
@@ -484,11 +464,6 @@ class TestNull(unittest.TestCase):
 
 
 class TestNumber(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         Height = jschema.Number()
         expected_schema = {
@@ -584,11 +559,6 @@ class TestNumber(unittest.TestCase):
 
 
 class TestObject(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         Hat = jschema.Object()
         expected_schema = {
@@ -950,11 +920,6 @@ class TestObject(unittest.TestCase):
 
 
 class TestString(unittest.TestCase):
-    """
-    enum                    # all
-    not                     # all
-
-    """
     def test_type_field(self):
         Name = jschema.String()
         expected_schema = {
