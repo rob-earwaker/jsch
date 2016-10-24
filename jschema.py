@@ -42,7 +42,7 @@ class JSchema(object):
     def __init__(self, **kwargs):
         self._optional = kwargs.pop('optional', False)
         schema = {}
-        for field, field_name in self.FIELD_NAMES.iteritems():
+        for field, field_name in self.FIELD_NAMES.items():
             if field in kwargs:
                 schema[field_name] = kwargs[field]
         if 'ref' in kwargs:
@@ -74,7 +74,7 @@ class JSchema(object):
 
 
 def uname():
-    return uuid.uuid4().get_hex()
+    return uuid.uuid4().hex
 
 
 def Properties(**kwargs):
@@ -91,9 +91,7 @@ class JSchemaMeta(type):
         return type(uname(), (object,), {'jschema': jschema})
 
 
-class Array(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Array(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         definitions = {}
         additional_items = kwargs.get('additional_items', None)
@@ -121,41 +119,31 @@ class Array(JSchema):
         super(Array, self).__init__(**kwargs)
 
 
-class Boolean(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Boolean(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         kwargs['type'] = 'boolean'
         super(Boolean, self).__init__(**kwargs)
 
 
-class Integer(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Integer(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         kwargs['type'] = 'integer'
         super(Integer, self).__init__(**kwargs)
 
 
-class Null(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Null(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         kwargs['type'] = 'null'
         super(Null, self).__init__(**kwargs)
 
 
-class Number(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Number(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         kwargs['type'] = 'number'
         super(Number, self).__init__(**kwargs)
 
 
-class Object(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Object(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         definitions = {}
         additional_properties = kwargs.get('additional_properties', None)
@@ -165,7 +153,7 @@ class Object(JSchema):
             for name in schema.definitions:
                 definitions[name] = schema.definitions[name]
         properties = kwargs.get('properties', {})
-        for name in properties:
+        for name in sorted(properties):
             schema = properties[name].jschema
             kwargs['properties'][name] = schema.asdict(root=False)
             if not schema.optional:
@@ -181,7 +169,7 @@ class Object(JSchema):
             for name in schema.definitions:
                 definitions[name] = schema.definitions[name]
         dependencies = kwargs.get('dependencies', {})
-        for name, dependency in dependencies.iteritems():
+        for name, dependency in dependencies.items():
             if hasattr(dependency, 'jschema'):
                 schema = dependency.jschema
                 kwargs['dependencies'][name] = schema.asdict(root=False)
@@ -193,17 +181,13 @@ class Object(JSchema):
         super(Object, self).__init__(**kwargs)
 
 
-class String(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class String(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         kwargs['type'] = 'string'
         super(String, self).__init__(**kwargs)
 
 
-class Empty(JSchema):
-    __metaclass__ = JSchemaMeta
-
+class Empty(JSchema, metaclass=JSchemaMeta):
     def __init__(self, **kwargs):
         definitions = {}
         all_of = kwargs.pop('all_of', [])
