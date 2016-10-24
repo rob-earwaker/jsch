@@ -13,7 +13,11 @@ object.
 ```
 >>> import jschema
 >>>
->>> jschema.JSchema(description="JSchema object example", type="string", max_length=32)  # doctest: +ELLIPSIS
+>>> jschema.JSchema(
+...     description="JSchema object example",
+...     type="string",
+...     max_length=32
+... )
 <jschema.JSchema object at 0x...>
 
 ```
