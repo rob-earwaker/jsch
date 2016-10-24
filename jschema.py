@@ -72,10 +72,10 @@ class JSchema(object):
         return dict
 
     def asjson(self, pretty=False):
-        dict = self.asdict()
-        return (
-            json.dumps(dict, sort_keys=True, indent=4, separators=(',', ': '))
-            if pretty else json.dumps(dict, separators=(',', ':'))
+        indent = 4 if pretty else None
+        separators = (',', ': ') if pretty else (',', ':')
+        return json.dumps(
+            self.asdict(), sort_keys=True, indent=indent, separators=separators
         )
 
 
