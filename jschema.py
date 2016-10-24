@@ -1,3 +1,4 @@
+import json
 import uuid
 
 
@@ -66,11 +67,16 @@ class JSchema(object):
         dict = self._dict.copy()
         if not root:
             dict.pop('definitions', None)
-        else:
-            dict['$schema'] = 'http://json-schema.org/draft-04/schema#'
         if id:
             dict['id'] = id
         return dict
+
+    def asjson(self, pretty=False):
+        dict = self.asdict()
+        return (
+            json.dumps(dict, sort_keys=True, indent=4, separators=(',', ': '))
+            if pretty else json.dumps(dict, separators=(',', ':'))
+        )
 
 
 def uname():

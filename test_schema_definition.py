@@ -7,7 +7,6 @@ class TestArray(unittest.TestCase):
     def test_type_field(self):
         Siblings = jschema.Array()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
@@ -17,7 +16,6 @@ class TestArray(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'array'
         }
@@ -26,7 +24,6 @@ class TestArray(unittest.TestCase):
     def test_title_field(self):
         Siblings = jschema.Array(title='Siblings')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Siblings',
             'type': 'array'
         }
@@ -35,7 +32,6 @@ class TestArray(unittest.TestCase):
     def test_description_field(self):
         Siblings = jschema.Array(description='List of siblings')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'List of siblings',
             'type': 'array'
         }
@@ -44,7 +40,6 @@ class TestArray(unittest.TestCase):
     def test_default_field(self):
         Siblings = jschema.Array(default=[])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': [],
             'type': 'array'
         }
@@ -53,7 +48,6 @@ class TestArray(unittest.TestCase):
     def test_additional_items_field_as_boolean(self):
         Siblings = jschema.Array(additional_items=True)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'additionalItems': True,
             'type': 'array'
         }
@@ -62,7 +56,6 @@ class TestArray(unittest.TestCase):
     def test_additional_items_field_as_object(self):
         Siblings = jschema.Array(additional_items=jschema.Object())
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'additionalItems': {'type': 'object'},
             'type': 'array'
         }
@@ -73,7 +66,6 @@ class TestArray(unittest.TestCase):
             additional_items=jschema.Object(ref='sibling')
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'sibling': {'type': 'object'}},
             'additionalItems': {'$ref': '#/definitions/sibling'},
             'type': 'array'
@@ -86,7 +78,6 @@ class TestArray(unittest.TestCase):
             items=jschema.Object(ref='sibling')
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {'type': 'object'},
                 'otherSibling': {'type': 'object'}
@@ -105,7 +96,6 @@ class TestArray(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {
                     'properties': {'hat': {'$ref': '#/definitions/hat'}},
@@ -122,7 +112,6 @@ class TestArray(unittest.TestCase):
     def test_items_field_as_array(self):
         Siblings = jschema.Array(items=[jschema.Object(), jschema.Null()])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'items': [{'type': 'object'}, {'type': 'null'}],
             'type': 'array'
         }
@@ -133,7 +122,6 @@ class TestArray(unittest.TestCase):
             items=[jschema.Object(ref='sibling'), jschema.Null()]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'sibling': {'type': 'object'}},
             'items': [{'$ref': '#/definitions/sibling'}, {'type': 'null'}],
             'type': 'array'
@@ -148,7 +136,6 @@ class TestArray(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {'type': 'object'},
                 'unknownSibling': {'type': 'null'}
@@ -174,7 +161,6 @@ class TestArray(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {
                     'properties': {'hat': {'$ref': '#/definitions/hat'}},
@@ -191,7 +177,6 @@ class TestArray(unittest.TestCase):
     def test_items_field_as_object(self):
         Siblings = jschema.Array(items=jschema.Object())
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'items': {'type': 'object'},
             'type': 'array'
         }
@@ -200,7 +185,6 @@ class TestArray(unittest.TestCase):
     def test_items_field_as_object_with_ref(self):
         Siblings = jschema.Array(items=jschema.Object(ref='sibling'))
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'sibling': {'type': 'object'}},
             'items': {'$ref': '#/definitions/sibling'},
             'type': 'array'
@@ -213,7 +197,6 @@ class TestArray(unittest.TestCase):
             additional_items=jschema.Object(ref='otherSibling')
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {'type': 'object'},
                 'otherSibling': {'type': 'object'}
@@ -232,7 +215,6 @@ class TestArray(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'sibling': {
                     'properties': {'hat': {'$ref': '#/definitions/hat'}},
@@ -249,7 +231,6 @@ class TestArray(unittest.TestCase):
     def test_max_items_field(self):
         Siblings = jschema.Array(max_items=4)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maxItems': 4,
             'type': 'array'
         }
@@ -258,7 +239,6 @@ class TestArray(unittest.TestCase):
     def test_min_items_field(self):
         Siblings = jschema.Array(min_items=1)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minItems': 1,
             'type': 'array'
         }
@@ -267,7 +247,6 @@ class TestArray(unittest.TestCase):
     def test_unique_items_field(self):
         Siblings = jschema.Array(unique_items=True)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'uniqueItems': True,
             'type': 'array'
         }
@@ -278,7 +257,6 @@ class TestBoolean(unittest.TestCase):
     def test_type_field(self):
         OnlyChild = jschema.Boolean()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'boolean'
         }
         self.assertEqual(expected_schema, OnlyChild.jschema.asdict())
@@ -288,7 +266,6 @@ class TestBoolean(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'boolean'
         }
@@ -297,7 +274,6 @@ class TestBoolean(unittest.TestCase):
     def test_title_field(self):
         OnlyChild = jschema.Boolean(title='Only child')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Only child',
             'type': 'boolean'
         }
@@ -306,7 +282,6 @@ class TestBoolean(unittest.TestCase):
     def test_description_field(self):
         OnlyChild = jschema.Boolean(description='Indicates if only child')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'Indicates if only child',
             'type': 'boolean'
         }
@@ -315,7 +290,6 @@ class TestBoolean(unittest.TestCase):
     def test_default_field(self):
         OnlyChild = jschema.Boolean(default=True)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': True,
             'type': 'boolean'
         }
@@ -326,7 +300,6 @@ class TestInteger(unittest.TestCase):
     def test_type_field(self):
         Age = jschema.Integer()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'integer'
         }
         self.assertEqual(expected_schema, Age.jschema.asdict())
@@ -336,7 +309,6 @@ class TestInteger(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'integer'
         }
@@ -345,7 +317,6 @@ class TestInteger(unittest.TestCase):
     def test_title_field(self):
         Age = jschema.Integer(title='Age')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Age',
             'type': 'integer'
         }
@@ -354,7 +325,6 @@ class TestInteger(unittest.TestCase):
     def test_description_field(self):
         Age = jschema.Integer(description='Age in years')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'Age in years',
             'type': 'integer'
         }
@@ -363,7 +333,6 @@ class TestInteger(unittest.TestCase):
     def test_default_field(self):
         Age = jschema.Integer(default=0)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': 0,
             'type': 'integer'
         }
@@ -372,7 +341,6 @@ class TestInteger(unittest.TestCase):
     def test_multiple_of_field(self):
         Age = jschema.Integer(multiple_of=1)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'multipleOf': 1,
             'type': 'integer'
         }
@@ -381,7 +349,6 @@ class TestInteger(unittest.TestCase):
     def test_maximum_field(self):
         Age = jschema.Integer(maximum=100)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maximum': 100,
             'type': 'integer'
         }
@@ -390,7 +357,6 @@ class TestInteger(unittest.TestCase):
     def test_exclusive_maximum_field(self):
         Age = jschema.Integer(maximum=100, exclusive_maximum=True)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maximum': 100,
             'exclusiveMaximum': True,
             'type': 'integer'
@@ -400,7 +366,6 @@ class TestInteger(unittest.TestCase):
     def test_minimum_field(self):
         Age = jschema.Integer(minimum=1)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minimum': 1,
             'type': 'integer'
         }
@@ -409,7 +374,6 @@ class TestInteger(unittest.TestCase):
     def test_exclusive_minimum_field(self):
         Age = jschema.Integer(minimum=1, exclusive_minimum=False)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minimum': 1,
             'exclusiveMinimum': False,
             'type': 'integer'
@@ -421,7 +385,6 @@ class TestNull(unittest.TestCase):
     def test_type_field(self):
         Brain = jschema.Null()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'null'
         }
         self.assertEqual(expected_schema, Brain.jschema.asdict())
@@ -429,7 +392,6 @@ class TestNull(unittest.TestCase):
     def test_id_field(self):
         schema = jschema.Null().jschema.asdict(id='http://py.jschema/schemas/')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'null'
         }
@@ -438,7 +400,6 @@ class TestNull(unittest.TestCase):
     def test_title_field(self):
         Brain = jschema.Null(title='Brain')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Brain',
             'type': 'null'
         }
@@ -447,7 +408,6 @@ class TestNull(unittest.TestCase):
     def test_description_field(self):
         Brain = jschema.Null(description='Represents the brain')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'Represents the brain',
             'type': 'null'
         }
@@ -456,7 +416,6 @@ class TestNull(unittest.TestCase):
     def test_default_field(self):
         Brain = jschema.Null(default=None)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': None,
             'type': 'null'
         }
@@ -467,7 +426,6 @@ class TestNumber(unittest.TestCase):
     def test_type_field(self):
         Height = jschema.Number()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'number'
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
@@ -477,7 +435,6 @@ class TestNumber(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'number'
         }
@@ -486,7 +443,6 @@ class TestNumber(unittest.TestCase):
     def test_title_field(self):
         Height = jschema.Number(title='Height')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Height',
             'type': 'number'
         }
@@ -495,7 +451,6 @@ class TestNumber(unittest.TestCase):
     def test_description_field(self):
         Height = jschema.Number(description='Height in cm')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'Height in cm',
             'type': 'number'
         }
@@ -504,7 +459,6 @@ class TestNumber(unittest.TestCase):
     def test_default_field(self):
         Height = jschema.Number(default=176.2)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': 176.2,
             'type': 'number'
         }
@@ -513,7 +467,6 @@ class TestNumber(unittest.TestCase):
     def test_multiple_of_field(self):
         Height = jschema.Number(multiple_of=5.)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'multipleOf': 5.,
             'type': 'number'
         }
@@ -522,7 +475,6 @@ class TestNumber(unittest.TestCase):
     def test_maximum_field(self):
         Height = jschema.Number(maximum=200.)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maximum': 200.,
             'type': 'number'
         }
@@ -531,7 +483,6 @@ class TestNumber(unittest.TestCase):
     def test_exclusive_maximum_field(self):
         Height = jschema.Number(maximum=200., exclusive_maximum=True)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maximum': 200.,
             'exclusiveMaximum': True,
             'type': 'number'
@@ -541,7 +492,6 @@ class TestNumber(unittest.TestCase):
     def test_minimum_field(self):
         Height = jschema.Number(minimum=10.)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minimum': 10.,
             'type': 'number'
         }
@@ -550,7 +500,6 @@ class TestNumber(unittest.TestCase):
     def test_exclusive_minimum_field(self):
         Height = jschema.Number(minimum=10., exclusive_minimum=False)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minimum': 10.,
             'exclusiveMinimum': False,
             'type': 'number'
@@ -562,7 +511,6 @@ class TestObject(unittest.TestCase):
     def test_type_field(self):
         Hat = jschema.Object()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
@@ -572,7 +520,6 @@ class TestObject(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'object'
         }
@@ -581,7 +528,6 @@ class TestObject(unittest.TestCase):
     def test_title_field(self):
         Hat = jschema.Object(title='Hat')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Hat',
             'type': 'object'
         }
@@ -590,7 +536,6 @@ class TestObject(unittest.TestCase):
     def test_description_field(self):
         Hat = jschema.Object(description='A type of hat')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'A type of hat',
             'type': 'object'
         }
@@ -599,7 +544,6 @@ class TestObject(unittest.TestCase):
     def test_max_properties_field(self):
         Hat = jschema.Object(max_properties=2)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maxProperties': 2,
             'type': 'object'
         }
@@ -608,7 +552,6 @@ class TestObject(unittest.TestCase):
     def test_min_properties_field(self):
         Hat = jschema.Object(min_properties=1)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minProperties': 1,
             'type': 'object'
         }
@@ -619,7 +562,6 @@ class TestObject(unittest.TestCase):
             properties=jschema.Properties(size=jschema.Integer(optional=True))
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'properties': {'size': {'type': 'integer'}},
             'type': 'object'
         }
@@ -628,7 +570,6 @@ class TestObject(unittest.TestCase):
     def test_additional_properties_field_as_boolean(self):
         Hat = jschema.Object(additional_properties=True)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'additionalProperties': True,
             'type': 'object'
         }
@@ -637,7 +578,6 @@ class TestObject(unittest.TestCase):
     def test_additional_properties_field_as_object(self):
         Hat = jschema.Object(additional_properties=jschema.Object())
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'additionalProperties': {'type': 'object'},
             'type': 'object'
         }
@@ -648,7 +588,6 @@ class TestObject(unittest.TestCase):
             additional_properties=jschema.Object(ref='otherProps')
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'otherProps': {'type': 'object'}},
             'additionalProperties': {'$ref': '#/definitions/otherProps'},
             'type': 'object'
@@ -661,7 +600,6 @@ class TestObject(unittest.TestCase):
             properties=jschema.Properties(color=jschema.Integer(ref='color'))
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'otherProps': {'type': 'object'},
                 'color': {'type': 'integer'}
@@ -681,7 +619,6 @@ class TestObject(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'otherProps': {
                     'properties': {'name': {'$ref': '#/definitions/name'}},
@@ -701,7 +638,6 @@ class TestObject(unittest.TestCase):
             properties=jschema.Properties(size=jschema.Object())
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'properties': {'size': {'type': 'object'}},
             'required': ['size'],
             'type': 'object'
@@ -713,7 +649,6 @@ class TestObject(unittest.TestCase):
             properties=jschema.Properties(size=jschema.Object(ref='size'))
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'size': {'type': 'object'}},
             'properties': {'size': {'$ref': '#/definitions/size'}},
             'required': ['size'],
@@ -729,7 +664,6 @@ class TestObject(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'size': {'type': 'object'}, 'color': {'type': 'number'}
             },
@@ -754,7 +688,6 @@ class TestObject(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'ribbon': {
                     'properties': {'color': {'$ref': '#/definitions/color'}},
@@ -772,7 +705,6 @@ class TestObject(unittest.TestCase):
     def test_pattern_properties_field(self):
         Hat = jschema.Object(pattern_properties={'^hat_.*$': jschema.Object()})
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'patternProperties': {'^hat_.*$': {'type': 'object'}},
             'type': 'object'
         }
@@ -783,7 +715,6 @@ class TestObject(unittest.TestCase):
             pattern_properties={'^hat_.*$': jschema.Object(ref='otherProps')}
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'otherProps': {'type': 'object'}},
             'patternProperties': {
                 '^hat_.*$': {'$ref': '#/definitions/otherProps'}
@@ -800,7 +731,6 @@ class TestObject(unittest.TestCase):
             }
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'otherProps': {'type': 'object'},
                 'metaProps': {'type': 'object'}
@@ -825,7 +755,6 @@ class TestObject(unittest.TestCase):
             }
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'otherProps': {
                     'properties': {'name': {'$ref': '#/definitions/name'}},
@@ -845,7 +774,6 @@ class TestObject(unittest.TestCase):
             dependencies=jschema.Dependencies(color=jschema.Object())
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'dependencies': {'color': {'type': 'object'}},
             'type': 'object'
         }
@@ -858,7 +786,6 @@ class TestObject(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'color': {'type': 'object'}},
             'dependencies': {'color': {'$ref': '#/definitions/color'}},
             'type': 'object'
@@ -873,7 +800,6 @@ class TestObject(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'color': {'type': 'object'}, 'size': {'type': 'object'}
             },
@@ -895,7 +821,6 @@ class TestObject(unittest.TestCase):
             )
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'color': {
                     'properties': {'rgb': {'$ref': '#/definitions/rgb'}},
@@ -912,7 +837,6 @@ class TestObject(unittest.TestCase):
     def test_dependencies_field_as_property_dependency(self):
         Hat = jschema.Object(dependencies=jschema.Dependencies(color=['size']))
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'dependencies': {'color': ['size']},
             'type': 'object'
         }
@@ -923,7 +847,6 @@ class TestString(unittest.TestCase):
     def test_type_field(self):
         Name = jschema.String()
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'type': 'string'
         }
         self.assertEqual(expected_schema, Name.jschema.asdict())
@@ -933,7 +856,6 @@ class TestString(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'type': 'string'
         }
@@ -942,7 +864,6 @@ class TestString(unittest.TestCase):
     def test_title_field(self):
         Name = jschema.String(title='Name')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Name',
             'type': 'string'
         }
@@ -951,7 +872,6 @@ class TestString(unittest.TestCase):
     def test_description_field(self):
         Name = jschema.String(description='Name or nickname')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'Name or nickname',
             'type': 'string'
         }
@@ -960,7 +880,6 @@ class TestString(unittest.TestCase):
     def test_default_field(self):
         Name = jschema.String(default='Anonymous')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': 'Anonymous',
             'type': 'string'
         }
@@ -969,7 +888,6 @@ class TestString(unittest.TestCase):
     def test_max_length_field(self):
         Name = jschema.String(max_length=32)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'maxLength': 32,
             'type': 'string'
         }
@@ -978,7 +896,6 @@ class TestString(unittest.TestCase):
     def test_min_length_field(self):
         Name = jschema.String(min_length=1)
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'minLength': 1,
             'type': 'string'
         }
@@ -987,7 +904,6 @@ class TestString(unittest.TestCase):
     def test_pattern_field(self):
         Name = jschema.String(pattern='.*')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'pattern': '.*',
             'type': 'string'
         }
@@ -1000,7 +916,6 @@ class TestEmpty(unittest.TestCase):
             id='http://py.jschema/schemas/'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'id': 'http://py.jschema/schemas/',
             'allOf': [{'type': 'object'}]
         }
@@ -1009,7 +924,6 @@ class TestEmpty(unittest.TestCase):
     def test_title_field(self):
         Name = jschema.Empty(all_of=[jschema.Object()], title='Name')
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'title': 'Name',
             'allOf': [{'type': 'object'}]
         }
@@ -1020,7 +934,6 @@ class TestEmpty(unittest.TestCase):
             all_of=[jschema.Object()], description='Name or nickname'
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'description': 'Name or nickname',
             'allOf': [{'type': 'object'}]
         }
@@ -1029,7 +942,6 @@ class TestEmpty(unittest.TestCase):
     def test_default_field(self):
         Name = jschema.Empty(all_of=[jschema.Object()], default={})
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'default': {},
             'allOf': [{'type': 'object'}]
         }
@@ -1038,7 +950,6 @@ class TestEmpty(unittest.TestCase):
     def test_all_of(self):
         Height = jschema.Empty(all_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'allOf': [{'type': 'integer'}, {'type': 'number'}]
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
@@ -1046,7 +957,6 @@ class TestEmpty(unittest.TestCase):
     def test_all_of_with_ref(self):
         Height = jschema.Empty(all_of=[jschema.Integer(ref='cm')])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'cm': {'type': 'integer'}},
             'allOf': [{'$ref': '#/definitions/cm'}]
         }
@@ -1060,7 +970,6 @@ class TestEmpty(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'maxHeight': {'maximum': 200, 'type': 'number'},
                 'minHeight': {'minimum': 50, 'type': 'number'},
@@ -1084,7 +993,6 @@ class TestEmpty(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'size': {
                     'properties': {'cm': {'$ref': '#/definitions/cm'}},
@@ -1100,7 +1008,6 @@ class TestEmpty(unittest.TestCase):
     def test_any_of(self):
         Height = jschema.Empty(any_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'anyOf': [{'type': 'integer'}, {'type': 'number'}]
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
@@ -1108,7 +1015,6 @@ class TestEmpty(unittest.TestCase):
     def test_any_of_with_ref(self):
         Height = jschema.Empty(any_of=[jschema.Integer(ref='cm')])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'cm': {'type': 'integer'}},
             'anyOf': [{'$ref': '#/definitions/cm'}]
         }
@@ -1122,7 +1028,6 @@ class TestEmpty(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'maxHeight': {'maximum': 200, 'type': 'number'},
                 'minHeight': {'minimum': 50, 'type': 'number'},
@@ -1146,7 +1051,6 @@ class TestEmpty(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'size': {
                     'properties': {'cm': {'$ref': '#/definitions/cm'}},
@@ -1162,7 +1066,6 @@ class TestEmpty(unittest.TestCase):
     def test_one_of(self):
         Height = jschema.Empty(one_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'oneOf': [{'type': 'integer'}, {'type': 'number'}]
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
@@ -1170,7 +1073,6 @@ class TestEmpty(unittest.TestCase):
     def test_one_of_with_ref(self):
         Height = jschema.Empty(one_of=[jschema.Integer(ref='cm')])
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {'cm': {'type': 'integer'}},
             'oneOf': [{'$ref': '#/definitions/cm'}]
         }
@@ -1184,7 +1086,6 @@ class TestEmpty(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'maxHeight': {'maximum': 200, 'type': 'number'},
                 'minHeight': {'minimum': 50, 'type': 'number'},
@@ -1208,7 +1109,6 @@ class TestEmpty(unittest.TestCase):
             ]
         )
         expected_schema = {
-            '$schema': 'http://json-schema.org/draft-04/schema#',
             'definitions': {
                 'size': {
                     'properties': {'cm': {'$ref': '#/definitions/cm'}},
