@@ -5,7 +5,7 @@
 Define classes that conform to a JSON schema, with built-in validation and
 schema generation.
 
-# The `JSchema` Class
+## The `JSchema` Class
 A `JSchema` object represents an unvalidated JSON schema. Any recognised JSON
 schema field can be passed as a keyword argument when constructing a `JSchema`
 object.
