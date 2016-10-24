@@ -3,4 +3,6 @@ python:
   - 3.5
 script:
   - pip install mock nose coverage
-  - nosetests --with-doctest --with-coverage --cover-package=jschema
+  - >
+    nosetests --with-doctest --with-coverage --cover-package=jschema
+              --doctest-extension=md --doctest-options=+ELLIPSIS
