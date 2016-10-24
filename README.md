@@ -30,7 +30,7 @@ format used by the JSON schema definition, i.e. `max_length` rather than
 `maxLength`. This is done to conform to the [PEP8 Style Guide](
 https://www.python.org/dev/peps/pep-0008/).
 
-The JSON schema can be accessed as either a `dict` or as a JSON string.
+The JSON schema can be accessed as either a `dict` or a JSON string.
 
 ```python
 >>> import jschema
@@ -47,7 +47,7 @@ The JSON schema can be accessed as either a `dict` or as a JSON string.
 >>>
 >>> print(schema.asjson())
 {"description":"Age","minimum":0,"type":"integer"}
-
+>>>
 >>> print(schema.asjson(pretty=True))
 {
     "description": "Age",
