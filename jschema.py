@@ -14,6 +14,7 @@ MIN_LENGTH_KEY = 'min_length'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
 PATTERN_KEY = 'pattern'
+UNIQUE_ITEMS_KEY = 'unique_items'
 
 
 class DefinitionError(Exception):
@@ -154,6 +155,14 @@ def validate_pattern(pattern):
             raise DefinitionError("'{0}' must be a string".format(PATTERN_KEY))
 
 
+def validate_unique_items(unique_items):
+    if unique_items is not None:
+        if not isinstance(unique_items, bool):
+            raise DefinitionError(
+                "'{0}' must be a boolean".format(UNIQUE_ITEMS_KEY)
+            )
+
+
 class JSchema(object):
     FIELD_NAMES = {
         # meta
@@ -166,7 +175,7 @@ class JSchema(object):
         ITEMS_KEY: 'items',
         MAX_ITEMS_KEY: 'maxItems',
         MIN_ITEMS_KEY: 'minItems',
-        'unique_items': 'uniqueItems',
+        UNIQUE_ITEMS_KEY: 'uniqueItems',
         # integer, number
         MULTIPLE_OF_KEY: 'multipleOf',
         MAXIMUM_KEY: 'maximum',
@@ -224,6 +233,9 @@ class JSchema(object):
 
         pattern = kwargs.get(PATTERN_KEY, None)
         validate_pattern(pattern)
+
+        unique_items = kwargs.get(UNIQUE_ITEMS_KEY, None)
+        validate_unique_items(unique_items)
 
         self._optional = kwargs.pop('optional', False)
         schema = {}

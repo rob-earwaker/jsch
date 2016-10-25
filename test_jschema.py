@@ -104,6 +104,11 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(items=[jschema.JSchema(), '{}'])
 
+    def test_unique_items_not_boolean(self):
+        message = "'unique_items' must be a boolean"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(unique_items='True')
+
     def test_additional_items_as_boolean(self):
         jschema.JSchema(additional_items=True)
 
