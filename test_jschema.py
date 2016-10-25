@@ -83,3 +83,8 @@ class TestJSchema(JSchemaTestCase):
         message = "'min_length' must be greater than or equal to zero"
         with self.assertDefinitionError(message):
             jschema.JSchema(min_length=-1)
+
+    def test_pattern_not_string(self):
+        message = "'pattern' must be a string"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(pattern=8)

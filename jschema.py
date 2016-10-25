@@ -11,6 +11,7 @@ MIN_ITEMS_KEY = 'min_items'
 MIN_LENGTH_KEY = 'min_length'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
+PATTERN_KEY = 'pattern'
 
 
 class DefinitionError(Exception):
@@ -119,6 +120,12 @@ def validate_multiple_of(multiple_of):
             )
 
 
+def validate_pattern(pattern):
+    if pattern is not None:
+        if not isinstance(pattern, str):
+            raise DefinitionError("'{0}' must be a string".format(PATTERN_KEY))
+
+
 class JSchema(object):
     FIELD_NAMES = {
         # meta
@@ -149,7 +156,7 @@ class JSchema(object):
         # string
         MAX_LENGTH_KEY: 'maxLength',
         MIN_LENGTH_KEY: 'minLength',
-        'pattern': 'pattern',
+        PATTERN_KEY: 'pattern',
         # all
         'definitions': 'definitions',
         'all_of': 'allOf',
@@ -180,6 +187,9 @@ class JSchema(object):
 
         multiple_of = kwargs.get(MULTIPLE_OF_KEY, None)
         validate_multiple_of(multiple_of)
+
+        pattern = kwargs.get(PATTERN_KEY, None)
+        validate_pattern(pattern)
 
         self._optional = kwargs.pop('optional', False)
         schema = {}
