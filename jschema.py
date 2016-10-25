@@ -2,6 +2,10 @@ import json
 import uuid
 
 
+class DefinitionError(Exception):
+    pass
+
+
 class JSchema(object):
     FIELD_NAMES = {
         # meta
@@ -41,6 +45,13 @@ class JSchema(object):
     }
 
     def __init__(self, **kwargs):
+        max_items = kwargs.get('max_items', None)
+        self.validate_max_items(max_items)
+
+        minimum = kwargs.get('minimum', None)
+        exclusive_minimum = kwargs.get('exclusive_minimum', None)
+        self.validate_minimum(minimum, exclusive_minimum)
+
         self._optional = kwargs.pop('optional', False)
         schema = {}
         for field, field_name in self.FIELD_NAMES.items():
@@ -54,6 +65,26 @@ class JSchema(object):
             self._dict['definitions'][kwargs['ref']] = schema
         else:
             self._dict = schema
+
+    def validate_max_items(self, max_items):
+        max_items_is_set = max_items is not None
+        max_items_is_int = isinstance(max_items, int)
+        if max_items_is_set and not max_items_is_int:
+            raise DefinitionError("'max_items' must be an integer")
+
+    def validate_minimum(self, minimum, exclusive_minimum):
+        minimum_is_set = minimum is not None
+        minimum_is_number = isinstance(minimum, (int, float))
+        exclusive_minimum_is_set = exclusive_minimum is not None
+        exclusive_minimum_is_bool = isinstance(exclusive_minimum, bool)
+        if minimum_is_set and not minimum_is_number:
+            raise DefinitionError("'minimum' must be a number")
+        if exclusive_minimum_is_set and not exclusive_minimum_is_bool:
+            raise DefinitionError("'exclusive_minimum' must be a boolean")
+        if exclusive_minimum_is_set and not minimum_is_set:
+            raise DefinitionError(
+                "'minimum' must be present if 'exclusive_minimum' is defined"
+            )
 
     @property
     def optional(self):
