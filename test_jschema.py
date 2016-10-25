@@ -14,8 +14,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(max_items=0.5)
 
-    def test_max_items_lt_zero(self):
-        message = "'max_items' must be gte zero"
+    def test_max_items_less_than_zero(self):
+        message = "'max_items' must be greater than or equal to zero"
         with self.assertDefinitionError(message):
             jschema.JSchema(max_items=-1)
 
@@ -24,8 +24,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(min_items=0.5)
 
-    def test_min_items_lt_zero(self):
-        message = "'min_items' must be gte zero"
+    def test_min_items_less_than_zero(self):
+        message = "'min_items' must be greater than or equal to zero"
         with self.assertDefinitionError(message):
             jschema.JSchema(min_items=-1)
 
@@ -58,3 +58,8 @@ class TestJSchema(JSchemaTestCase):
         message = "'minimum' must be present if 'exclusive_minimum' is defined"
         with self.assertDefinitionError(message):
             jschema.JSchema(exclusive_minimum=True)
+
+    def test_multiple_of_not_number(self):
+        message = "'multiple_of' must be a number"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(multiple_of='2.3')

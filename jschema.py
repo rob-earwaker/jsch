@@ -2,12 +2,13 @@ import json
 import uuid
 
 
+EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
+EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 MAX_ITEMS_KEY = 'max_items'
 MIN_ITEMS_KEY = 'min_items'
 MAXIMUM_KEY = 'maximum'
-EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 MINIMUM_KEY = 'minimum'
-EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
+MULTIPLE_OF_KEY = 'multiple_of'
 
 
 class DefinitionError(Exception):
@@ -15,21 +16,17 @@ class DefinitionError(Exception):
 
 
 def validate_max_items(max_items):
-    if max_items is None:
-        return
-    if not isinstance(max_items, int):
-        raise DefinitionError("'{0}' must be an integer".format(MAX_ITEMS_KEY))
-    if max_items < 0:
-        raise DefinitionError("'{0}' must be gte zero".format(MAX_ITEMS_KEY))
-
-
-def validate_min_items(min_items):
-    if min_items is None:
-        return
-    if not isinstance(min_items, int):
-        raise DefinitionError("'{0}' must be an integer".format(MIN_ITEMS_KEY))
-    if min_items < 0:
-        raise DefinitionError("'{0}' must be gte zero".format(MIN_ITEMS_KEY))
+    if max_items is not None:
+        if not isinstance(max_items, int):
+            raise DefinitionError(
+                "'{0}' must be an integer".format(MAX_ITEMS_KEY)
+            )
+        if not max_items >= 0:
+            raise DefinitionError(
+                "'{0}' must be greater than or equal to zero".format(
+                    MAX_ITEMS_KEY
+                )
+            )
 
 
 def validate_maximum(maximum, exclusive_maximum):
@@ -45,6 +42,20 @@ def validate_maximum(maximum, exclusive_maximum):
             raise DefinitionError(
                 "'{0}' must be present if '{1}' is defined".format(
                     MAXIMUM_KEY, EXCLUSIVE_MAXIMUM_KEY
+                )
+            )
+
+
+def validate_min_items(min_items):
+    if min_items is not None:
+        if not isinstance(min_items, int):
+            raise DefinitionError(
+                "'{0}' must be an integer".format(MIN_ITEMS_KEY)
+            )
+        if not min_items >= 0:
+            raise DefinitionError(
+                "'{0}' must be greater than or equal to zero".format(
+                    MIN_ITEMS_KEY
                 )
             )
 
@@ -66,6 +77,18 @@ def validate_minimum(minimum, exclusive_minimum):
             )
 
 
+def validate_multiple_of(multiple_of):
+    if multiple_of is not None:
+        if not isinstance(multiple_of, (int, float)):
+            raise DefinitionError(
+                "'{0}' must be a number".format(MULTIPLE_OF_KEY)
+            )
+        if not multiple_of > 0:
+            raise DefinitionError(
+                "'{0}' must be greater than zero".format(MULTIPLE_OF_KEY)
+            )
+
+
 class JSchema(object):
     FIELD_NAMES = {
         # meta
@@ -80,7 +103,7 @@ class JSchema(object):
         MIN_ITEMS_KEY: 'minItems',
         'unique_items': 'uniqueItems',
         # integer, number
-        'multiple_of': 'multipleOf',
+        MULTIPLE_OF_KEY: 'multipleOf',
         MAXIMUM_KEY: 'maximum',
         EXCLUSIVE_MAXIMUM_KEY: 'exclusiveMaximum',
         MINIMUM_KEY: 'minimum',
@@ -108,16 +131,19 @@ class JSchema(object):
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
         validate_max_items(max_items)
 
-        min_items = kwargs.get(MIN_ITEMS_KEY, None)
-        validate_min_items(min_items)
-
         maximum = kwargs.get(MAXIMUM_KEY, None)
         exclusive_maximum = kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
         validate_maximum(maximum, exclusive_maximum)
 
+        min_items = kwargs.get(MIN_ITEMS_KEY, None)
+        validate_min_items(min_items)
+
         minimum = kwargs.get(MINIMUM_KEY, None)
         exclusive_minimum = kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
         validate_minimum(minimum, exclusive_minimum)
+
+        multiple_of = kwargs.get(MULTIPLE_OF_KEY, None)
+        validate_multiple_of(multiple_of)
 
         self._optional = kwargs.pop('optional', False)
         schema = {}
