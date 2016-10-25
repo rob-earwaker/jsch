@@ -89,13 +89,29 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(pattern=8)
 
+    def test_additional_items_not_boolean_or_schema(self):
+        message = "'additional_items' must be a boolean or a schema"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(additional_items='False')
+
+    def test_items_not_schema_or_array(self):
+        message = "'items' must be a schema or an array"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(items=9.6)
+
+    def test_items_array_contains_non_schema(self):
+        message = "'items' array must contain only schemas"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(items=[jschema.JSchema(), '{}'])
+
     def test_additional_items_as_boolean(self):
         jschema.JSchema(additional_items=True)
 
     def test_additional_items_as_schema(self):
         jschema.JSchema(additional_items=jschema.JSchema())
 
-    def test_additional_items_not_boolean_or_schema(self):
-        message = "'additional_items' must be a boolean or a schema"
-        with self.assertDefinitionError(message):
-            jschema.JSchema(additional_items='False')
+    def test_items_as_schema(self):
+        jschema.JSchema(items=jschema.JSchema())
+
+    def test_items_as_array(self):
+        jschema.JSchema(items=[jschema.JSchema(), jschema.JSchema()])

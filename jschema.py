@@ -5,6 +5,7 @@ import uuid
 ADDITIONAL_ITEMS_KEY = 'additional_items'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
+ITEMS_KEY = 'items'
 MAX_ITEMS_KEY = 'max_items'
 MAX_LENGTH_KEY = 'max_length'
 MAXIMUM_KEY = 'maximum'
@@ -27,6 +28,22 @@ def validate_additional_items(additional_items):
                     ADDITIONAL_ITEMS_KEY
                 )
             )
+
+
+def validate_items(items):
+    if items is not None:
+        if not isinstance(items, (JSchema, list)):
+            raise DefinitionError(
+                "'{0}' must be a schema or an array".format(ITEMS_KEY)
+            )
+        if isinstance(items, list):
+            for item in items:
+                if not isinstance(item, JSchema):
+                    raise DefinitionError(
+                        "'{0}' array must contain only schemas".format(
+                            ITEMS_KEY
+                        )
+                    )
 
 
 def validate_max_items(max_items):
@@ -146,7 +163,7 @@ class JSchema(object):
         'default': 'default',
         # array
         ADDITIONAL_ITEMS_KEY: 'additionalItems',
-        'items': 'items',
+        ITEMS_KEY: 'items',
         MAX_ITEMS_KEY: 'maxItems',
         MIN_ITEMS_KEY: 'minItems',
         'unique_items': 'uniqueItems',
@@ -178,6 +195,9 @@ class JSchema(object):
     def __init__(self, **kwargs):
         additional_items = kwargs.get(ADDITIONAL_ITEMS_KEY, None)
         validate_additional_items(additional_items)
+
+        items = kwargs.get(ITEMS_KEY, None)
+        validate_items(items)
 
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
         validate_max_items(max_items)
