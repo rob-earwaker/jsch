@@ -19,6 +19,16 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(max_items=-1)
 
+    def test_min_items_not_integer(self):
+        message = "'min_items' must be an integer"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(min_items=0.5)
+
+    def test_min_items_lt_zero(self):
+        message = "'min_items' must be gte zero"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(min_items=-1)
+
     def test_maximum_not_number(self):
         message = "'maximum' must be a number"
         with self.assertDefinitionError(message):

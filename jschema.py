@@ -3,6 +3,7 @@ import uuid
 
 
 MAX_ITEMS_KEY = 'max_items'
+MIN_ITEMS_KEY = 'min_items'
 MAXIMUM_KEY = 'maximum'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 MINIMUM_KEY = 'minimum'
@@ -20,6 +21,15 @@ def validate_max_items(max_items):
         raise DefinitionError("'{0}' must be an integer".format(MAX_ITEMS_KEY))
     if max_items < 0:
         raise DefinitionError("'{0}' must be gte zero".format(MAX_ITEMS_KEY))
+
+
+def validate_min_items(min_items):
+    if min_items is None:
+        return
+    if not isinstance(min_items, int):
+        raise DefinitionError("'{0}' must be an integer".format(MIN_ITEMS_KEY))
+    if min_items < 0:
+        raise DefinitionError("'{0}' must be gte zero".format(MIN_ITEMS_KEY))
 
 
 def validate_maximum(maximum, exclusive_maximum):
@@ -67,7 +77,7 @@ class JSchema(object):
         'additional_items': 'additionalItems',
         'items': 'items',
         MAX_ITEMS_KEY: 'maxItems',
-        'min_items': 'minItems',
+        MIN_ITEMS_KEY: 'minItems',
         'unique_items': 'uniqueItems',
         # integer, number
         'multiple_of': 'multipleOf',
@@ -97,6 +107,9 @@ class JSchema(object):
     def __init__(self, **kwargs):
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
         validate_max_items(max_items)
+
+        min_items = kwargs.get(MIN_ITEMS_KEY, None)
+        validate_min_items(min_items)
 
         maximum = kwargs.get(MAXIMUM_KEY, None)
         exclusive_maximum = kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
