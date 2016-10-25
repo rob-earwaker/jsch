@@ -8,7 +8,7 @@ built-in validation and schema generation.
 ## The JSchema Class
 A `jschema.JSchema` object represents an validated JSON schema. Any recognised
 JSON schema field can be passed as a keyword argument when initialising a
-`jschema.JSchema` object.
+`jschema.JSchema` object:
 
 ```python
 >>> import jschema
@@ -30,7 +30,7 @@ format used by the JSON schema definition, i.e. `max_length` rather than
 `maxLength`. This is done to conform to the [PEP8 Style Guide]
 (https://www.python.org/dev/peps/pep-0008/).
 
-The JSON schema can be accessed as either a `dict` or a JSON string.
+The JSON schema can be accessed as either a `dict` or a JSON string:
 
 ```python
 >>> import jschema
@@ -59,7 +59,7 @@ The JSON schema can be accessed as either a `dict` or a JSON string.
 
 A `jschema.DefinitionError` will be raised on initialisation if any
 [JSON schema validation]
-(http://json-schema.org/latest/json-schema-validation.html) rules are breached.
+(http://json-schema.org/latest/json-schema-validation.html) rules are breached:
 
 ```python
 >>> import jschema
