@@ -45,70 +45,6 @@ class TestArray(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())
 
-    def test_additional_items_field_as_boolean(self):
-        Siblings = jschema.Array(additional_items=True)
-        expected_schema = {
-            'additionalItems': True,
-            'type': 'array'
-        }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
-
-    def test_additional_items_field_as_object(self):
-        Siblings = jschema.Array(additional_items=jschema.Object())
-        expected_schema = {
-            'additionalItems': {'type': 'object'},
-            'type': 'array'
-        }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
-
-    def test_additional_items_field_as_object_with_ref(self):
-        Siblings = jschema.Array(
-            additional_items=jschema.Object(ref='sibling')
-        )
-        expected_schema = {
-            'definitions': {'sibling': {'type': 'object'}},
-            'additionalItems': {'$ref': '#/definitions/sibling'},
-            'type': 'array'
-        }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
-
-    def test_additional_items_field_as_object_with_refs(self):
-        Siblings = jschema.Array(
-            additional_items=jschema.Object(ref='otherSibling'),
-            items=jschema.Object(ref='sibling')
-        )
-        expected_schema = {
-            'definitions': {
-                'sibling': {'type': 'object'},
-                'otherSibling': {'type': 'object'}
-            },
-            'items': {'$ref': '#/definitions/sibling'},
-            'additionalItems': {'$ref': '#/definitions/otherSibling'},
-            'type': 'array'
-        }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
-
-    def test_additional_items_field_as_object_with_nested_ref(self):
-        Siblings = jschema.Array(
-            additional_items=jschema.Object(
-                ref='sibling',
-                properties=jschema.Properties(hat=jschema.Object(ref='hat'))
-            )
-        )
-        expected_schema = {
-            'definitions': {
-                'sibling': {
-                    'properties': {'hat': {'$ref': '#/definitions/hat'}},
-                    'required': ['hat'],
-                    'type': 'object'
-                },
-                'hat': {'type': 'object'}
-            },
-            'additionalItems': {'$ref': '#/definitions/sibling'},
-            'type': 'array'
-        }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
-
     def test_items_field_as_array(self):
         Siblings = jschema.Array(items=[jschema.Object(), jschema.Null()])
         expected_schema = {
@@ -187,22 +123,6 @@ class TestArray(unittest.TestCase):
         expected_schema = {
             'definitions': {'sibling': {'type': 'object'}},
             'items': {'$ref': '#/definitions/sibling'},
-            'type': 'array'
-        }
-        self.assertEqual(expected_schema, Siblings.jschema.asdict())
-
-    def test_items_field_as_object_with_refs(self):
-        Siblings = jschema.Array(
-            items=jschema.Object(ref='sibling'),
-            additional_items=jschema.Object(ref='otherSibling')
-        )
-        expected_schema = {
-            'definitions': {
-                'sibling': {'type': 'object'},
-                'otherSibling': {'type': 'object'}
-            },
-            'items': {'$ref': '#/definitions/sibling'},
-            'additionalItems': {'$ref': '#/definitions/otherSibling'},
             'type': 'array'
         }
         self.assertEqual(expected_schema, Siblings.jschema.asdict())

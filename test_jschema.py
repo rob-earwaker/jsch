@@ -88,3 +88,14 @@ class TestJSchema(JSchemaTestCase):
         message = "'pattern' must be a string"
         with self.assertDefinitionError(message):
             jschema.JSchema(pattern=8)
+
+    def test_additional_items_as_boolean(self):
+        jschema.JSchema(additional_items=True)
+
+    def test_additional_items_as_schema(self):
+        jschema.JSchema(additional_items=jschema.JSchema())
+
+    def test_additional_items_not_boolean_or_schema(self):
+        message = "'additional_items' must be a boolean or a schema"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(additional_items='False')

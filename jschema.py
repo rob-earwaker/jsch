@@ -2,6 +2,7 @@ import json
 import uuid
 
 
+ADDITIONAL_ITEMS_KEY = 'additional_items'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 MAX_ITEMS_KEY = 'max_items'
@@ -16,6 +17,16 @@ PATTERN_KEY = 'pattern'
 
 class DefinitionError(Exception):
     pass
+
+
+def validate_additional_items(additional_items):
+    if additional_items is not None:
+        if not isinstance(additional_items, (bool, JSchema)):
+            raise DefinitionError(
+                "'{0}' must be a boolean or a schema".format(
+                    ADDITIONAL_ITEMS_KEY
+                )
+            )
 
 
 def validate_max_items(max_items):
@@ -134,7 +145,7 @@ class JSchema(object):
         'description': 'description',
         'default': 'default',
         # array
-        'additional_items': 'additionalItems',
+        ADDITIONAL_ITEMS_KEY: 'additionalItems',
         'items': 'items',
         MAX_ITEMS_KEY: 'maxItems',
         MIN_ITEMS_KEY: 'minItems',
@@ -165,6 +176,9 @@ class JSchema(object):
     }
 
     def __init__(self, **kwargs):
+        additional_items = kwargs.get(ADDITIONAL_ITEMS_KEY, None)
+        validate_additional_items(additional_items)
+
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
         validate_max_items(max_items)
 
