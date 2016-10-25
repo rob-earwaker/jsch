@@ -7,6 +7,32 @@ MINIMUM_KEY = 'minimum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 
 
+def validate_max_items(max_items):
+    if max_items is None:
+        return
+    if not isinstance(max_items, int):
+        raise DefinitionError("'{0}' must be an integer".format(MAX_ITEMS_KEY))
+    if max_items < 0:
+        raise DefinitionError("'{0}' must be gte zero".format(MAX_ITEMS_KEY))
+
+
+def validate_minimum(minimum, exclusive_minimum):
+    if minimum is not None:
+        if not isinstance(minimum, (int, float)):
+            raise DefinitionError("'{0}' must be a number".format(MINIMUM_KEY))
+    if exclusive_minimum is not None:
+        if not isinstance(exclusive_minimum, bool):
+            raise DefinitionError(
+                "'{0}' must be a boolean".format(EXCLUSIVE_MINIMUM_KEY)
+            )
+        if minimum is None:
+            raise DefinitionError(
+                "'{0}' must be present if '{1}' is defined".format(
+                    MINIMUM_KEY, EXCLUSIVE_MINIMUM_KEY
+                )
+            )
+
+
 class DefinitionError(Exception):
     pass
 
@@ -51,11 +77,11 @@ class JSchema(object):
 
     def __init__(self, **kwargs):
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
-        self.validate_max_items(max_items)
+        validate_max_items(max_items)
 
         minimum = kwargs.get(MINIMUM_KEY, None)
         exclusive_minimum = kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
-        self.validate_minimum(minimum, exclusive_minimum)
+        validate_minimum(minimum, exclusive_minimum)
 
         self._optional = kwargs.pop('optional', False)
         schema = {}
@@ -70,32 +96,6 @@ class JSchema(object):
             self._dict['definitions'][kwargs['ref']] = schema
         else:
             self._dict = schema
-
-    def validate_max_items(self, max_items):
-        if max_items is None:
-            return
-        if not isinstance(max_items, int):
-            raise DefinitionError("'max_items' must be an integer")
-        if max_items < 0:
-            raise DefinitionError("'max_items' must be gte zero")
-
-    def validate_minimum(self, minimum, exclusive_minimum):
-        if minimum is not None:
-            if not isinstance(minimum, (int, float)):
-                raise DefinitionError(
-                    "'{0}' must be a number".format(MINIMUM_KEY)
-                )
-        if exclusive_minimum is not None:
-            if not isinstance(exclusive_minimum, bool):
-                raise DefinitionError(
-                    "'{0}' must be a boolean".format(EXCLUSIVE_MINIMUM_KEY)
-                )
-            if minimum is None:
-                raise DefinitionError(
-                    "'{0}' must be present if '{1}' is defined".format(
-                        MINIMUM_KEY, EXCLUSIVE_MINIMUM_KEY
-                    )
-                )
 
     @property
     def optional(self):
