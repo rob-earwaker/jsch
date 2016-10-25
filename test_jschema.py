@@ -19,6 +19,21 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(max_items=-1)
 
+    def test_maximum_not_number(self):
+        message = "'maximum' must be a number"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(maximum='5')
+
+    def test_exclusive_maximum_not_bool(self):
+        message = "'exclusive_maximum' must be a boolean"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(maximum=1, exclusive_maximum='True')
+
+    def test_exclusive_maximum_without_maximum(self):
+        message = "'maximum' must be present if 'exclusive_maximum' is defined"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(exclusive_maximum=True)
+
     def test_minimum_not_number(self):
         message = "'minimum' must be a number"
         with self.assertDefinitionError(message):

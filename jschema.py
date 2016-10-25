@@ -3,8 +3,14 @@ import uuid
 
 
 MAX_ITEMS_KEY = 'max_items'
+MAXIMUM_KEY = 'maximum'
+EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 MINIMUM_KEY = 'minimum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
+
+
+class DefinitionError(Exception):
+    pass
 
 
 def validate_max_items(max_items):
@@ -14,6 +20,23 @@ def validate_max_items(max_items):
         raise DefinitionError("'{0}' must be an integer".format(MAX_ITEMS_KEY))
     if max_items < 0:
         raise DefinitionError("'{0}' must be gte zero".format(MAX_ITEMS_KEY))
+
+
+def validate_maximum(maximum, exclusive_maximum):
+    if maximum is not None:
+        if not isinstance(maximum, (int, float)):
+            raise DefinitionError("'{0}' must be a number".format(MAXIMUM_KEY))
+    if exclusive_maximum is not None:
+        if not isinstance(exclusive_maximum, bool):
+            raise DefinitionError(
+                "'{0}' must be a boolean".format(EXCLUSIVE_MAXIMUM_KEY)
+            )
+        if maximum is None:
+            raise DefinitionError(
+                "'{0}' must be present if '{1}' is defined".format(
+                    MAXIMUM_KEY, EXCLUSIVE_MAXIMUM_KEY
+                )
+            )
 
 
 def validate_minimum(minimum, exclusive_minimum):
@@ -33,10 +56,6 @@ def validate_minimum(minimum, exclusive_minimum):
             )
 
 
-class DefinitionError(Exception):
-    pass
-
-
 class JSchema(object):
     FIELD_NAMES = {
         # meta
@@ -47,15 +66,15 @@ class JSchema(object):
         # array
         'additional_items': 'additionalItems',
         'items': 'items',
-        'max_items': 'maxItems',
+        MAX_ITEMS_KEY: 'maxItems',
         'min_items': 'minItems',
         'unique_items': 'uniqueItems',
         # integer, number
         'multiple_of': 'multipleOf',
-        'maximum': 'maximum',
-        'exclusive_maximum': 'exclusiveMaximum',
-        'minimum': 'minimum',
-        'exclusive_minimum': 'exclusiveMinimum',
+        MAXIMUM_KEY: 'maximum',
+        EXCLUSIVE_MAXIMUM_KEY: 'exclusiveMaximum',
+        MINIMUM_KEY: 'minimum',
+        EXCLUSIVE_MINIMUM_KEY: 'exclusiveMinimum',
         # object
         'max_properties': 'maxProperties',
         'min_properties': 'minProperties',
@@ -78,6 +97,10 @@ class JSchema(object):
     def __init__(self, **kwargs):
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
         validate_max_items(max_items)
+
+        maximum = kwargs.get(MAXIMUM_KEY, None)
+        exclusive_maximum = kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
+        validate_maximum(maximum, exclusive_maximum)
 
         minimum = kwargs.get(MINIMUM_KEY, None)
         exclusive_minimum = kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
