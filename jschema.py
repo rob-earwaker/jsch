@@ -8,9 +8,11 @@ EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 ITEMS_KEY = 'items'
 MAX_ITEMS_KEY = 'max_items'
 MAX_LENGTH_KEY = 'max_length'
+MAX_PROPERTIES_KEY = 'max_properties'
 MAXIMUM_KEY = 'maximum'
 MIN_ITEMS_KEY = 'min_items'
 MIN_LENGTH_KEY = 'min_length'
+MIN_PROPERTIES_KEY = 'min_properties'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
 PATTERN_KEY = 'pattern'
@@ -75,6 +77,20 @@ def validate_max_length(max_length):
             )
 
 
+def validate_max_properties(max_properties):
+    if max_properties is not None:
+        if not isinstance(max_properties, int):
+            raise DefinitionError(
+                "'{0}' must be an integer".format(MAX_PROPERTIES_KEY)
+            )
+        if not max_properties >= 0:
+            raise DefinitionError(
+                "'{0}' must be greater than or equal to zero".format(
+                    MAX_PROPERTIES_KEY
+                )
+            )
+
+
 def validate_maximum(maximum, exclusive_maximum):
     if maximum is not None:
         if not isinstance(maximum, (int, float)):
@@ -116,6 +132,20 @@ def validate_min_length(min_length):
             raise DefinitionError(
                 "'{0}' must be greater than or equal to zero".format(
                     MIN_LENGTH_KEY
+                )
+            )
+
+
+def validate_min_properties(min_properties):
+    if min_properties is not None:
+        if not isinstance(min_properties, int):
+            raise DefinitionError(
+                "'{0}' must be an integer".format(MIN_PROPERTIES_KEY)
+            )
+        if not min_properties >= 0:
+            raise DefinitionError(
+                "'{0}' must be greater than or equal to zero".format(
+                    MIN_PROPERTIES_KEY
                 )
             )
 
@@ -183,8 +213,8 @@ class JSchema(object):
         MINIMUM_KEY: 'minimum',
         EXCLUSIVE_MINIMUM_KEY: 'exclusiveMinimum',
         # object
-        'max_properties': 'maxProperties',
-        'min_properties': 'minProperties',
+        MAX_PROPERTIES_KEY: 'maxProperties',
+        MIN_PROPERTIES_KEY: 'minProperties',
         'required': 'required',
         'additional_properties': 'additionalProperties',
         'properties': 'properties',
@@ -214,6 +244,9 @@ class JSchema(object):
         max_length = kwargs.get(MAX_LENGTH_KEY, None)
         validate_max_length(max_length)
 
+        max_properties = kwargs.get(MAX_PROPERTIES_KEY, None)
+        validate_max_properties(max_properties)
+
         maximum = kwargs.get(MAXIMUM_KEY, None)
         exclusive_maximum = kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
         validate_maximum(maximum, exclusive_maximum)
@@ -223,6 +256,9 @@ class JSchema(object):
 
         min_length = kwargs.get(MIN_LENGTH_KEY, None)
         validate_min_length(min_length)
+
+        min_properties = kwargs.get(MIN_PROPERTIES_KEY, None)
+        validate_min_properties(min_properties)
 
         minimum = kwargs.get(MINIMUM_KEY, None)
         exclusive_minimum = kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)

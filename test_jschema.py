@@ -109,6 +109,26 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(unique_items='True')
 
+    def test_max_properties_not_integer(self):
+        message = "'max_properties' must be an integer"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(max_properties=0.5)
+
+    def test_max_properties_less_than_zero(self):
+        message = "'max_properties' must be greater than or equal to zero"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(max_properties=-1)
+
+    def test_min_properties_not_integer(self):
+        message = "'min_properties' must be an integer"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(min_properties=0.5)
+
+    def test_min_properties_less_than_zero(self):
+        message = "'min_properties' must be greater than or equal to zero"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(min_properties=-1)
+
     def test_additional_items_as_boolean(self):
         jschema.JSchema(additional_items=True)
 
