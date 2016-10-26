@@ -374,89 +374,10 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
-    def test_optional_field(self):
-        Hat = jschema.Object(
-            properties=jschema.Properties(size=jschema.Integer(optional=True))
-        )
-        expected_schema = {
-            'properties': {'size': {'type': 'integer'}},
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_additional_properties_field_as_boolean(self):
         Hat = jschema.Object(additional_properties=True)
         expected_schema = {
             'additionalProperties': True,
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_properties_field(self):
-        Hat = jschema.Object(
-            properties=jschema.Properties(size=jschema.Object())
-        )
-        expected_schema = {
-            'properties': {'size': {'type': 'object'}},
-            'required': ['size'],
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_properties_field_with_ref(self):
-        Hat = jschema.Object(
-            properties=jschema.Properties(size=jschema.Object(ref='size'))
-        )
-        expected_schema = {
-            'definitions': {'size': {'type': 'object'}},
-            'properties': {'size': {'$ref': '#/definitions/size'}},
-            'required': ['size'],
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_properties_field_with_refs(self):
-        Hat = jschema.Object(
-            properties=jschema.Properties(
-                size=jschema.Object(ref='size'),
-                color=jschema.Number(ref='color')
-            )
-        )
-        expected_schema = {
-            'definitions': {
-                'size': {'type': 'object'}, 'color': {'type': 'number'}
-            },
-            'properties': {
-                'size': {'$ref': '#/definitions/size'},
-                'color': {'$ref': '#/definitions/color'}
-            },
-            'required': ['color', 'size'],
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_properties_field_with_nested_ref(self):
-        Hat = jschema.Object(
-            properties=jschema.Properties(
-                ribbon=jschema.Object(
-                    ref='ribbon',
-                    properties=jschema.Properties(
-                        color=jschema.Integer(ref='color')
-                    )
-                )
-            )
-        )
-        expected_schema = {
-            'definitions': {
-                'ribbon': {
-                    'properties': {'color': {'$ref': '#/definitions/color'}},
-                    'required': ['color'],
-                    'type': 'object'
-                },
-                'color': {'type': 'integer'}
-            },
-            'properties': {'ribbon': {'$ref': '#/definitions/ribbon'}},
-            'required': ['ribbon'],
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
@@ -502,32 +423,6 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
-    def test_pattern_properties_field_with_nested_ref(self):
-        Hat = jschema.Object(
-            pattern_properties={
-                '^hat_.*$': jschema.Object(
-                    ref='otherProps',
-                    properties=jschema.Properties(
-                        name=jschema.String(ref='name')
-                    )
-                )
-            }
-        )
-        expected_schema = {
-            'definitions': {
-                'otherProps': {
-                    'properties': {'name': {'$ref': '#/definitions/name'}},
-                    'required': ['name'],
-                    'type': 'object'},
-                'name': {'type': 'string'}
-            },
-            'patternProperties': {
-                '^hat_.*$': {'$ref': '#/definitions/otherProps'}
-            },
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_dependencies_field_as_schema_dependency(self):
         Hat = jschema.Object(
             dependencies=jschema.Dependencies(color=jschema.Object())
@@ -566,29 +461,6 @@ class TestObject(unittest.TestCase):
                 'color': {'$ref': '#/definitions/color'},
                 'size': {'$ref': '#/definitions/size'}
             },
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_dependencies_field_as_schema_dependency_with_nested_ref(self):
-        Hat = jschema.Object(
-            dependencies=jschema.Dependencies(
-                color=jschema.Object(
-                    ref='color',
-                    properties=jschema.Properties(rgb=jschema.Array(ref='rgb'))
-                )
-            )
-        )
-        expected_schema = {
-            'definitions': {
-                'color': {
-                    'properties': {'rgb': {'$ref': '#/definitions/rgb'}},
-                    'required': ['rgb'],
-                    'type': 'object'
-                },
-                'rgb': {'type': 'array'}
-            },
-            'dependencies': {'color': {'$ref': '#/definitions/color'}},
             'type': 'object'
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
@@ -740,30 +612,6 @@ class TestEmpty(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_all_of_with_nested_ref(self):
-        Hat = jschema.Empty(
-            all_of=[
-                jschema.Object(
-                    ref='size',
-                    properties=jschema.Properties(
-                        cm=jschema.Integer(ref='cm')
-                    )
-                )
-            ]
-        )
-        expected_schema = {
-            'definitions': {
-                'size': {
-                    'properties': {'cm': {'$ref': '#/definitions/cm'}},
-                    'required': ['cm'],
-                    'type': 'object'
-                },
-                'cm': {'type': 'integer'}
-            },
-            'allOf': [{'$ref': '#/definitions/size'}]
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_any_of(self):
         Height = jschema.Empty(any_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
@@ -798,30 +646,6 @@ class TestEmpty(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_any_of_with_nested_ref(self):
-        Hat = jschema.Empty(
-            any_of=[
-                jschema.Object(
-                    ref='size',
-                    properties=jschema.Properties(
-                        cm=jschema.Integer(ref='cm')
-                    )
-                )
-            ]
-        )
-        expected_schema = {
-            'definitions': {
-                'size': {
-                    'properties': {'cm': {'$ref': '#/definitions/cm'}},
-                    'required': ['cm'],
-                    'type': 'object'
-                },
-                'cm': {'type': 'integer'}
-            },
-            'anyOf': [{'$ref': '#/definitions/size'}]
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_one_of(self):
         Height = jschema.Empty(one_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
@@ -855,30 +679,6 @@ class TestEmpty(unittest.TestCase):
             ]
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
-
-    def test_one_of_with_nested_ref(self):
-        Hat = jschema.Empty(
-            one_of=[
-                jschema.Object(
-                    ref='size',
-                    properties=jschema.Properties(
-                        cm=jschema.Integer(ref='cm')
-                    )
-                )
-            ]
-        )
-        expected_schema = {
-            'definitions': {
-                'size': {
-                    'properties': {'cm': {'$ref': '#/definitions/cm'}},
-                    'required': ['cm'],
-                    'type': 'object'
-                },
-                'cm': {'type': 'integer'}
-            },
-            'oneOf': [{'$ref': '#/definitions/size'}]
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
 
 
 if __name__ == '__main__':

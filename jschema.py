@@ -17,6 +17,7 @@ MIN_PROPERTIES_KEY = 'min_properties'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
 PATTERN_KEY = 'pattern'
+PROPERTIES_KEY = 'properties'
 REQUIRED_KEY = 'required'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
@@ -29,7 +30,7 @@ def validate_additional_items(additional_items):
     if additional_items is not None:
         if not isinstance(additional_items, (bool, JSchema)):
             raise DefinitionError(
-                "'{0}' must be a boolean or a schema".format(
+                "'{0}' must be a bool or a schema".format(
                     ADDITIONAL_ITEMS_KEY
                 )
             )
@@ -39,7 +40,7 @@ def validate_additional_properties(additional_properties):
     if additional_properties is not None:
         if not isinstance(additional_properties, (bool, JSchema)):
             raise DefinitionError(
-                "'{0}' must be a boolean or a schema".format(
+                "'{0}' must be a bool or a schema".format(
                     ADDITIONAL_PROPERTIES_KEY
                 )
             )
@@ -65,7 +66,7 @@ def validate_max_items(max_items):
     if max_items is not None:
         if not isinstance(max_items, int):
             raise DefinitionError(
-                "'{0}' must be an integer".format(MAX_ITEMS_KEY)
+                "'{0}' must be an int".format(MAX_ITEMS_KEY)
             )
         if not max_items >= 0:
             raise DefinitionError(
@@ -79,7 +80,7 @@ def validate_max_length(max_length):
     if max_length is not None:
         if not isinstance(max_length, int):
             raise DefinitionError(
-                "'{0}' must be an integer".format(MAX_LENGTH_KEY)
+                "'{0}' must be an int".format(MAX_LENGTH_KEY)
             )
         if not max_length >= 0:
             raise DefinitionError(
@@ -93,7 +94,7 @@ def validate_max_properties(max_properties):
     if max_properties is not None:
         if not isinstance(max_properties, int):
             raise DefinitionError(
-                "'{0}' must be an integer".format(MAX_PROPERTIES_KEY)
+                "'{0}' must be an int".format(MAX_PROPERTIES_KEY)
             )
         if not max_properties >= 0:
             raise DefinitionError(
@@ -107,12 +108,12 @@ def validate_maximum(maximum, exclusive_maximum):
     if maximum is not None:
         if not isinstance(maximum, (int, float)):
             raise DefinitionError(
-                "'{0}' must be an integer or float".format(MAXIMUM_KEY)
+                "'{0}' must be an int or float".format(MAXIMUM_KEY)
             )
     if exclusive_maximum is not None:
         if not isinstance(exclusive_maximum, bool):
             raise DefinitionError(
-                "'{0}' must be a boolean".format(EXCLUSIVE_MAXIMUM_KEY)
+                "'{0}' must be a bool".format(EXCLUSIVE_MAXIMUM_KEY)
             )
         if maximum is None:
             raise DefinitionError(
@@ -126,7 +127,7 @@ def validate_min_items(min_items):
     if min_items is not None:
         if not isinstance(min_items, int):
             raise DefinitionError(
-                "'{0}' must be an integer".format(MIN_ITEMS_KEY)
+                "'{0}' must be an int".format(MIN_ITEMS_KEY)
             )
         if not min_items >= 0:
             raise DefinitionError(
@@ -140,7 +141,7 @@ def validate_min_length(min_length):
     if min_length is not None:
         if not isinstance(min_length, int):
             raise DefinitionError(
-                "'{0}' must be an integer".format(MIN_LENGTH_KEY)
+                "'{0}' must be an int".format(MIN_LENGTH_KEY)
             )
         if not min_length >= 0:
             raise DefinitionError(
@@ -154,7 +155,7 @@ def validate_min_properties(min_properties):
     if min_properties is not None:
         if not isinstance(min_properties, int):
             raise DefinitionError(
-                "'{0}' must be an integer".format(MIN_PROPERTIES_KEY)
+                "'{0}' must be an int".format(MIN_PROPERTIES_KEY)
             )
         if not min_properties >= 0:
             raise DefinitionError(
@@ -168,12 +169,12 @@ def validate_minimum(minimum, exclusive_minimum):
     if minimum is not None:
         if not isinstance(minimum, (int, float)):
             raise DefinitionError(
-                "'{0}' must be an integer or float".format(MINIMUM_KEY)
+                "'{0}' must be an int or float".format(MINIMUM_KEY)
             )
     if exclusive_minimum is not None:
         if not isinstance(exclusive_minimum, bool):
             raise DefinitionError(
-                "'{0}' must be a boolean".format(EXCLUSIVE_MINIMUM_KEY)
+                "'{0}' must be a bool".format(EXCLUSIVE_MINIMUM_KEY)
             )
         if minimum is None:
             raise DefinitionError(
@@ -187,7 +188,7 @@ def validate_multiple_of(multiple_of):
     if multiple_of is not None:
         if not isinstance(multiple_of, (int, float)):
             raise DefinitionError(
-                "'{0}' must be an integer or float".format(MULTIPLE_OF_KEY)
+                "'{0}' must be an int or float".format(MULTIPLE_OF_KEY)
             )
         if not multiple_of > 0:
             raise DefinitionError(
@@ -198,7 +199,24 @@ def validate_multiple_of(multiple_of):
 def validate_pattern(pattern):
     if pattern is not None:
         if not isinstance(pattern, str):
-            raise DefinitionError("'{0}' must be a string".format(PATTERN_KEY))
+            raise DefinitionError("'{0}' must be a str".format(PATTERN_KEY))
+
+
+def validate_properties(properties):
+    if properties is not None:
+        if not isinstance(properties, dict):
+            raise DefinitionError(
+                "'{0}' must be a dict".format(PROPERTIES_KEY)
+            )
+        for key, value in properties.items():
+            if not isinstance(key, str):
+                raise DefinitionError(
+                    "'{0}' dict key must be a str".format(PROPERTIES_KEY)
+                )
+            if not isinstance(value, JSchema):
+                raise DefinitionError(
+                    "'{0}' dict value must be a schema".format(PROPERTIES_KEY)
+                )
 
 
 def validate_required(required):
@@ -216,7 +234,7 @@ def validate_required(required):
         for item in required:
             if not isinstance(item, str):
                 raise DefinitionError(
-                    "'{0}' list items must be strings".format(REQUIRED_KEY)
+                    "'{0}' list item must be a str".format(REQUIRED_KEY)
                 )
         if not len(set(required)) == len(required):
             raise DefinitionError(
@@ -228,7 +246,7 @@ def validate_unique_items(unique_items):
     if unique_items is not None:
         if not isinstance(unique_items, bool):
             raise DefinitionError(
-                "'{0}' must be a boolean".format(UNIQUE_ITEMS_KEY)
+                "'{0}' must be a bool".format(UNIQUE_ITEMS_KEY)
             )
 
 
@@ -256,7 +274,7 @@ class JSchema(object):
         MIN_PROPERTIES_KEY: 'minProperties',
         REQUIRED_KEY: 'required',
         ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
-        'properties': 'properties',
+        PROPERTIES_KEY: 'properties',
         'pattern_properties': 'patternProperties',
         'dependencies': 'dependencies',
         # string
@@ -311,6 +329,9 @@ class JSchema(object):
 
         pattern = kwargs.get(PATTERN_KEY, None)
         validate_pattern(pattern)
+
+        properties = kwargs.get(PROPERTIES_KEY, None)
+        validate_properties(properties)
 
         required = kwargs.get(REQUIRED_KEY, None)
         validate_required(required)

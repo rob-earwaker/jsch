@@ -71,7 +71,7 @@ A `jschema.DefinitionError` will be raised on initialisation if any
 ... )
 Traceback (most recent call last):
   ...
-jschema.DefinitionError: 'max_items' must be an integer
+jschema.DefinitionError: 'max_items' must be an int
 >>>
 >>> jschema.JSchema(
 ...     title='Height',

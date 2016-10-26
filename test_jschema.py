@@ -9,8 +9,8 @@ class JSchemaTestCase(unittest.TestCase):
 
 
 class TestJSchema(JSchemaTestCase):
-    def test_max_items_not_integer(self):
-        message = "'max_items' must be an integer"
+    def test_max_items_not_int(self):
+        message = "'max_items' must be an int"
         with self.assertDefinitionError(message):
             jschema.JSchema(max_items=0.5)
 
@@ -19,8 +19,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(max_items=-1)
 
-    def test_min_items_not_integer(self):
-        message = "'min_items' must be an integer"
+    def test_min_items_not_int(self):
+        message = "'min_items' must be an int"
         with self.assertDefinitionError(message):
             jschema.JSchema(min_items=0.5)
 
@@ -29,13 +29,13 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(min_items=-1)
 
-    def test_maximum_not_integer_or_float(self):
-        message = "'maximum' must be an integer or float"
+    def test_maximum_not_int_or_float(self):
+        message = "'maximum' must be an int or float"
         with self.assertDefinitionError(message):
             jschema.JSchema(maximum='5')
 
     def test_exclusive_maximum_not_bool(self):
-        message = "'exclusive_maximum' must be a boolean"
+        message = "'exclusive_maximum' must be a bool"
         with self.assertDefinitionError(message):
             jschema.JSchema(maximum=1, exclusive_maximum='True')
 
@@ -44,13 +44,13 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(exclusive_maximum=True)
 
-    def test_minimum_not_integer_or_float(self):
-        message = "'minimum' must be an integer or float"
+    def test_minimum_not_int_or_float(self):
+        message = "'minimum' must be an int or float"
         with self.assertDefinitionError(message):
             jschema.JSchema(minimum='5')
 
     def test_exclusive_minimum_not_bool(self):
-        message = "'exclusive_minimum' must be a boolean"
+        message = "'exclusive_minimum' must be a bool"
         with self.assertDefinitionError(message):
             jschema.JSchema(minimum=1, exclusive_minimum='True')
 
@@ -59,13 +59,13 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(exclusive_minimum=True)
 
-    def test_multiple_of_not_integer_or_float(self):
-        message = "'multiple_of' must be an integer or float"
+    def test_multiple_of_not_int_or_float(self):
+        message = "'multiple_of' must be an int or float"
         with self.assertDefinitionError(message):
             jschema.JSchema(multiple_of='2.3')
 
-    def test_max_length_not_integer(self):
-        message = "'max_length' must be an integer"
+    def test_max_length_not_int(self):
+        message = "'max_length' must be an int"
         with self.assertDefinitionError(message):
             jschema.JSchema(max_length=0.5)
 
@@ -74,8 +74,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(max_length=-1)
 
-    def test_min_length_not_integer(self):
-        message = "'min_length' must be an integer"
+    def test_min_length_not_int(self):
+        message = "'min_length' must be an int"
         with self.assertDefinitionError(message):
             jschema.JSchema(min_length=0.5)
 
@@ -84,13 +84,13 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(min_length=-1)
 
-    def test_pattern_not_string(self):
-        message = "'pattern' must be a string"
+    def test_pattern_not_str(self):
+        message = "'pattern' must be a str"
         with self.assertDefinitionError(message):
             jschema.JSchema(pattern=8)
 
-    def test_additional_items_not_boolean_or_schema(self):
-        message = "'additional_items' must be a boolean or a schema"
+    def test_additional_items_not_bool_or_schema(self):
+        message = "'additional_items' must be a bool or a schema"
         with self.assertDefinitionError(message):
             jschema.JSchema(additional_items='False')
 
@@ -104,13 +104,13 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(items=[jschema.JSchema(), '{}'])
 
-    def test_unique_items_not_boolean(self):
-        message = "'unique_items' must be a boolean"
+    def test_unique_items_not_bool(self):
+        message = "'unique_items' must be a bool"
         with self.assertDefinitionError(message):
             jschema.JSchema(unique_items='True')
 
-    def test_max_properties_not_integer(self):
-        message = "'max_properties' must be an integer"
+    def test_max_properties_not_int(self):
+        message = "'max_properties' must be an int"
         with self.assertDefinitionError(message):
             jschema.JSchema(max_properties=0.5)
 
@@ -119,8 +119,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(max_properties=-1)
 
-    def test_min_properties_not_integer(self):
-        message = "'min_properties' must be an integer"
+    def test_min_properties_not_int(self):
+        message = "'min_properties' must be an int"
         with self.assertDefinitionError(message):
             jschema.JSchema(min_properties=0.5)
 
@@ -139,8 +139,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(required=[])
 
-    def test_required_list_item_not_string(self):
-        message = "'required' list items must be strings"
+    def test_required_list_item_not_str(self):
+        message = "'required' list item must be a str"
         with self.assertDefinitionError(message):
             jschema.JSchema(required=[8])
 
@@ -149,12 +149,27 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
-    def test_additional_properties_not_boolean_or_schema(self):
-        message = "'additional_properties' must be a boolean or a schema"
+    def test_additional_properties_not_bool_or_schema(self):
+        message = "'additional_properties' must be a bool or a schema"
         with self.assertDefinitionError(message):
             jschema.JSchema(additional_properties='False')
 
-    def test_additional_items_as_boolean(self):
+    def test_properties_not_dict(self):
+        message = "'properties' must be a dict"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(properties=[9])
+
+    def test_properties_dict_key_not_str(self):
+        message = "'properties' dict key must be a str"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(properties={8: jschema.JSchema()})
+
+    def test_properties_dict_value_not_schema(self):
+        message = "'properties' dict value must be a schema"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(properties={'name': '{}'})
+
+    def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)
 
     def test_additional_items_as_schema(self):
