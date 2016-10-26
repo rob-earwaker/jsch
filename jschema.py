@@ -49,13 +49,13 @@ def validate_items(items):
     if items is not None:
         if not isinstance(items, (JSchema, list)):
             raise DefinitionError(
-                "'{0}' must be a schema or an array".format(ITEMS_KEY)
+                "'{0}' must be a schema or a list".format(ITEMS_KEY)
             )
         if isinstance(items, list):
             for item in items:
                 if not isinstance(item, JSchema):
                     raise DefinitionError(
-                        "'{0}' array must contain only schemas".format(
+                        "'{0}' list must contain only schemas".format(
                             ITEMS_KEY
                         )
                     )
@@ -106,7 +106,9 @@ def validate_max_properties(max_properties):
 def validate_maximum(maximum, exclusive_maximum):
     if maximum is not None:
         if not isinstance(maximum, (int, float)):
-            raise DefinitionError("'{0}' must be a number".format(MAXIMUM_KEY))
+            raise DefinitionError(
+                "'{0}' must be an integer or float".format(MAXIMUM_KEY)
+            )
     if exclusive_maximum is not None:
         if not isinstance(exclusive_maximum, bool):
             raise DefinitionError(
@@ -165,7 +167,9 @@ def validate_min_properties(min_properties):
 def validate_minimum(minimum, exclusive_minimum):
     if minimum is not None:
         if not isinstance(minimum, (int, float)):
-            raise DefinitionError("'{0}' must be a number".format(MINIMUM_KEY))
+            raise DefinitionError(
+                "'{0}' must be an integer or float".format(MINIMUM_KEY)
+            )
     if exclusive_minimum is not None:
         if not isinstance(exclusive_minimum, bool):
             raise DefinitionError(
@@ -183,7 +187,7 @@ def validate_multiple_of(multiple_of):
     if multiple_of is not None:
         if not isinstance(multiple_of, (int, float)):
             raise DefinitionError(
-                "'{0}' must be a number".format(MULTIPLE_OF_KEY)
+                "'{0}' must be an integer or float".format(MULTIPLE_OF_KEY)
             )
         if not multiple_of > 0:
             raise DefinitionError(
@@ -201,22 +205,22 @@ def validate_required(required):
     if required is not None:
         if not isinstance(required, list):
             raise DefinitionError(
-                "'{0}' must be an array".format(REQUIRED_KEY)
+                "'{0}' must be a list".format(REQUIRED_KEY)
             )
         if not len(required) >= 1:
             raise DefinitionError(
-                "'{0}' array must have at least one item".format(
+                "'{0}' list must have at least one item".format(
                     REQUIRED_KEY
                 )
             )
         for item in required:
             if not isinstance(item, str):
                 raise DefinitionError(
-                    "'{0}' array items must be strings".format(REQUIRED_KEY)
+                    "'{0}' list items must be strings".format(REQUIRED_KEY)
                 )
         if not len(set(required)) == len(required):
             raise DefinitionError(
-                "'{0}' array items must be unique".format(REQUIRED_KEY)
+                "'{0}' list items must be unique".format(REQUIRED_KEY)
             )
 
 

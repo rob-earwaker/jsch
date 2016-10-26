@@ -29,8 +29,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(min_items=-1)
 
-    def test_maximum_not_number(self):
-        message = "'maximum' must be a number"
+    def test_maximum_not_integer_or_float(self):
+        message = "'maximum' must be an integer or float"
         with self.assertDefinitionError(message):
             jschema.JSchema(maximum='5')
 
@@ -44,8 +44,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(exclusive_maximum=True)
 
-    def test_minimum_not_number(self):
-        message = "'minimum' must be a number"
+    def test_minimum_not_integer_or_float(self):
+        message = "'minimum' must be an integer or float"
         with self.assertDefinitionError(message):
             jschema.JSchema(minimum='5')
 
@@ -59,8 +59,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(exclusive_minimum=True)
 
-    def test_multiple_of_not_number(self):
-        message = "'multiple_of' must be a number"
+    def test_multiple_of_not_integer_or_float(self):
+        message = "'multiple_of' must be an integer or float"
         with self.assertDefinitionError(message):
             jschema.JSchema(multiple_of='2.3')
 
@@ -94,13 +94,13 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(additional_items='False')
 
-    def test_items_not_schema_or_array(self):
-        message = "'items' must be a schema or an array"
+    def test_items_not_schema_or_list(self):
+        message = "'items' must be a schema or a list"
         with self.assertDefinitionError(message):
             jschema.JSchema(items=9.6)
 
-    def test_items_array_element_not_schema(self):
-        message = "'items' array must contain only schemas"
+    def test_items_list_item_not_schema(self):
+        message = "'items' list must contain only schemas"
         with self.assertDefinitionError(message):
             jschema.JSchema(items=[jschema.JSchema(), '{}'])
 
@@ -129,23 +129,23 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(min_properties=-1)
 
-    def test_required_not_array(self):
-        message = "'required' must be an array"
+    def test_required_not_list(self):
+        message = "'required' must be a list"
         with self.assertDefinitionError(message):
             jschema.JSchema(required='[]')
 
-    def test_required_array_empty(self):
-        message = "'required' array must have at least one item"
+    def test_required_list_empty(self):
+        message = "'required' list must have at least one item"
         with self.assertDefinitionError(message):
             jschema.JSchema(required=[])
 
-    def test_required_array_item_not_string(self):
-        message = "'required' array items must be strings"
+    def test_required_list_item_not_string(self):
+        message = "'required' list items must be strings"
         with self.assertDefinitionError(message):
             jschema.JSchema(required=[8])
 
-    def test_required_array_with_duplicates(self):
-        message = "'required' array items must be unique"
+    def test_required_list_with_duplicates(self):
+        message = "'required' list items must be unique"
         with self.assertDefinitionError(message):
             jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
@@ -163,5 +163,5 @@ class TestJSchema(JSchemaTestCase):
     def test_items_as_schema(self):
         jschema.JSchema(items=jschema.JSchema())
 
-    def test_items_as_array(self):
+    def test_items_as_list(self):
         jschema.JSchema(items=[jschema.JSchema(), jschema.JSchema()])
