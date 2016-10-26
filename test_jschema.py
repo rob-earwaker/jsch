@@ -169,6 +169,21 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(properties={'name': '{}'})
 
+    def test_pattern_properties_not_dict(self):
+        message = "'pattern_properties' must be a dict"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(pattern_properties=[9])
+
+    def test_pattern_properties_dict_key_not_str(self):
+        message = "'pattern_properties' dict key must be a str"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(pattern_properties={8: jschema.JSchema()})
+
+    def test_pattern_properties_dict_value_not_schema(self):
+        message = "'pattern_properties' dict value must be a schema"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(pattern_properties={'name': '{}'})
+
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)
 

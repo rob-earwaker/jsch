@@ -17,6 +17,7 @@ MIN_PROPERTIES_KEY = 'min_properties'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
 PATTERN_KEY = 'pattern'
+PATTERN_PROPERTIES_KEY = 'pattern_properties'
 PROPERTIES_KEY = 'properties'
 REQUIRED_KEY = 'required'
 UNIQUE_ITEMS_KEY = 'unique_items'
@@ -202,6 +203,27 @@ def validate_pattern(pattern):
             raise DefinitionError("'{0}' must be a str".format(PATTERN_KEY))
 
 
+def validate_pattern_properties(pattern_properties):
+    if pattern_properties is not None:
+        if not isinstance(pattern_properties, dict):
+            raise DefinitionError(
+                "'{0}' must be a dict".format(PATTERN_PROPERTIES_KEY)
+            )
+        for key, value in pattern_properties.items():
+            if not isinstance(key, str):
+                raise DefinitionError(
+                    "'{0}' dict key must be a str".format(
+                        PATTERN_PROPERTIES_KEY
+                    )
+                )
+            if not isinstance(value, JSchema):
+                raise DefinitionError(
+                    "'{0}' dict value must be a schema".format(
+                        PATTERN_PROPERTIES_KEY
+                    )
+                )
+
+
 def validate_properties(properties):
     if properties is not None:
         if not isinstance(properties, dict):
@@ -275,7 +297,7 @@ class JSchema(object):
         REQUIRED_KEY: 'required',
         ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
         PROPERTIES_KEY: 'properties',
-        'pattern_properties': 'patternProperties',
+        PATTERN_PROPERTIES_KEY: 'patternProperties',
         'dependencies': 'dependencies',
         # string
         MAX_LENGTH_KEY: 'maxLength',
@@ -329,6 +351,9 @@ class JSchema(object):
 
         pattern = kwargs.get(PATTERN_KEY, None)
         validate_pattern(pattern)
+
+        pattern_properties = kwargs.get(PATTERN_PROPERTIES_KEY, None)
+        validate_pattern_properties(pattern_properties)
 
         properties = kwargs.get(PROPERTIES_KEY, None)
         validate_properties(properties)

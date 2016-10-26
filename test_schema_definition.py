@@ -382,47 +382,6 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
-    def test_pattern_properties_field(self):
-        Hat = jschema.Object(pattern_properties={'^hat_.*$': jschema.Object()})
-        expected_schema = {
-            'patternProperties': {'^hat_.*$': {'type': 'object'}},
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_pattern_properties_field_with_ref(self):
-        Hat = jschema.Object(
-            pattern_properties={'^hat_.*$': jschema.Object(ref='otherProps')}
-        )
-        expected_schema = {
-            'definitions': {'otherProps': {'type': 'object'}},
-            'patternProperties': {
-                '^hat_.*$': {'$ref': '#/definitions/otherProps'}
-            },
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_pattern_properties_field_with_refs(self):
-        Hat = jschema.Object(
-            pattern_properties={
-                '^hat_.*$': jschema.Object(ref='otherProps'),
-                '^meta_.*$': jschema.Object(ref='metaProps')
-            }
-        )
-        expected_schema = {
-            'definitions': {
-                'otherProps': {'type': 'object'},
-                'metaProps': {'type': 'object'}
-            },
-            'patternProperties': {
-                '^hat_.*$': {'$ref': '#/definitions/otherProps'},
-                '^meta_.*$': {'$ref': '#/definitions/metaProps'}
-            },
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_dependencies_field_as_schema_dependency(self):
         Hat = jschema.Object(
             dependencies=jschema.Dependencies(color=jschema.Object())
