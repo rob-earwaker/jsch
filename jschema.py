@@ -16,6 +16,7 @@ MIN_PROPERTIES_KEY = 'min_properties'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
 PATTERN_KEY = 'pattern'
+REQUIRED_KEY = 'required'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
 
@@ -185,6 +186,29 @@ def validate_pattern(pattern):
             raise DefinitionError("'{0}' must be a string".format(PATTERN_KEY))
 
 
+def validate_required(required):
+    if required is not None:
+        if not isinstance(required, list):
+            raise DefinitionError(
+                "'{0}' must be an array".format(REQUIRED_KEY)
+            )
+        if not len(required) >= 1:
+            raise DefinitionError(
+                "'{0}' array must have at least one item".format(
+                    REQUIRED_KEY
+                )
+            )
+        for item in required:
+            if not isinstance(item, str):
+                raise DefinitionError(
+                    "'{0}' array items must be strings".format(REQUIRED_KEY)
+                )
+        if not len(set(required)) == len(required):
+            raise DefinitionError(
+                "'{0}' array items must be unique".format(REQUIRED_KEY)
+            )
+
+
 def validate_unique_items(unique_items):
     if unique_items is not None:
         if not isinstance(unique_items, bool):
@@ -215,7 +239,7 @@ class JSchema(object):
         # object
         MAX_PROPERTIES_KEY: 'maxProperties',
         MIN_PROPERTIES_KEY: 'minProperties',
-        'required': 'required',
+        REQUIRED_KEY: 'required',
         'additional_properties': 'additionalProperties',
         'properties': 'properties',
         'pattern_properties': 'patternProperties',
@@ -269,6 +293,9 @@ class JSchema(object):
 
         pattern = kwargs.get(PATTERN_KEY, None)
         validate_pattern(pattern)
+
+        required = kwargs.get(REQUIRED_KEY, None)
+        validate_required(required)
 
         unique_items = kwargs.get(UNIQUE_ITEMS_KEY, None)
         validate_unique_items(unique_items)

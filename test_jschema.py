@@ -99,7 +99,7 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(items=9.6)
 
-    def test_items_array_contains_non_schema(self):
+    def test_items_array_element_not_schema(self):
         message = "'items' array must contain only schemas"
         with self.assertDefinitionError(message):
             jschema.JSchema(items=[jschema.JSchema(), '{}'])
@@ -128,6 +128,26 @@ class TestJSchema(JSchemaTestCase):
         message = "'min_properties' must be greater than or equal to zero"
         with self.assertDefinitionError(message):
             jschema.JSchema(min_properties=-1)
+
+    def test_required_not_array(self):
+        message = "'required' must be an array"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(required='[]')
+
+    def test_required_array_empty(self):
+        message = "'required' array must have at least one item"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(required=[])
+
+    def test_required_array_item_not_string(self):
+        message = "'required' array items must be strings"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(required=[8])
+
+    def test_required_array_with_duplicates(self):
+        message = "'required' array items must be unique"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
     def test_additional_items_as_boolean(self):
         jschema.JSchema(additional_items=True)
