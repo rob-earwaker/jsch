@@ -149,6 +149,11 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
+    def test_additional_properties_not_boolean_or_schema(self):
+        message = "'additional_properties' must be a boolean or a schema"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(additional_properties='False')
+
     def test_additional_items_as_boolean(self):
         jschema.JSchema(additional_items=True)
 

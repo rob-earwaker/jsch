@@ -3,6 +3,7 @@ import uuid
 
 
 ADDITIONAL_ITEMS_KEY = 'additional_items'
+ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 ITEMS_KEY = 'items'
@@ -30,6 +31,16 @@ def validate_additional_items(additional_items):
             raise DefinitionError(
                 "'{0}' must be a boolean or a schema".format(
                     ADDITIONAL_ITEMS_KEY
+                )
+            )
+
+
+def validate_additional_properties(additional_properties):
+    if additional_properties is not None:
+        if not isinstance(additional_properties, (bool, JSchema)):
+            raise DefinitionError(
+                "'{0}' must be a boolean or a schema".format(
+                    ADDITIONAL_PROPERTIES_KEY
                 )
             )
 
@@ -240,7 +251,7 @@ class JSchema(object):
         MAX_PROPERTIES_KEY: 'maxProperties',
         MIN_PROPERTIES_KEY: 'minProperties',
         REQUIRED_KEY: 'required',
-        'additional_properties': 'additionalProperties',
+        ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
         'properties': 'properties',
         'pattern_properties': 'patternProperties',
         'dependencies': 'dependencies',
@@ -258,6 +269,9 @@ class JSchema(object):
     def __init__(self, **kwargs):
         additional_items = kwargs.get(ADDITIONAL_ITEMS_KEY, None)
         validate_additional_items(additional_items)
+
+        additional_properties = kwargs.get(ADDITIONAL_PROPERTIES_KEY, None)
+        validate_additional_properties(additional_properties)
 
         items = kwargs.get(ITEMS_KEY, None)
         validate_items(items)

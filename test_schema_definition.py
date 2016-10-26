@@ -392,64 +392,6 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
-    def test_additional_properties_field_as_object(self):
-        Hat = jschema.Object(additional_properties=jschema.Object())
-        expected_schema = {
-            'additionalProperties': {'type': 'object'},
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_additional_properties_field_as_object_with_ref(self):
-        Hat = jschema.Object(
-            additional_properties=jschema.Object(ref='otherProps')
-        )
-        expected_schema = {
-            'definitions': {'otherProps': {'type': 'object'}},
-            'additionalProperties': {'$ref': '#/definitions/otherProps'},
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_additional_properties_field_as_object_with_refs(self):
-        Hat = jschema.Object(
-            additional_properties=jschema.Object(ref='otherProps'),
-            properties=jschema.Properties(color=jschema.Integer(ref='color'))
-        )
-        expected_schema = {
-            'definitions': {
-                'otherProps': {'type': 'object'},
-                'color': {'type': 'integer'}
-            },
-            'properties': {'color': {'$ref': '#/definitions/color'}},
-            'required': ['color'],
-            'additionalProperties': {'$ref': '#/definitions/otherProps'},
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_additional_properties_field_as_object_with_nested_ref(self):
-        Hat = jschema.Object(
-            additional_properties=jschema.Object(
-                ref='otherProps',
-                properties=jschema.Properties(name=jschema.String(ref='name'))
-            )
-        )
-        expected_schema = {
-            'definitions': {
-                'otherProps': {
-                    'properties': {'name': {'$ref': '#/definitions/name'}},
-                    'required': ['name'],
-                    'type': 'object'},
-                'name': {'type': 'string'}
-            },
-            'additionalProperties': {
-                '$ref': '#/definitions/otherProps'
-            },
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_properties_field(self):
         Hat = jschema.Object(
             properties=jschema.Properties(size=jschema.Object())
