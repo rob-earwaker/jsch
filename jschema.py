@@ -275,7 +275,9 @@ def validate_unique_items(unique_items):
 class JSchema(object):
     FIELD_NAMES = {
         # meta
-        'type': 'type',
+        'schema': '$schema',
+        'ref': '$ref',
+        'id': 'id',
         'title': 'title',
         'description': 'description',
         'default': 'default',
@@ -304,10 +306,13 @@ class JSchema(object):
         MIN_LENGTH_KEY: 'minLength',
         PATTERN_KEY: 'pattern',
         # all
-        'definitions': 'definitions',
+        'enum': 'enum',
+        'type': 'type',
         'all_of': 'allOf',
         'any_of': 'anyOf',
-        'one_of': 'oneOf'
+        'one_of': 'oneOf',
+        'not_': 'not',
+        'definitions': 'definitions'
     }
 
     def __init__(self, **kwargs):
