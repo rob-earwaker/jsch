@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/rob-earwaker/jschema.svg?branch=master)]
 (https://travis-ci.org/rob-earwaker/jschema)
-
 [![Coverage Status]
 (https://coveralls.io/repos/github/rob-earwaker/jschema/badge.svg?branch=master)]
 (https://coveralls.io/github/rob-earwaker/jschema?branch=master)
