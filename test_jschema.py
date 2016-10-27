@@ -265,3 +265,7 @@ class TestJSchema(JSchemaTestCase):
 
     def test_items_as_list(self):
         jschema.JSchema(items=[jschema.JSchema(), jschema.JSchema()])
+
+
+if __name__ == '__main__':
+    unittest.main()
