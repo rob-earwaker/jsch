@@ -254,6 +254,11 @@ class TestJSchema(JSchemaTestCase):
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(one_of=[jschema.JSchema(), '{}'])
 
+    def test_not_not_schema(self):
+        message = "'not_' must be a schema"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(not_='{}')
+
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)
 

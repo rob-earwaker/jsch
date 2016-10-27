@@ -18,6 +18,7 @@ MIN_LENGTH_KEY = 'min_length'
 MIN_PROPERTIES_KEY = 'min_properties'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
+NOT_KEY = 'not_'
 ONE_OF_KEY = 'one_of'
 PATTERN_KEY = 'pattern'
 PATTERN_PROPERTIES_KEY = 'pattern_properties'
@@ -235,6 +236,12 @@ def validate_multiple_of(multiple_of):
             )
 
 
+def validate_not(not_):
+    if not_ is not None:
+        if not isinstance(not_, JSchema):
+            raise DefinitionError("'{0}' must be a schema".format(NOT_KEY))
+
+
 def validate_pattern(pattern):
     if pattern is not None:
         if not isinstance(pattern, str):
@@ -393,7 +400,7 @@ class JSchema(object):
         ALL_OF_KEY: 'allOf',
         ANY_OF_KEY: 'anyOf',
         ONE_OF_KEY: 'oneOf',
-        'not_': 'not',
+        NOT_KEY: 'not',
         'definitions': 'definitions'
     }
 
@@ -441,6 +448,9 @@ class JSchema(object):
 
         multiple_of = kwargs.get(MULTIPLE_OF_KEY, None)
         validate_multiple_of(multiple_of)
+
+        not_ = kwargs.get(NOT_KEY, None)
+        validate_not(not_)
 
         pattern = kwargs.get(PATTERN_KEY, None)
         validate_pattern(pattern)
