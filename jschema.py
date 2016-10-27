@@ -6,6 +6,7 @@ ADDITIONAL_ITEMS_KEY = 'additional_items'
 ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
 ALL_OF_KEY = 'all_of'
 ANY_OF_KEY = 'any_of'
+DEFINITIONS_KEY = 'definitions'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 ITEMS_KEY = 'items'
@@ -83,6 +84,23 @@ def validate_any_of(any_of):
             if not isinstance(item, JSchema):
                 raise DefinitionError(
                     "'{0}' list item must be a schema".format(ANY_OF_KEY)
+                )
+
+
+def validate_definitions(definitions):
+    if definitions is not None:
+        if not isinstance(definitions, dict):
+            raise DefinitionError(
+                "'{0}' must be a dict".format(DEFINITIONS_KEY)
+            )
+        for key, value in definitions.items():
+            if not isinstance(key, str):
+                raise DefinitionError(
+                    "'{0}' dict key must be a str".format(DEFINITIONS_KEY)
+                )
+            if not isinstance(value, JSchema):
+                raise DefinitionError(
+                    "'{0}' dict value must be a schema".format(DEFINITIONS_KEY)
                 )
 
 
@@ -401,7 +419,7 @@ class JSchema(object):
         ANY_OF_KEY: 'anyOf',
         ONE_OF_KEY: 'oneOf',
         NOT_KEY: 'not',
-        'definitions': 'definitions'
+        DEFINITIONS_KEY: 'definitions'
     }
 
     def __init__(self, **kwargs):
@@ -416,6 +434,9 @@ class JSchema(object):
 
         any_of = kwargs.get(ANY_OF_KEY, None)
         validate_any_of(any_of)
+
+        definitions = kwargs.get(DEFINITIONS_KEY, None)
+        validate_definitions(definitions)
 
         items = kwargs.get(ITEMS_KEY, None)
         validate_items(items)

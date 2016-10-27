@@ -259,6 +259,21 @@ class TestJSchema(JSchemaTestCase):
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(not_='{}')
 
+    def test_definitions_not_dict(self):
+        message = "'definitions' must be a dict"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(definitions=True)
+
+    def test_definitions_dict_key_not_str(self):
+        message = "'definitions' dict key must be a str"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(definitions={7: jschema.JSchema()})
+
+    def test_definitions_dict_value_not_schema(self):
+        message = "'definitions' dict value must be a schema"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(definitions={'name': '{}'})
+
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)
 
