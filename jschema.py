@@ -5,6 +5,7 @@ import uuid
 ADDITIONAL_ITEMS_KEY = 'additional_items'
 ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
 ALL_OF_KEY = 'all_of'
+ANY_OF_KEY = 'any_of'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 ITEMS_KEY = 'items'
@@ -65,6 +66,21 @@ def validate_all_of(all_of):
             if not isinstance(item, JSchema):
                 raise DefinitionError(
                     "'{0}' list item must be a schema".format(ALL_OF_KEY)
+                )
+
+
+def validate_any_of(any_of):
+    if any_of is not None:
+        if not isinstance(any_of, list):
+            raise DefinitionError("'{0}' must be a list".format(ANY_OF_KEY))
+        if not len(any_of) >= 1:
+            raise DefinitionError(
+                "'{0}' list must contain at least one item".format(ANY_OF_KEY)
+            )
+        for item in any_of:
+            if not isinstance(item, JSchema):
+                raise DefinitionError(
+                    "'{0}' list item must be a schema".format(ANY_OF_KEY)
                 )
 
 
@@ -359,7 +375,7 @@ class JSchema(object):
         'enum': 'enum',
         TYPE_KEY: 'type',
         ALL_OF_KEY: 'allOf',
-        'any_of': 'anyOf',
+        ANY_OF_KEY: 'anyOf',
         'one_of': 'oneOf',
         'not_': 'not',
         'definitions': 'definitions'
@@ -374,6 +390,9 @@ class JSchema(object):
 
         all_of = kwargs.get(ALL_OF_KEY, None)
         validate_all_of(all_of)
+
+        any_of = kwargs.get(ANY_OF_KEY, None)
+        validate_any_of(any_of)
 
         items = kwargs.get(ITEMS_KEY, None)
         validate_items(items)

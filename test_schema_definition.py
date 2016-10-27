@@ -469,13 +469,6 @@ class TestString(unittest.TestCase):
 
 
 class TestEmpty(unittest.TestCase):
-    def test_any_of(self):
-        Height = jschema.Empty(any_of=[jschema.Integer(), jschema.Number()])
-        expected_schema = {
-            'anyOf': [{'type': 'integer'}, {'type': 'number'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
     def test_one_of(self):
         Height = jschema.Empty(one_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
