@@ -20,7 +20,12 @@ PATTERN_KEY = 'pattern'
 PATTERN_PROPERTIES_KEY = 'pattern_properties'
 PROPERTIES_KEY = 'properties'
 REQUIRED_KEY = 'required'
+TYPE_KEY = 'type'
 UNIQUE_ITEMS_KEY = 'unique_items'
+
+PRIMITIVE_TYPES = [
+    'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
+]
 
 
 class DefinitionError(Exception):
@@ -264,6 +269,35 @@ def validate_required(required):
             )
 
 
+def validate_type(type):
+    if type is not None:
+        if not isinstance(type, (str, list)):
+            raise DefinitionError(
+                "'{0}' must be a str or a list".format(TYPE_KEY)
+            )
+        if isinstance(type, str):
+            if type not in PRIMITIVE_TYPES:
+                raise DefinitionError(
+                    "'{0}' str must be a primitive type".format(TYPE_KEY)
+                )
+        if isinstance(type, list):
+            for item in type:
+                if not isinstance(item, str):
+                    raise DefinitionError(
+                        "'{0}' list item must be a str".format(TYPE_KEY)
+                    )
+                if item not in PRIMITIVE_TYPES:
+                    raise DefinitionError(
+                        "'{0}' list item must be a primitive type".format(
+                            TYPE_KEY
+                        )
+                    )
+            if not len(set(type)) == len(type):
+                raise DefinitionError(
+                    "'{0}' list items must be unique".format(TYPE_KEY)
+                )
+
+
 def validate_unique_items(unique_items):
     if unique_items is not None:
         if not isinstance(unique_items, bool):
@@ -307,7 +341,7 @@ class JSchema(object):
         PATTERN_KEY: 'pattern',
         # all
         'enum': 'enum',
-        'type': 'type',
+        TYPE_KEY: 'type',
         'all_of': 'allOf',
         'any_of': 'anyOf',
         'one_of': 'oneOf',
@@ -365,6 +399,9 @@ class JSchema(object):
 
         required = kwargs.get(REQUIRED_KEY, None)
         validate_required(required)
+
+        type = kwargs.get(TYPE_KEY, None)
+        validate_type(type)
 
         unique_items = kwargs.get(UNIQUE_ITEMS_KEY, None)
         validate_unique_items(unique_items)

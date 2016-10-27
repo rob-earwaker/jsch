@@ -392,38 +392,6 @@ class TestObject(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Hat.jschema.asdict())
 
-    def test_dependencies_field_as_schema_dependency_with_ref(self):
-        Hat = jschema.Object(
-            dependencies=jschema.Dependencies(
-                color=jschema.Object(ref='color')
-            )
-        )
-        expected_schema = {
-            'definitions': {'color': {'type': 'object'}},
-            'dependencies': {'color': {'$ref': '#/definitions/color'}},
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
-    def test_dependencies_field_as_schema_dependency_with_refs(self):
-        Hat = jschema.Object(
-            dependencies=jschema.Dependencies(
-                color=jschema.Object(ref='color'),
-                size=jschema.Object(ref='size')
-            )
-        )
-        expected_schema = {
-            'definitions': {
-                'color': {'type': 'object'}, 'size': {'type': 'object'}
-            },
-            'dependencies': {
-                'color': {'$ref': '#/definitions/color'},
-                'size': {'$ref': '#/definitions/size'}
-            },
-            'type': 'object'
-        }
-        self.assertEqual(expected_schema, Hat.jschema.asdict())
-
     def test_dependencies_field_as_property_dependency(self):
         Hat = jschema.Object(dependencies=jschema.Dependencies(color=['size']))
         expected_schema = {
@@ -544,33 +512,6 @@ class TestEmpty(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_all_of_with_ref(self):
-        Height = jschema.Empty(all_of=[jschema.Integer(ref='cm')])
-        expected_schema = {
-            'definitions': {'cm': {'type': 'integer'}},
-            'allOf': [{'$ref': '#/definitions/cm'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
-    def test_all_of_with_refs(self):
-        Height = jschema.Empty(
-            all_of=[
-                jschema.Number(ref='maxHeight', maximum=200),
-                jschema.Number(ref='minHeight', minimum=50)
-            ]
-        )
-        expected_schema = {
-            'definitions': {
-                'maxHeight': {'maximum': 200, 'type': 'number'},
-                'minHeight': {'minimum': 50, 'type': 'number'},
-            },
-            'allOf': [
-                {'$ref': '#/definitions/maxHeight'},
-                {'$ref': '#/definitions/minHeight'}
-            ]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
     def test_any_of(self):
         Height = jschema.Empty(any_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
@@ -578,64 +519,10 @@ class TestEmpty(unittest.TestCase):
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 
-    def test_any_of_with_ref(self):
-        Height = jschema.Empty(any_of=[jschema.Integer(ref='cm')])
-        expected_schema = {
-            'definitions': {'cm': {'type': 'integer'}},
-            'anyOf': [{'$ref': '#/definitions/cm'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
-    def test_any_of_with_refs(self):
-        Height = jschema.Empty(
-            any_of=[
-                jschema.Number(ref='maxHeight', maximum=200),
-                jschema.Number(ref='minHeight', minimum=50)
-            ]
-        )
-        expected_schema = {
-            'definitions': {
-                'maxHeight': {'maximum': 200, 'type': 'number'},
-                'minHeight': {'minimum': 50, 'type': 'number'},
-            },
-            'anyOf': [
-                {'$ref': '#/definitions/maxHeight'},
-                {'$ref': '#/definitions/minHeight'}
-            ]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
     def test_one_of(self):
         Height = jschema.Empty(one_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
             'oneOf': [{'type': 'integer'}, {'type': 'number'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
-    def test_one_of_with_ref(self):
-        Height = jschema.Empty(one_of=[jschema.Integer(ref='cm')])
-        expected_schema = {
-            'definitions': {'cm': {'type': 'integer'}},
-            'oneOf': [{'$ref': '#/definitions/cm'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
-    def test_one_of_with_refs(self):
-        Height = jschema.Empty(
-            one_of=[
-                jschema.Number(ref='maxHeight', maximum=200),
-                jschema.Number(ref='minHeight', minimum=50)
-            ]
-        )
-        expected_schema = {
-            'definitions': {
-                'maxHeight': {'maximum': 200, 'type': 'number'},
-                'minHeight': {'minimum': 50, 'type': 'number'},
-            },
-            'oneOf': [
-                {'$ref': '#/definitions/maxHeight'},
-                {'$ref': '#/definitions/minHeight'}
-            ]
         }
         self.assertEqual(expected_schema, Height.jschema.asdict())
 

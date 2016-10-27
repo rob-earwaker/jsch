@@ -184,6 +184,31 @@ class TestJSchema(JSchemaTestCase):
         with self.assertDefinitionError(message):
             jschema.JSchema(pattern_properties={'name': '{}'})
 
+    def test_type_not_str_or_list(self):
+        message = "'type' must be a str or a list"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(type=45)
+
+    def test_type_str_not_primitive_type(self):
+        message = "'type' str must be a primitive type"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(type='float')
+
+    def test_type_list_item_not_str(self):
+        message = "'type' list item must be a str"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(type=['string', 7])
+
+    def test_type_list_item_not_primitive_type(self):
+        message = "'type' list item must be a primitive type"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(type=['string', 'float'])
+
+    def test_type_list_items_not_unique(self):
+        message = "'type' list items must be unique"
+        with self.assertDefinitionError(message):
+            jschema.JSchema(type=['string', 'null', 'null'])
+
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)
 
