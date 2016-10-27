@@ -18,6 +18,7 @@ MIN_LENGTH_KEY = 'min_length'
 MIN_PROPERTIES_KEY = 'min_properties'
 MINIMUM_KEY = 'minimum'
 MULTIPLE_OF_KEY = 'multiple_of'
+ONE_OF_KEY = 'one_of'
 PATTERN_KEY = 'pattern'
 PATTERN_PROPERTIES_KEY = 'pattern_properties'
 PROPERTIES_KEY = 'properties'
@@ -278,6 +279,21 @@ def validate_properties(properties):
                 )
 
 
+def validate_one_of(one_of):
+    if one_of is not None:
+        if not isinstance(one_of, list):
+            raise DefinitionError("'{0}' must be a list".format(ONE_OF_KEY))
+        if not len(one_of) >= 1:
+            raise DefinitionError(
+                "'{0}' list must contain at least one item".format(ONE_OF_KEY)
+            )
+        for item in one_of:
+            if not isinstance(item, JSchema):
+                raise DefinitionError(
+                    "'{0}' list item must be a schema".format(ONE_OF_KEY)
+                )
+
+
 def validate_required(required):
     if required is not None:
         if not isinstance(required, list):
@@ -376,7 +392,7 @@ class JSchema(object):
         TYPE_KEY: 'type',
         ALL_OF_KEY: 'allOf',
         ANY_OF_KEY: 'anyOf',
-        'one_of': 'oneOf',
+        ONE_OF_KEY: 'oneOf',
         'not_': 'not',
         'definitions': 'definitions'
     }
@@ -434,6 +450,9 @@ class JSchema(object):
 
         properties = kwargs.get(PROPERTIES_KEY, None)
         validate_properties(properties)
+
+        one_of = kwargs.get(ONE_OF_KEY, None)
+        validate_one_of(one_of)
 
         required = kwargs.get(REQUIRED_KEY, None)
         validate_required(required)

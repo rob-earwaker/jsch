@@ -468,14 +468,5 @@ class TestString(unittest.TestCase):
         self.assertEqual(expected_schema, Name.jschema.asdict())
 
 
-class TestEmpty(unittest.TestCase):
-    def test_one_of(self):
-        Height = jschema.Empty(one_of=[jschema.Integer(), jschema.Number()])
-        expected_schema = {
-            'oneOf': [{'type': 'integer'}, {'type': 'number'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
-
 if __name__ == '__main__':
     unittest.main()

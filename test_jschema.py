@@ -239,6 +239,21 @@ class TestJSchema(JSchemaTestCase):
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(any_of=[jschema.JSchema(), '{}'])
 
+    def test_one_of_not_list(self):
+        message = "'one_of' must be a list"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(one_of='[]')
+
+    def test_one_of_list_empty(self):
+        message = "'one_of' list must contain at least one item"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(one_of=[])
+
+    def test_one_of_list_item_not_schema(self):
+        message = "'one_of' list item must be a schema"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(one_of=[jschema.JSchema(), '{}'])
+
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)
 
