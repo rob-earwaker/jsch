@@ -2,6 +2,8 @@ language: python
 python:
   - 3.5
 script:
-  - pip install mock nose coverage
+  - pip install mock nose coverage coveralls
   - nosetests --with-doctest --with-coverage --cover-package=jschema
     --cover-html --doctest-extension=md --doctest-options=+ELLIPSIS
+after_success:
+  - coveralls
