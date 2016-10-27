@@ -140,7 +140,7 @@ class TestJSchema(JSchemaTestCase):
             jschema.JSchema(required='[]')
 
     def test_required_list_empty(self):
-        message = "'required' list must contain at least one item"
+        message = "'required' list must not be empty"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(required=[])
 
@@ -149,8 +149,8 @@ class TestJSchema(JSchemaTestCase):
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(required=[8])
 
-    def test_required_list_with_duplicates(self):
-        message = "'required' list items must be unique"
+    def test_required_list_str_item_not_unique(self):
+        message = "'required' list item str must be unique"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
@@ -220,7 +220,7 @@ class TestJSchema(JSchemaTestCase):
             jschema.JSchema(all_of='[]')
 
     def test_all_of_list_empty(self):
-        message = "'all_of' list must contain at least one item"
+        message = "'all_of' list must not be empty"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(all_of=[])
 
@@ -235,7 +235,7 @@ class TestJSchema(JSchemaTestCase):
             jschema.JSchema(any_of='[]')
 
     def test_any_of_list_empty(self):
-        message = "'any_of' list must contain at least one item"
+        message = "'any_of' list must not be empty"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(any_of=[])
 
@@ -250,7 +250,7 @@ class TestJSchema(JSchemaTestCase):
             jschema.JSchema(one_of='[]')
 
     def test_one_of_list_empty(self):
-        message = "'one_of' list must contain at least one item"
+        message = "'one_of' list must not be empty"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(one_of=[])
 
@@ -285,7 +285,7 @@ class TestJSchema(JSchemaTestCase):
             jschema.JSchema(enum='[]')
 
     def test_enum_list_empty(self):
-        message = "'enum' list must contain at least one item"
+        message = "'enum' list must not be empty"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(enum=[])
 
@@ -328,6 +328,36 @@ class TestJSchema(JSchemaTestCase):
         message = "'enum' list item must be unique"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(enum=['name', 'name', 'age'])
+
+    def test_dependencies_not_dict(self):
+        message = "'dependencies' must be a dict"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(dependencies=['name'])
+
+    def test_dependencies_dict_key_not_str(self):
+        message = "'dependencies' dict key must be a str"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(dependencies={7: jschema.JSchema()})
+
+    def test_dependencies_dict_value_not_schema_or_list(self):
+        message = "'dependencies' dict value must be a schema or a list"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(dependencies={'name': False})
+
+    def test_dependencies_dict_list_value_empty(self):
+        message = "'dependencies' dict value list must not be empty"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(dependencies={'name': []})
+
+    def test_dependencies_dict_list_value_item_not_str(self):
+        message = "'dependencies' dict value list item must be a str"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(dependencies={'name': [7]})
+
+    def test_dependencies_dict_list_value_item_str_not_unique(self):
+        message = "'dependencies' dict value list item str must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(dependencies={'name': ['a', 'b', 'a']})
 
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)

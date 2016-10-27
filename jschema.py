@@ -7,6 +7,7 @@ ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
 ALL_OF_KEY = 'all_of'
 ANY_OF_KEY = 'any_of'
 DEFINITIONS_KEY = 'definitions'
+DEPENDENCIES_KEY = 'dependencies'
 ENUM_KEY = 'enum'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
@@ -82,7 +83,7 @@ def validate_all_of(all_of):
             raise DefinitionError("'{0}' must be a list".format(ALL_OF_KEY))
         if not len(all_of) >= 1:
             raise DefinitionError(
-                "'{0}' list must contain at least one item".format(ALL_OF_KEY)
+                "'{0}' list must not be empty".format(ALL_OF_KEY)
             )
         for item in all_of:
             if not isinstance(item, JSchema):
@@ -97,7 +98,7 @@ def validate_any_of(any_of):
             raise DefinitionError("'{0}' must be a list".format(ANY_OF_KEY))
         if not len(any_of) >= 1:
             raise DefinitionError(
-                "'{0}' list must contain at least one item".format(ANY_OF_KEY)
+                "'{0}' list must not be empty".format(ANY_OF_KEY)
             )
         for item in any_of:
             if not isinstance(item, JSchema):
@@ -123,13 +124,52 @@ def validate_definitions(definitions):
                 )
 
 
+def validate_dependencies(dependencies):
+    if dependencies is not None:
+        if not isinstance(dependencies, dict):
+            raise DefinitionError(
+                "'{0}' must be a dict".format(DEPENDENCIES_KEY)
+            )
+        for key, value in dependencies.items():
+            if not isinstance(key, str):
+                raise DefinitionError(
+                    "'{0}' dict key must be a str".format(DEPENDENCIES_KEY)
+                )
+            if not isinstance(value, (JSchema, list)):
+                raise DefinitionError(
+                    "'{0}' dict value must be a schema or a list".format(
+                        DEPENDENCIES_KEY
+                    )
+                )
+            if isinstance(value, list):
+                if not len(value) >= 1:
+                    raise DefinitionError(
+                        "'{0}' dict value list must not be empty".format(
+                            DEPENDENCIES_KEY
+                        )
+                    )
+                for item in value:
+                    if not isinstance(item, str):
+                        raise DefinitionError(
+                            "'{0}' dict value list item must be a str".format(
+                                DEPENDENCIES_KEY
+                            )
+                        )
+                if not len(set(value)) == len(value):
+                    raise DefinitionError(
+                        "'{0}' dict value list item str must be unique".format(
+                            DEPENDENCIES_KEY
+                        )
+                    )
+
+
 def validate_enum(enum):
     if enum is not None:
         if not isinstance(enum, list):
             raise DefinitionError("'{0}' must be a list".format(ENUM_KEY))
         if not len(enum) >= 1:
             raise DefinitionError(
-                "'{0}' list must contain at least one item".format(ENUM_KEY)
+                "'{0}' list must not be empty".format(ENUM_KEY)
             )
         for item in enum:
             if not is_primitive_type(item):
@@ -348,7 +388,7 @@ def validate_one_of(one_of):
             raise DefinitionError("'{0}' must be a list".format(ONE_OF_KEY))
         if not len(one_of) >= 1:
             raise DefinitionError(
-                "'{0}' list must contain at least one item".format(ONE_OF_KEY)
+                "'{0}' list must not be empty".format(ONE_OF_KEY)
             )
         for item in one_of:
             if not isinstance(item, JSchema):
@@ -365,9 +405,7 @@ def validate_required(required):
             )
         if not len(required) >= 1:
             raise DefinitionError(
-                "'{0}' list must contain at least one item".format(
-                    REQUIRED_KEY
-                )
+                "'{0}' list must not be empty".format(REQUIRED_KEY)
             )
         for item in required:
             if not isinstance(item, str):
@@ -376,7 +414,7 @@ def validate_required(required):
                 )
         if not len(set(required)) == len(required):
             raise DefinitionError(
-                "'{0}' list items must be unique".format(REQUIRED_KEY)
+                "'{0}' list item str must be unique".format(REQUIRED_KEY)
             )
 
 
@@ -445,7 +483,7 @@ class JSchema(object):
         ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
         PROPERTIES_KEY: 'properties',
         PATTERN_PROPERTIES_KEY: 'patternProperties',
-        'dependencies': 'dependencies',
+        DEPENDENCIES_KEY: 'dependencies',
         # string
         MAX_LENGTH_KEY: 'maxLength',
         MIN_LENGTH_KEY: 'minLength',
@@ -475,6 +513,9 @@ class JSchema(object):
 
         definitions = kwargs.get(DEFINITIONS_KEY, None)
         validate_definitions(definitions)
+
+        dependencies = kwargs.get(DEPENDENCIES_KEY, None)
+        validate_dependencies(dependencies)
 
         enum = kwargs.get(ENUM_KEY, None)
         validate_enum(enum)
