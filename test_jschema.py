@@ -64,6 +64,11 @@ class TestJSchema(JSchemaTestCase):
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(multiple_of='2.3')
 
+    def test_multiple_of_not_greater_then_zero(self):
+        message = "'multiple_of' must be greater than zero"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(multiple_of=0)
+
     def test_max_length_not_int(self):
         message = "'max_length' must be an int"
         with self.assertRaisesDefinitionError(message):
