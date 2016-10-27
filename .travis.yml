@@ -4,4 +4,4 @@ python:
 script:
   - pip install mock nose coverage
   - nosetests --with-doctest --with-coverage --cover-package=jschema
-    --doctest-extension=md --doctest-options=+ELLIPSIS
+    --cover-html --doctest-extension=md --doctest-options=+ELLIPSIS
