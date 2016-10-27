@@ -199,15 +199,30 @@ class TestJSchema(JSchemaTestCase):
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(type=['string', 7])
 
-    def test_type_list_item_not_primitive_type(self):
-        message = "'type' list item must be a primitive type"
+    def test_type_list_item_str_not_primitive_type(self):
+        message = "'type' list item str must be a primitive type"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(type=['string', 'float'])
 
-    def test_type_list_items_not_unique(self):
-        message = "'type' list items must be unique"
+    def test_type_list_item_str_not_unique(self):
+        message = "'type' list item str must be unique"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(type=['string', 'null', 'null'])
+
+    def test_all_of_not_list(self):
+        message = "'all_of' must be a list"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(all_of='[]')
+
+    def test_all_of_list_empty(self):
+        message = "'all_of' list must contain at least one item"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(all_of=[])
+
+    def test_all_of_list_item_not_schema(self):
+        message = "'all_of' list item must be a schema"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(all_of=[jschema.JSchema(), '{}'])
 
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)

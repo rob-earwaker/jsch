@@ -4,6 +4,7 @@ import uuid
 
 ADDITIONAL_ITEMS_KEY = 'additional_items'
 ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
+ALL_OF_KEY = 'all_of'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 ITEMS_KEY = 'items'
@@ -50,6 +51,21 @@ def validate_additional_properties(additional_properties):
                     ADDITIONAL_PROPERTIES_KEY
                 )
             )
+
+
+def validate_all_of(all_of):
+    if all_of is not None:
+        if not isinstance(all_of, list):
+            raise DefinitionError("'{0}' must be a list".format(ALL_OF_KEY))
+        if not len(all_of) >= 1:
+            raise DefinitionError(
+                "'{0}' list must contain at least one item".format(ALL_OF_KEY)
+            )
+        for item in all_of:
+            if not isinstance(item, JSchema):
+                raise DefinitionError(
+                    "'{0}' list item must be a schema".format(ALL_OF_KEY)
+                )
 
 
 def validate_items(items):
@@ -288,13 +304,13 @@ def validate_type(type):
                     )
                 if item not in PRIMITIVE_TYPES:
                     raise DefinitionError(
-                        "'{0}' list item must be a primitive type".format(
+                        "'{0}' list item str must be a primitive type".format(
                             TYPE_KEY
                         )
                     )
             if not len(set(type)) == len(type):
                 raise DefinitionError(
-                    "'{0}' list items must be unique".format(TYPE_KEY)
+                    "'{0}' list item str must be unique".format(TYPE_KEY)
                 )
 
 
@@ -342,7 +358,7 @@ class JSchema(object):
         # all
         'enum': 'enum',
         TYPE_KEY: 'type',
-        'all_of': 'allOf',
+        ALL_OF_KEY: 'allOf',
         'any_of': 'anyOf',
         'one_of': 'oneOf',
         'not_': 'not',
@@ -355,6 +371,9 @@ class JSchema(object):
 
         additional_properties = kwargs.get(ADDITIONAL_PROPERTIES_KEY, None)
         validate_additional_properties(additional_properties)
+
+        all_of = kwargs.get(ALL_OF_KEY, None)
+        validate_all_of(all_of)
 
         items = kwargs.get(ITEMS_KEY, None)
         validate_items(items)

@@ -469,49 +469,6 @@ class TestString(unittest.TestCase):
 
 
 class TestEmpty(unittest.TestCase):
-    def test_id_field(self):
-        schema = jschema.Empty(all_of=[jschema.Object()]).jschema.asdict(
-            id='http://py.jschema/schemas/'
-        )
-        expected_schema = {
-            'id': 'http://py.jschema/schemas/',
-            'allOf': [{'type': 'object'}]
-        }
-        self.assertEqual(expected_schema, schema)
-
-    def test_title_field(self):
-        Name = jschema.Empty(all_of=[jschema.Object()], title='Name')
-        expected_schema = {
-            'title': 'Name',
-            'allOf': [{'type': 'object'}]
-        }
-        self.assertEqual(expected_schema, Name.jschema.asdict())
-
-    def test_description_field(self):
-        Name = jschema.Empty(
-            all_of=[jschema.Object()], description='Name or nickname'
-        )
-        expected_schema = {
-            'description': 'Name or nickname',
-            'allOf': [{'type': 'object'}]
-        }
-        self.assertEqual(expected_schema, Name.jschema.asdict())
-
-    def test_default_field(self):
-        Name = jschema.Empty(all_of=[jschema.Object()], default={})
-        expected_schema = {
-            'default': {},
-            'allOf': [{'type': 'object'}]
-        }
-        self.assertEqual(expected_schema, Name.jschema.asdict())
-
-    def test_all_of(self):
-        Height = jschema.Empty(all_of=[jschema.Integer(), jschema.Number()])
-        expected_schema = {
-            'allOf': [{'type': 'integer'}, {'type': 'number'}]
-        }
-        self.assertEqual(expected_schema, Height.jschema.asdict())
-
     def test_any_of(self):
         Height = jschema.Empty(any_of=[jschema.Integer(), jschema.Number()])
         expected_schema = {
