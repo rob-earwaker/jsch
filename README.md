@@ -60,7 +60,7 @@ The JSON schema can be accessed as either a `dict` or a JSON string:
 >>>
 ```
 
-A `jschema.DefinitionError` will be raised on initialisation if any
+A `jschema.SchemaValidationError` will be raised on initialisation if any
 [JSON schema validation]
 (http://json-schema.org/latest/json-schema-validation.html) rules are breached:
 
@@ -74,15 +74,15 @@ A `jschema.DefinitionError` will be raised on initialisation if any
 ... )
 Traceback (most recent call last):
   ...
-jschema.DefinitionError: 'max_items' must be an int
+jschema.SchemaValidationError: 'max_items' must be an int
 >>>
 >>> jschema.JSchema(
 ...     title='Height',
-...     type='number',
-...     exclusive_minimum=True
+...     type='object',
+...     required=[]
 ... )
 Traceback (most recent call last):
   ...
-jschema.DefinitionError: 'minimum' must be present if 'exclusive_minimum' is defined
+jschema.SchemaValidationError: 'required' list must not be empty
 >>>
 ```
