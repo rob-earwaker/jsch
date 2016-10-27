@@ -140,7 +140,7 @@ class TestJSchema(JSchemaTestCase):
             jschema.JSchema(required='[]')
 
     def test_required_list_empty(self):
-        message = "'required' list must have at least one item"
+        message = "'required' list must contain at least one item"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(required=[])
 
@@ -278,6 +278,56 @@ class TestJSchema(JSchemaTestCase):
         message = "'definitions' dict value must be a schema"
         with self.assertRaisesDefinitionError(message):
             jschema.JSchema(definitions={'name': '{}'})
+
+    def test_enum_not_list(self):
+        message = "'enum' must be a list"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum='[]')
+
+    def test_enum_list_empty(self):
+        message = "'enum' list must contain at least one item"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[])
+
+    def test_enum_list_item_not_primitive_type(self):
+        message = "'enum' list item must be a primitive type"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[{'a', 'b'}])
+
+    def test_enum_list_item_list_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[['a', 'b'], ['a', 'b'], ['b', 'c']])
+
+    def test_enum_list_item_bool_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[True, True, False])
+
+    def test_enum_list_item_int_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[5, 5, 67])
+
+    def test_enum_list_item_null_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[None, None])
+
+    def test_enum_list_item_float_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[4.8, 4.8, 1.9])
+
+    def test_enum_list_item_dict_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=[{'a': 'b'}, {'a': 'b'}, {'b': 'c'}])
+
+    def test_enum_list_item_str_not_unique(self):
+        message = "'enum' list item must be unique"
+        with self.assertRaisesDefinitionError(message):
+            jschema.JSchema(enum=['name', 'name', 'age'])
 
     def test_additional_items_as_bool(self):
         jschema.JSchema(additional_items=True)

@@ -7,6 +7,7 @@ ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
 ALL_OF_KEY = 'all_of'
 ANY_OF_KEY = 'any_of'
 DEFINITIONS_KEY = 'definitions'
+ENUM_KEY = 'enum'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
 ITEMS_KEY = 'items'
@@ -28,9 +29,27 @@ REQUIRED_KEY = 'required'
 TYPE_KEY = 'type'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
-PRIMITIVE_TYPES = [
-    'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
-]
+
+def is_primitive_type_str(type_str):
+    return (
+        type_str in [
+            'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
+        ]
+    )
+
+
+def is_primitive_type(type):
+    return (
+        type is None or isinstance(type, (list, bool, int, float, dict, str))
+    )
+
+
+def are_items_unique(items):
+    for index, item in enumerate(items):
+        for other_index, other_item in enumerate(items):
+            if not other_index == index and other_item == item:
+                return False
+    return True
 
 
 class DefinitionError(Exception):
@@ -102,6 +121,25 @@ def validate_definitions(definitions):
                 raise DefinitionError(
                     "'{0}' dict value must be a schema".format(DEFINITIONS_KEY)
                 )
+
+
+def validate_enum(enum):
+    if enum is not None:
+        if not isinstance(enum, list):
+            raise DefinitionError("'{0}' must be a list".format(ENUM_KEY))
+        if not len(enum) >= 1:
+            raise DefinitionError(
+                "'{0}' list must contain at least one item".format(ENUM_KEY)
+            )
+        for item in enum:
+            if not is_primitive_type(item):
+                raise DefinitionError(
+                    "'{0}' list item must be a primitive type".format(ENUM_KEY)
+                )
+        if not are_items_unique(enum):
+            raise DefinitionError(
+                "'{0}' list item must be unique".format(ENUM_KEY)
+            )
 
 
 def validate_items(items):
@@ -327,7 +365,7 @@ def validate_required(required):
             )
         if not len(required) >= 1:
             raise DefinitionError(
-                "'{0}' list must have at least one item".format(
+                "'{0}' list must contain at least one item".format(
                     REQUIRED_KEY
                 )
             )
@@ -349,7 +387,7 @@ def validate_type(type):
                 "'{0}' must be a str or a list".format(TYPE_KEY)
             )
         if isinstance(type, str):
-            if type not in PRIMITIVE_TYPES:
+            if not is_primitive_type_str(type):
                 raise DefinitionError(
                     "'{0}' str must be a primitive type".format(TYPE_KEY)
                 )
@@ -359,7 +397,7 @@ def validate_type(type):
                     raise DefinitionError(
                         "'{0}' list item must be a str".format(TYPE_KEY)
                     )
-                if item not in PRIMITIVE_TYPES:
+                if not is_primitive_type_str(item):
                     raise DefinitionError(
                         "'{0}' list item str must be a primitive type".format(
                             TYPE_KEY
@@ -413,7 +451,7 @@ class JSchema(object):
         MIN_LENGTH_KEY: 'minLength',
         PATTERN_KEY: 'pattern',
         # all
-        'enum': 'enum',
+        ENUM_KEY: 'enum',
         TYPE_KEY: 'type',
         ALL_OF_KEY: 'allOf',
         ANY_OF_KEY: 'anyOf',
@@ -437,6 +475,9 @@ class JSchema(object):
 
         definitions = kwargs.get(DEFINITIONS_KEY, None)
         validate_definitions(definitions)
+
+        enum = kwargs.get(ENUM_KEY, None)
+        validate_enum(enum)
 
         items = kwargs.get(ITEMS_KEY, None)
         validate_items(items)
