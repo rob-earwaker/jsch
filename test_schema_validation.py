@@ -8,7 +8,7 @@ class SchemaValidationTestCase(unittest.TestCase):
         return self.assertRaisesRegex(jschema.SchemaValidationError, message)
 
 
-class TestJSchema(SchemaValidationTestCase):
+class TestMaxItemsValidation(SchemaValidationTestCase):
     def test_max_items_not_int(self):
         message = "'max_items' must be an int"
         with self.assertRaisesSchemaValidationError(message):
@@ -19,6 +19,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(max_items=-1)
 
+
+class TestMinItemsValidation(SchemaValidationTestCase):
     def test_min_items_not_int(self):
         message = "'min_items' must be an int"
         with self.assertRaisesSchemaValidationError(message):
@@ -29,36 +31,46 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(min_items=-1)
 
+
+class TestMaximumValidation(SchemaValidationTestCase):
     def test_maximum_not_int_or_float(self):
         message = "'maximum' must be an int or float"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(maximum='5')
 
+    def test_maximum_not_present_with_exclusive_maximum_defined(self):
+        message = "'maximum' must be present if 'exclusive_maximum' is defined"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(exclusive_maximum=True)
+
+
+class TestExclusiveMaximumValidation(SchemaValidationTestCase):
     def test_exclusive_maximum_not_bool(self):
         message = "'exclusive_maximum' must be a bool"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(maximum=1, exclusive_maximum='True')
 
-    def test_exclusive_maximum_without_maximum(self):
-        message = "'maximum' must be present if 'exclusive_maximum' is defined"
-        with self.assertRaisesSchemaValidationError(message):
-            jschema.JSchema(exclusive_maximum=True)
 
+class TestMinimumValidation(SchemaValidationTestCase):
     def test_minimum_not_int_or_float(self):
         message = "'minimum' must be an int or float"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(minimum='5')
 
+    def test_minimum_not_present_with_exclusive_minimum_defined(self):
+        message = "'minimum' must be present if 'exclusive_minimum' is defined"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(exclusive_minimum=True)
+
+
+class TestExclusiveMinimumValidation(SchemaValidationTestCase):
     def test_exclusive_minimum_not_bool(self):
         message = "'exclusive_minimum' must be a bool"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(minimum=1, exclusive_minimum='True')
 
-    def test_exclusive_minimum_without_minimum(self):
-        message = "'minimum' must be present if 'exclusive_minimum' is defined"
-        with self.assertRaisesSchemaValidationError(message):
-            jschema.JSchema(exclusive_minimum=True)
 
+class TestMultipleOfValidation(SchemaValidationTestCase):
     def test_multiple_of_not_int_or_float(self):
         message = "'multiple_of' must be an int or float"
         with self.assertRaisesSchemaValidationError(message):
@@ -69,6 +81,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(multiple_of=0)
 
+
+class TestMaxLengthValidation(SchemaValidationTestCase):
     def test_max_length_not_int(self):
         message = "'max_length' must be an int"
         with self.assertRaisesSchemaValidationError(message):
@@ -79,6 +93,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(max_length=-1)
 
+
+class TestMinLengthValidation(SchemaValidationTestCase):
     def test_min_length_not_int(self):
         message = "'min_length' must be an int"
         with self.assertRaisesSchemaValidationError(message):
@@ -89,16 +105,28 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(min_length=-1)
 
+
+class TestPatternValidation(SchemaValidationTestCase):
     def test_pattern_not_str(self):
         message = "'pattern' must be a str"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(pattern=8)
 
+
+class TestAdditionalItemsValidation(SchemaValidationTestCase):
     def test_additional_items_not_bool_or_schema(self):
         message = "'additional_items' must be a bool or a schema"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(additional_items='False')
 
+    def test_additional_items_as_bool(self):
+        jschema.JSchema(additional_items=True)
+
+    def test_additional_items_as_schema(self):
+        jschema.JSchema(additional_items=jschema.JSchema())
+
+
+class TestItemsValidation(SchemaValidationTestCase):
     def test_items_not_schema_or_list(self):
         message = "'items' must be a schema or a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -109,11 +137,21 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(items=[jschema.JSchema(), '{}'])
 
+    def test_items_as_schema(self):
+        jschema.JSchema(items=jschema.JSchema())
+
+    def test_items_as_list(self):
+        jschema.JSchema(items=[jschema.JSchema(), jschema.JSchema()])
+
+
+class TestUniqueItemsValidation(SchemaValidationTestCase):
     def test_unique_items_not_bool(self):
         message = "'unique_items' must be a bool"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(unique_items='True')
 
+
+class TestMaxPropertiesValidation(SchemaValidationTestCase):
     def test_max_properties_not_int(self):
         message = "'max_properties' must be an int"
         with self.assertRaisesSchemaValidationError(message):
@@ -124,6 +162,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(max_properties=-1)
 
+
+class TestMinPropertiesValidation(SchemaValidationTestCase):
     def test_min_properties_not_int(self):
         message = "'min_properties' must be an int"
         with self.assertRaisesSchemaValidationError(message):
@@ -134,6 +174,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(min_properties=-1)
 
+
+class TestRequiredValidation(SchemaValidationTestCase):
     def test_required_not_list(self):
         message = "'required' must be a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -154,11 +196,15 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
+
+class TestAdditionalPropertiesValidation(SchemaValidationTestCase):
     def test_additional_properties_not_bool_or_schema(self):
         message = "'additional_properties' must be a bool or a schema"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(additional_properties='False')
 
+
+class TestPropertiesValidation(SchemaValidationTestCase):
     def test_properties_not_dict(self):
         message = "'properties' must be a dict"
         with self.assertRaisesSchemaValidationError(message):
@@ -174,6 +220,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(properties={'name': '{}'})
 
+
+class TestPatternPropertiesValidation(SchemaValidationTestCase):
     def test_pattern_properties_not_dict(self):
         message = "'pattern_properties' must be a dict"
         with self.assertRaisesSchemaValidationError(message):
@@ -189,6 +237,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(pattern_properties={'name': '{}'})
 
+
+class TestTypeValidation(SchemaValidationTestCase):
     def test_type_not_str_or_list(self):
         message = "'type' must be a str or a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -214,6 +264,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(type=['string', 'null', 'null'])
 
+
+class TestAllOfValidation(SchemaValidationTestCase):
     def test_all_of_not_list(self):
         message = "'all_of' must be a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -229,6 +281,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(all_of=[jschema.JSchema(), '{}'])
 
+
+class TestAnyOfValidation(SchemaValidationTestCase):
     def test_any_of_not_list(self):
         message = "'any_of' must be a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -244,6 +298,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(any_of=[jschema.JSchema(), '{}'])
 
+
+class TestOneOfValidation(SchemaValidationTestCase):
     def test_one_of_not_list(self):
         message = "'one_of' must be a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -259,11 +315,15 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(one_of=[jschema.JSchema(), '{}'])
 
+
+class TestNotValidation(SchemaValidationTestCase):
     def test_not_not_schema(self):
         message = "'not_' must be a schema"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(not_='{}')
 
+
+class TestDefinitionsValidation(SchemaValidationTestCase):
     def test_definitions_not_dict(self):
         message = "'definitions' must be a dict"
         with self.assertRaisesSchemaValidationError(message):
@@ -279,6 +339,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(definitions={'name': '{}'})
 
+
+class TestEnumValidation(SchemaValidationTestCase):
     def test_enum_not_list(self):
         message = "'enum' must be a list"
         with self.assertRaisesSchemaValidationError(message):
@@ -329,6 +391,8 @@ class TestJSchema(SchemaValidationTestCase):
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(enum=['name', 'name', 'age'])
 
+
+class TestDependenciesValidation(SchemaValidationTestCase):
     def test_dependencies_not_dict(self):
         message = "'dependencies' must be a dict"
         with self.assertRaisesSchemaValidationError(message):
@@ -358,18 +422,6 @@ class TestJSchema(SchemaValidationTestCase):
         message = "'dependencies' dict value list item str must be unique"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(dependencies={'name': ['a', 'b', 'a']})
-
-    def test_additional_items_as_bool(self):
-        jschema.JSchema(additional_items=True)
-
-    def test_additional_items_as_schema(self):
-        jschema.JSchema(additional_items=jschema.JSchema())
-
-    def test_items_as_schema(self):
-        jschema.JSchema(items=jschema.JSchema())
-
-    def test_items_as_list(self):
-        jschema.JSchema(items=[jschema.JSchema(), jschema.JSchema()])
 
 
 if __name__ == '__main__':
