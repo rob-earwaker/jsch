@@ -79,7 +79,11 @@ SCHEMA_VALIDATION_FUNCTIONS = {
         lambda dict: validate_is_bool_or_schema(
             ADDITIONAL_ITEMS_KEY, dict.get(ADDITIONAL_ITEMS_KEY, None)
         ),
-    ADDITIONAL_PROPERTIES_KEY: lambda dict: None,
+    ADDITIONAL_PROPERTIES_KEY:
+        lambda dict: validate_is_bool_or_schema(
+            ADDITIONAL_PROPERTIES_KEY,
+            dict.get(ADDITIONAL_PROPERTIES_KEY, None)
+        ),
     ALL_OF_KEY: lambda dict: None,
     ANY_OF_KEY: lambda dict: None,
     DEFINITIONS_KEY: lambda dict: None,
@@ -359,93 +363,83 @@ class JSchema(object):
                 SCHEMA_VALIDATION_FUNCTIONS[key](kwargs)
                 self._dict[keyword] = kwargs[key]
 
-        additional_properties = kwargs.get(ADDITIONAL_PROPERTIES_KEY, None)
-        validate_is_bool_or_schema(
-            ADDITIONAL_PROPERTIES_KEY, additional_properties
+        validate_is_schema_list(ALL_OF_KEY, kwargs.get(ALL_OF_KEY, None))
+
+        validate_is_schema_list(ANY_OF_KEY, kwargs.get(ANY_OF_KEY, None))
+
+        validate_is_schema_dict(
+            DEFINITIONS_KEY, kwargs.get(DEFINITIONS_KEY, None)
         )
 
-        all_of = kwargs.get(ALL_OF_KEY, None)
-        validate_is_schema_list(ALL_OF_KEY, all_of)
+        validate_dependencies(kwargs.get(DEPENDENCIES_KEY, None))
 
-        any_of = kwargs.get(ANY_OF_KEY, None)
-        validate_is_schema_list(ANY_OF_KEY, any_of)
+        validate_is_str(DESCRIPTION_KEY, kwargs.get(DESCRIPTION_KEY, None))
 
-        definitions = kwargs.get(DEFINITIONS_KEY, None)
-        validate_is_schema_dict(DEFINITIONS_KEY, definitions)
+        validate_enum(kwargs.get(ENUM_KEY, None))
 
-        dependencies = kwargs.get(DEPENDENCIES_KEY, None)
-        validate_dependencies(dependencies)
+        validate_is_str(ID_KEY, kwargs.get(ID_KEY, None))
 
-        description = kwargs.get(DESCRIPTION_KEY, None)
-        validate_is_str(DESCRIPTION_KEY, description)
+        validate_items(kwargs.get(ITEMS_KEY, None))
 
-        enum = kwargs.get(ENUM_KEY, None)
-        validate_enum(enum)
+        validate_is_positive_int_or_zero(
+            MAX_ITEMS_KEY, kwargs.get(MAX_ITEMS_KEY, None)
+        )
 
-        id = kwargs.get(ID_KEY, None)
-        validate_is_str(ID_KEY, id)
+        validate_is_positive_int_or_zero(
+            MAX_LENGTH_KEY, kwargs.get(MAX_LENGTH_KEY, None)
+        )
 
-        items = kwargs.get(ITEMS_KEY, None)
-        validate_items(items)
+        validate_is_positive_int_or_zero(
+            MAX_PROPERTIES_KEY, kwargs.get(MAX_PROPERTIES_KEY, None)
+        )
 
-        max_items = kwargs.get(MAX_ITEMS_KEY, None)
-        validate_is_positive_int_or_zero(MAX_ITEMS_KEY, max_items)
+        validate_maximum(
+            kwargs.get(MAXIMUM_KEY, None),
+            kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
+        )
 
-        max_length = kwargs.get(MAX_LENGTH_KEY, None)
-        validate_is_positive_int_or_zero(MAX_LENGTH_KEY, max_length)
+        validate_is_positive_int_or_zero(
+            MIN_ITEMS_KEY, kwargs.get(MIN_ITEMS_KEY, None)
+        )
 
-        max_properties = kwargs.get(MAX_PROPERTIES_KEY, None)
-        validate_is_positive_int_or_zero(MAX_PROPERTIES_KEY, max_properties)
+        validate_is_positive_int_or_zero(
+            MIN_LENGTH_KEY, kwargs.get(MIN_LENGTH_KEY, None)
+        )
 
-        maximum = kwargs.get(MAXIMUM_KEY, None)
-        exclusive_maximum = kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
-        validate_maximum(maximum, exclusive_maximum)
+        validate_is_positive_int_or_zero(
+            MIN_PROPERTIES_KEY, kwargs.get(MIN_PROPERTIES_KEY, None)
+        )
 
-        min_items = kwargs.get(MIN_ITEMS_KEY, None)
-        validate_is_positive_int_or_zero(MIN_ITEMS_KEY, min_items)
+        validate_minimum(
+            kwargs.get(MINIMUM_KEY, None),
+            kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
+        )
 
-        min_length = kwargs.get(MIN_LENGTH_KEY, None)
-        validate_is_positive_int_or_zero(MIN_LENGTH_KEY, min_length)
+        validate_multiple_of(kwargs.get(MULTIPLE_OF_KEY, None))
 
-        min_properties = kwargs.get(MIN_PROPERTIES_KEY, None)
-        validate_is_positive_int_or_zero(MIN_PROPERTIES_KEY, min_properties)
+        validate_not(kwargs.get(NOT_KEY, None))
 
-        minimum = kwargs.get(MINIMUM_KEY, None)
-        exclusive_minimum = kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
-        validate_minimum(minimum, exclusive_minimum)
+        validate_pattern(kwargs.get(PATTERN_KEY, None))
 
-        multiple_of = kwargs.get(MULTIPLE_OF_KEY, None)
-        validate_multiple_of(multiple_of)
+        validate_is_schema_dict(
+            PATTERN_PROPERTIES_KEY, kwargs.get(PATTERN_PROPERTIES_KEY, None)
+        )
 
-        not_ = kwargs.get(NOT_KEY, None)
-        validate_not(not_)
+        validate_is_schema_dict(
+            PROPERTIES_KEY, kwargs.get(PROPERTIES_KEY, None)
+        )
 
-        pattern = kwargs.get(PATTERN_KEY, None)
-        validate_pattern(pattern)
+        validate_is_schema_list(ONE_OF_KEY, kwargs.get(ONE_OF_KEY, None))
 
-        pattern_properties = kwargs.get(PATTERN_PROPERTIES_KEY, None)
-        validate_is_schema_dict(PATTERN_PROPERTIES_KEY, pattern_properties)
+        validate_is_str(REF_KEY, kwargs.get(REF_KEY, None))
 
-        properties = kwargs.get(PROPERTIES_KEY, None)
-        validate_is_schema_dict(PROPERTIES_KEY, properties)
+        validate_required(kwargs.get(REQUIRED_KEY, None))
 
-        one_of = kwargs.get(ONE_OF_KEY, None)
-        validate_is_schema_list(ONE_OF_KEY, one_of)
+        validate_is_str(TITLE_KEY, kwargs.get(TITLE_KEY, None))
 
-        ref = kwargs.get(REF_KEY, None)
-        validate_is_str(REF_KEY, ref)
+        validate_type(kwargs.get(TYPE_KEY, None))
 
-        required = kwargs.get(REQUIRED_KEY, None)
-        validate_required(required)
-
-        title = kwargs.get(TITLE_KEY, None)
-        validate_is_str(TITLE_KEY, title)
-
-        type = kwargs.get(TYPE_KEY, None)
-        validate_type(type)
-
-        unique_items = kwargs.get(UNIQUE_ITEMS_KEY, None)
-        validate_unique_items(unique_items)
+        validate_unique_items(kwargs.get(UNIQUE_ITEMS_KEY, None))
 
     def asdict(self, root=False, schema=None):
         dict = self._dict.copy()
