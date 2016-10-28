@@ -133,6 +133,16 @@ class TestDependenciesValidation(SchemaValidationTestCase):
             jschema.JSchema(dependencies={'name': ['a', 'b', 'a']})
 
 
+class TestDescriptionValidation(SchemaValidationTestCase):
+    def test_passes_when_str(self):
+        jschema.JSchema(description='Height in cm')
+
+    def test_fails_when_not_str(self):
+        message = "'description' must be a str"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(description=90)
+
+
 class TestEnumValidation(SchemaValidationTestCase):
     def test_passes_when_list(self):
         jschema.JSchema(enum=['name', True, None, 8, {}, ['a']])
@@ -206,6 +216,16 @@ class TestExclusiveMinimumValidation(SchemaValidationTestCase):
         message = "'exclusive_minimum' must be a bool"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema(minimum=1, exclusive_minimum='True')
+
+
+class TestIdValidation(SchemaValidationTestCase):
+    def test_passes_when_str(self):
+        jschema.JSchema(id='#def')
+
+    def test_fails_when_not_str(self):
+        message = "'id' must be a str"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(id=90)
 
 
 class TestItemsValidation(SchemaValidationTestCase):
@@ -450,6 +470,16 @@ class TestPropertiesValidation(SchemaValidationTestCase):
             jschema.JSchema(properties={'name': '{}'})
 
 
+class TestRefValidation(SchemaValidationTestCase):
+    def test_passes_when_str(self):
+        jschema.JSchema(ref='#/definitions/name')
+
+    def test_fails_when_not_str(self):
+        message = "'ref' must be a str"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(ref=90)
+
+
 class TestRequiredValidation(SchemaValidationTestCase):
     def test_passes_when_list(self):
         jschema.JSchema(required=['name', 'age'])
@@ -483,6 +513,16 @@ class TestSchemaValidation(SchemaValidationTestCase):
         message = "'schema' must be a str"
         with self.assertRaisesSchemaValidationError(message):
             jschema.JSchema().asdict(root=True, schema=76)
+
+
+class TestTitleValidation(SchemaValidationTestCase):
+    def test_passes_when_str(self):
+        jschema.JSchema(title='Height')
+
+    def test_fails_when_not_str(self):
+        message = "'title' must be a str"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(title=90)
 
 
 class TestTypeValidation(SchemaValidationTestCase):

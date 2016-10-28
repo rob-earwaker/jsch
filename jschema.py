@@ -8,9 +8,11 @@ ALL_OF_KEY = 'all_of'
 ANY_OF_KEY = 'any_of'
 DEFINITIONS_KEY = 'definitions'
 DEPENDENCIES_KEY = 'dependencies'
+DESCRIPTION_KEY = 'description'
 ENUM_KEY = 'enum'
 EXCLUSIVE_MAXIMUM_KEY = 'exclusive_maximum'
 EXCLUSIVE_MINIMUM_KEY = 'exclusive_minimum'
+ID_KEY = 'id'
 ITEMS_KEY = 'items'
 MAX_ITEMS_KEY = 'max_items'
 MAX_LENGTH_KEY = 'max_length'
@@ -26,18 +28,15 @@ ONE_OF_KEY = 'one_of'
 PATTERN_KEY = 'pattern'
 PATTERN_PROPERTIES_KEY = 'pattern_properties'
 PROPERTIES_KEY = 'properties'
+REF_KEY = 'ref'
 REQUIRED_KEY = 'required'
 SCHEMA_KEY = 'schema'
+TITLE_KEY = 'title'
 TYPE_KEY = 'type'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
 
 KEYWORDS = {
-    SCHEMA_KEY: '$schema',
-    'ref': '$ref',
-    'id': 'id',
-    'title': 'title',
-    'description': 'description',
     'default': 'default',
     ADDITIONAL_ITEMS_KEY: 'additionalItems',
     ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
@@ -45,9 +44,11 @@ KEYWORDS = {
     ANY_OF_KEY: 'anyOf',
     DEFINITIONS_KEY: 'definitions',
     DEPENDENCIES_KEY: 'dependencies',
+    DESCRIPTION_KEY: 'description',
     ENUM_KEY: 'enum',
     EXCLUSIVE_MAXIMUM_KEY: 'exclusiveMaximum',
     EXCLUSIVE_MINIMUM_KEY: 'exclusiveMinimum',
+    ID_KEY: 'id',
     ITEMS_KEY: 'items',
     MAX_ITEMS_KEY: 'maxItems',
     MAX_LENGTH_KEY: 'maxLength',
@@ -63,7 +64,10 @@ KEYWORDS = {
     PATTERN_KEY: 'pattern',
     PATTERN_PROPERTIES_KEY: 'patternProperties',
     PROPERTIES_KEY: 'properties',
+    REF_KEY: '$ref',
     REQUIRED_KEY: 'required',
+    SCHEMA_KEY: '$schema',
+    TITLE_KEY: 'title',
     TYPE_KEY: 'type',
     UNIQUE_ITEMS_KEY: 'uniqueItems'
 }
@@ -92,6 +96,12 @@ def are_items_unique(items):
 class SchemaValidationError(Exception):
     def __init__(self, key, message):
         super().__init__("'{0}' {1}".format(key, message))
+
+
+def validate_is_str(key, value):
+    if value is not None:
+        if not isinstance(value, str):
+            raise SchemaValidationError(key, "must be a str")
 
 
 def validate_is_bool_or_schema(key, value):
@@ -322,8 +332,14 @@ class JSchema(object):
         dependencies = kwargs.get(DEPENDENCIES_KEY, None)
         validate_dependencies(dependencies)
 
+        description = kwargs.get(DESCRIPTION_KEY, None)
+        validate_is_str(DESCRIPTION_KEY, description)
+
         enum = kwargs.get(ENUM_KEY, None)
         validate_enum(enum)
+
+        id = kwargs.get(ID_KEY, None)
+        validate_is_str(ID_KEY, id)
 
         items = kwargs.get(ITEMS_KEY, None)
         validate_items(items)
@@ -372,8 +388,14 @@ class JSchema(object):
         one_of = kwargs.get(ONE_OF_KEY, None)
         validate_is_schema_list(ONE_OF_KEY, one_of)
 
+        ref = kwargs.get(REF_KEY, None)
+        validate_is_str(REF_KEY, ref)
+
         required = kwargs.get(REQUIRED_KEY, None)
         validate_required(required)
+
+        title = kwargs.get(TITLE_KEY, None)
+        validate_is_str(TITLE_KEY, title)
 
         type = kwargs.get(TYPE_KEY, None)
         validate_type(type)
@@ -389,12 +411,11 @@ class JSchema(object):
     def asdict(self, root=False, schema=None):
         dict = self._dict.copy()
         if root:
-            kw = KEYWORDS['schema']
-            dict[kw] = 'http://json-schema.org/draft-04/schema#'
-            if schema is not None:
-                if not isinstance(schema, str):
-                    raise SchemaValidationError(SCHEMA_KEY, 'must be a str')
-                dict[kw] = schema
+            validate_is_str(SCHEMA_KEY, schema)
+            dict[KEYWORDS['schema']] = (
+                'http://json-schema.org/draft-04/schema#' if schema is None
+                else schema
+            )
         return dict
 
     def asjson(self, pretty=False, root=False, schema=None):
