@@ -31,6 +31,43 @@ TYPE_KEY = 'type'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
 
+FIELD_NAMES = {
+    'schema': '$schema',
+    'ref': '$ref',
+    'id': 'id',
+    'title': 'title',
+    'description': 'description',
+    'default': 'default',
+    ADDITIONAL_ITEMS_KEY: 'additionalItems',
+    ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
+    ALL_OF_KEY: 'allOf',
+    ANY_OF_KEY: 'anyOf',
+    DEFINITIONS_KEY: 'definitions',
+    DEPENDENCIES_KEY: 'dependencies',
+    ENUM_KEY: 'enum',
+    EXCLUSIVE_MAXIMUM_KEY: 'exclusiveMaximum',
+    EXCLUSIVE_MINIMUM_KEY: 'exclusiveMinimum',
+    ITEMS_KEY: 'items',
+    MAX_ITEMS_KEY: 'maxItems',
+    MAX_LENGTH_KEY: 'maxLength',
+    MAX_PROPERTIES_KEY: 'maxProperties',
+    MAXIMUM_KEY: 'maximum',
+    MIN_ITEMS_KEY: 'minItems',
+    MIN_LENGTH_KEY: 'minLength',
+    MIN_PROPERTIES_KEY: 'minProperties',
+    MINIMUM_KEY: 'minimum',
+    MULTIPLE_OF_KEY: 'multipleOf',
+    NOT_KEY: 'not',
+    ONE_OF_KEY: 'oneOf',
+    PATTERN_KEY: 'pattern',
+    PATTERN_PROPERTIES_KEY: 'patternProperties',
+    PROPERTIES_KEY: 'properties',
+    REQUIRED_KEY: 'required',
+    TYPE_KEY: 'type',
+    UNIQUE_ITEMS_KEY: 'uniqueItems'
+}
+
+
 def is_primitive_type_str(type_str):
     type_strs = [
         'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
@@ -263,48 +300,6 @@ def validate_unique_items(unique_items):
 
 
 class JSchema(object):
-    FIELD_NAMES = {
-        # meta
-        'schema': '$schema',
-        'ref': '$ref',
-        'id': 'id',
-        'title': 'title',
-        'description': 'description',
-        'default': 'default',
-        # array
-        ADDITIONAL_ITEMS_KEY: 'additionalItems',
-        ITEMS_KEY: 'items',
-        MAX_ITEMS_KEY: 'maxItems',
-        MIN_ITEMS_KEY: 'minItems',
-        UNIQUE_ITEMS_KEY: 'uniqueItems',
-        # integer, number
-        MULTIPLE_OF_KEY: 'multipleOf',
-        MAXIMUM_KEY: 'maximum',
-        EXCLUSIVE_MAXIMUM_KEY: 'exclusiveMaximum',
-        MINIMUM_KEY: 'minimum',
-        EXCLUSIVE_MINIMUM_KEY: 'exclusiveMinimum',
-        # object
-        MAX_PROPERTIES_KEY: 'maxProperties',
-        MIN_PROPERTIES_KEY: 'minProperties',
-        REQUIRED_KEY: 'required',
-        ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
-        PROPERTIES_KEY: 'properties',
-        PATTERN_PROPERTIES_KEY: 'patternProperties',
-        DEPENDENCIES_KEY: 'dependencies',
-        # string
-        MAX_LENGTH_KEY: 'maxLength',
-        MIN_LENGTH_KEY: 'minLength',
-        PATTERN_KEY: 'pattern',
-        # all
-        ENUM_KEY: 'enum',
-        TYPE_KEY: 'type',
-        ALL_OF_KEY: 'allOf',
-        ANY_OF_KEY: 'anyOf',
-        ONE_OF_KEY: 'oneOf',
-        NOT_KEY: 'not',
-        DEFINITIONS_KEY: 'definitions'
-    }
-
     def __init__(self, **kwargs):
         additional_items = kwargs.get(ADDITIONAL_ITEMS_KEY, None)
         validate_is_bool_or_schema(ADDITIONAL_ITEMS_KEY, additional_items)
@@ -386,9 +381,9 @@ class JSchema(object):
         validate_unique_items(unique_items)
 
         self._dict = {}
-        for field, field_name in self.FIELD_NAMES.items():
-            if field in kwargs:
-                self._dict[field_name] = kwargs[field]
+        for key, field_name in FIELD_NAMES.items():
+            if key in kwargs:
+                self._dict[field_name] = kwargs[key]
 
     def asdict(self, root=True, id=None):
         return self._dict.copy()
