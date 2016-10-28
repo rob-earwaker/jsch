@@ -32,17 +32,15 @@ UNIQUE_ITEMS_KEY = 'unique_items'
 
 
 def is_primitive_type_str(type_str):
-    return (
-        type_str in [
-            'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
-        ]
-    )
+    type_strs = [
+        'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
+    ]
+    return type_str in type_strs
 
 
 def is_primitive_type(type):
-    return (
-        type is None or isinstance(type, (list, bool, int, float, dict, str))
-    )
+    types = (list, bool, int, float, dict, str)
+    return type is None or isinstance(type, types)
 
 
 def are_items_unique(items):
