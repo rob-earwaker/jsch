@@ -55,74 +55,41 @@ class SchemaValidationError(Exception):
     pass
 
 
-def validate_additional_items(additional_items):
-    if additional_items is not None:
-        if not isinstance(additional_items, (bool, JSchema)):
+def validate_is_bool_or_schema(key, value):
+    if value is not None:
+        if not isinstance(value, (bool, JSchema)):
             raise SchemaValidationError(
-                "'{0}' must be a bool or a schema".format(
-                    ADDITIONAL_ITEMS_KEY
-                )
+                "'{0}' must be a bool or a schema".format(key)
             )
 
 
-def validate_additional_properties(additional_properties):
-    if additional_properties is not None:
-        if not isinstance(additional_properties, (bool, JSchema)):
+def validate_is_schema_list(key, value):
+    if value is not None:
+        if not isinstance(value, list):
+            raise SchemaValidationError("'{0}' must be a list".format(key))
+        if not len(value) >= 1:
             raise SchemaValidationError(
-                "'{0}' must be a bool or a schema".format(
-                    ADDITIONAL_PROPERTIES_KEY
-                )
+                "'{0}' list must not be empty".format(key)
             )
-
-
-def validate_all_of(all_of):
-    if all_of is not None:
-        if not isinstance(all_of, list):
-            raise SchemaValidationError(
-                "'{0}' must be a list".format(ALL_OF_KEY)
-            )
-        if not len(all_of) >= 1:
-            raise SchemaValidationError(
-                "'{0}' list must not be empty".format(ALL_OF_KEY)
-            )
-        for item in all_of:
+        for item in value:
             if not isinstance(item, JSchema):
                 raise SchemaValidationError(
-                    "'{0}' list item must be a schema".format(ALL_OF_KEY)
+                    "'{0}' list item must be a schema".format(key)
                 )
 
 
-def validate_any_of(any_of):
-    if any_of is not None:
-        if not isinstance(any_of, list):
-            raise SchemaValidationError(
-                "'{0}' must be a list".format(ANY_OF_KEY)
-            )
-        if not len(any_of) >= 1:
-            raise SchemaValidationError(
-                "'{0}' list must not be empty".format(ANY_OF_KEY)
-            )
-        for item in any_of:
-            if not isinstance(item, JSchema):
+def validate_is_schema_dict(key, value):
+    if value is not None:
+        if not isinstance(value, dict):
+            raise SchemaValidationError("'{0}' must be a dict".format(key))
+        for k, v in value.items():
+            if not isinstance(k, str):
                 raise SchemaValidationError(
-                    "'{0}' list item must be a schema".format(ANY_OF_KEY)
+                    "'{0}' dict key must be a str".format(key)
                 )
-
-
-def validate_definitions(definitions):
-    if definitions is not None:
-        if not isinstance(definitions, dict):
-            raise SchemaValidationError(
-                "'{0}' must be a dict".format(DEFINITIONS_KEY)
-            )
-        for key, value in definitions.items():
-            if not isinstance(key, str):
+            if not isinstance(v, JSchema):
                 raise SchemaValidationError(
-                    "'{0}' dict key must be a str".format(DEFINITIONS_KEY)
-                )
-            if not isinstance(value, JSchema):
-                raise SchemaValidationError(
-                    "'{0}' dict value must be a schema".format(DEFINITIONS_KEY)
+                    "'{0}' dict value must be a schema".format(key)
                 )
 
 
@@ -202,45 +169,13 @@ def validate_items(items):
                     )
 
 
-def validate_max_items(max_items):
-    if max_items is not None:
-        if not isinstance(max_items, int):
+def validate_is_positive_int_or_zero(key, value):
+    if value is not None:
+        if not isinstance(value, int):
+            raise SchemaValidationError("'{0}' must be an int".format(key))
+        if not value >= 0:
             raise SchemaValidationError(
-                "'{0}' must be an int".format(MAX_ITEMS_KEY)
-            )
-        if not max_items >= 0:
-            raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(
-                    MAX_ITEMS_KEY
-                )
-            )
-
-
-def validate_max_length(max_length):
-    if max_length is not None:
-        if not isinstance(max_length, int):
-            raise SchemaValidationError(
-                "'{0}' must be an int".format(MAX_LENGTH_KEY)
-            )
-        if not max_length >= 0:
-            raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(
-                    MAX_LENGTH_KEY
-                )
-            )
-
-
-def validate_max_properties(max_properties):
-    if max_properties is not None:
-        if not isinstance(max_properties, int):
-            raise SchemaValidationError(
-                "'{0}' must be an int".format(MAX_PROPERTIES_KEY)
-            )
-        if not max_properties >= 0:
-            raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(
-                    MAX_PROPERTIES_KEY
-                )
+                "'{0}' must be greater than or equal to zero".format(key)
             )
 
 
@@ -259,48 +194,6 @@ def validate_maximum(maximum, exclusive_maximum):
             raise SchemaValidationError(
                 "'{0}' must be present if '{1}' is defined".format(
                     MAXIMUM_KEY, EXCLUSIVE_MAXIMUM_KEY
-                )
-            )
-
-
-def validate_min_items(min_items):
-    if min_items is not None:
-        if not isinstance(min_items, int):
-            raise SchemaValidationError(
-                "'{0}' must be an int".format(MIN_ITEMS_KEY)
-            )
-        if not min_items >= 0:
-            raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(
-                    MIN_ITEMS_KEY
-                )
-            )
-
-
-def validate_min_length(min_length):
-    if min_length is not None:
-        if not isinstance(min_length, int):
-            raise SchemaValidationError(
-                "'{0}' must be an int".format(MIN_LENGTH_KEY)
-            )
-        if not min_length >= 0:
-            raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(
-                    MIN_LENGTH_KEY
-                )
-            )
-
-
-def validate_min_properties(min_properties):
-    if min_properties is not None:
-        if not isinstance(min_properties, int):
-            raise SchemaValidationError(
-                "'{0}' must be an int".format(MIN_PROPERTIES_KEY)
-            )
-        if not min_properties >= 0:
-            raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(
-                    MIN_PROPERTIES_KEY
                 )
             )
 
@@ -350,61 +243,6 @@ def validate_pattern(pattern):
             raise SchemaValidationError(
                 "'{0}' must be a str".format(PATTERN_KEY)
             )
-
-
-def validate_pattern_properties(pattern_properties):
-    if pattern_properties is not None:
-        if not isinstance(pattern_properties, dict):
-            raise SchemaValidationError(
-                "'{0}' must be a dict".format(PATTERN_PROPERTIES_KEY)
-            )
-        for key, value in pattern_properties.items():
-            if not isinstance(key, str):
-                raise SchemaValidationError(
-                    "'{0}' dict key must be a str".format(
-                        PATTERN_PROPERTIES_KEY
-                    )
-                )
-            if not isinstance(value, JSchema):
-                raise SchemaValidationError(
-                    "'{0}' dict value must be a schema".format(
-                        PATTERN_PROPERTIES_KEY
-                    )
-                )
-
-
-def validate_properties(properties):
-    if properties is not None:
-        if not isinstance(properties, dict):
-            raise SchemaValidationError(
-                "'{0}' must be a dict".format(PROPERTIES_KEY)
-            )
-        for key, value in properties.items():
-            if not isinstance(key, str):
-                raise SchemaValidationError(
-                    "'{0}' dict key must be a str".format(PROPERTIES_KEY)
-                )
-            if not isinstance(value, JSchema):
-                raise SchemaValidationError(
-                    "'{0}' dict value must be a schema".format(PROPERTIES_KEY)
-                )
-
-
-def validate_one_of(one_of):
-    if one_of is not None:
-        if not isinstance(one_of, list):
-            raise SchemaValidationError(
-                "'{0}' must be a list".format(ONE_OF_KEY)
-            )
-        if not len(one_of) >= 1:
-            raise SchemaValidationError(
-                "'{0}' list must not be empty".format(ONE_OF_KEY)
-            )
-        for item in one_of:
-            if not isinstance(item, JSchema):
-                raise SchemaValidationError(
-                    "'{0}' list item must be a schema".format(ONE_OF_KEY)
-                )
 
 
 def validate_required(required):
@@ -510,19 +348,21 @@ class JSchema(object):
 
     def __init__(self, **kwargs):
         additional_items = kwargs.get(ADDITIONAL_ITEMS_KEY, None)
-        validate_additional_items(additional_items)
+        validate_is_bool_or_schema(ADDITIONAL_ITEMS_KEY, additional_items)
 
         additional_properties = kwargs.get(ADDITIONAL_PROPERTIES_KEY, None)
-        validate_additional_properties(additional_properties)
+        validate_is_bool_or_schema(
+            ADDITIONAL_PROPERTIES_KEY, additional_properties
+        )
 
         all_of = kwargs.get(ALL_OF_KEY, None)
-        validate_all_of(all_of)
+        validate_is_schema_list(ALL_OF_KEY, all_of)
 
         any_of = kwargs.get(ANY_OF_KEY, None)
-        validate_any_of(any_of)
+        validate_is_schema_list(ANY_OF_KEY, any_of)
 
         definitions = kwargs.get(DEFINITIONS_KEY, None)
-        validate_definitions(definitions)
+        validate_is_schema_dict(DEFINITIONS_KEY, definitions)
 
         dependencies = kwargs.get(DEPENDENCIES_KEY, None)
         validate_dependencies(dependencies)
@@ -534,26 +374,26 @@ class JSchema(object):
         validate_items(items)
 
         max_items = kwargs.get(MAX_ITEMS_KEY, None)
-        validate_max_items(max_items)
+        validate_is_positive_int_or_zero(MAX_ITEMS_KEY, max_items)
 
         max_length = kwargs.get(MAX_LENGTH_KEY, None)
-        validate_max_length(max_length)
+        validate_is_positive_int_or_zero(MAX_LENGTH_KEY, max_length)
 
         max_properties = kwargs.get(MAX_PROPERTIES_KEY, None)
-        validate_max_properties(max_properties)
+        validate_is_positive_int_or_zero(MAX_PROPERTIES_KEY, max_properties)
 
         maximum = kwargs.get(MAXIMUM_KEY, None)
         exclusive_maximum = kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
         validate_maximum(maximum, exclusive_maximum)
 
         min_items = kwargs.get(MIN_ITEMS_KEY, None)
-        validate_min_items(min_items)
+        validate_is_positive_int_or_zero(MIN_ITEMS_KEY, min_items)
 
         min_length = kwargs.get(MIN_LENGTH_KEY, None)
-        validate_min_length(min_length)
+        validate_is_positive_int_or_zero(MIN_LENGTH_KEY, min_length)
 
         min_properties = kwargs.get(MIN_PROPERTIES_KEY, None)
-        validate_min_properties(min_properties)
+        validate_is_positive_int_or_zero(MIN_PROPERTIES_KEY, min_properties)
 
         minimum = kwargs.get(MINIMUM_KEY, None)
         exclusive_minimum = kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
@@ -569,13 +409,13 @@ class JSchema(object):
         validate_pattern(pattern)
 
         pattern_properties = kwargs.get(PATTERN_PROPERTIES_KEY, None)
-        validate_pattern_properties(pattern_properties)
+        validate_is_schema_dict(PATTERN_PROPERTIES_KEY, pattern_properties)
 
         properties = kwargs.get(PROPERTIES_KEY, None)
-        validate_properties(properties)
+        validate_is_schema_dict(PROPERTIES_KEY, properties)
 
         one_of = kwargs.get(ONE_OF_KEY, None)
-        validate_one_of(one_of)
+        validate_is_schema_list(ONE_OF_KEY, one_of)
 
         required = kwargs.get(REQUIRED_KEY, None)
         validate_required(required)
