@@ -31,7 +31,7 @@ TYPE_KEY = 'type'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
 
-FIELD_NAMES = {
+KEYWORDS = {
     'schema': '$schema',
     'ref': '$ref',
     'id': 'id',
@@ -381,9 +381,9 @@ class JSchema(object):
         validate_unique_items(unique_items)
 
         self._dict = {}
-        for key, field_name in FIELD_NAMES.items():
+        for key, keyword in KEYWORDS.items():
             if key in kwargs:
-                self._dict[field_name] = kwargs[key]
+                self._dict[keyword] = kwargs[key]
 
     def asdict(self, root=True, id=None):
         return self._dict.copy()
