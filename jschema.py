@@ -73,6 +73,46 @@ KEYWORDS = {
 }
 
 
+SCHEMA_VALIDATION_FUNCTIONS = {
+    'default': lambda dict: None,
+    ADDITIONAL_ITEMS_KEY:
+        lambda dict: validate_is_bool_or_schema(
+            ADDITIONAL_ITEMS_KEY, dict.get(ADDITIONAL_ITEMS_KEY, None)
+        ),
+    ADDITIONAL_PROPERTIES_KEY: lambda dict: None,
+    ALL_OF_KEY: lambda dict: None,
+    ANY_OF_KEY: lambda dict: None,
+    DEFINITIONS_KEY: lambda dict: None,
+    DEPENDENCIES_KEY: lambda dict: None,
+    DESCRIPTION_KEY: lambda dict: None,
+    ENUM_KEY: lambda dict: None,
+    EXCLUSIVE_MAXIMUM_KEY: lambda dict: None,
+    EXCLUSIVE_MINIMUM_KEY: lambda dict: None,
+    ID_KEY: lambda dict: None,
+    ITEMS_KEY: lambda dict: None,
+    MAX_ITEMS_KEY: lambda dict: None,
+    MAX_LENGTH_KEY: lambda dict: None,
+    MAX_PROPERTIES_KEY: lambda dict: None,
+    MAXIMUM_KEY: lambda dict: None,
+    MIN_ITEMS_KEY: lambda dict: None,
+    MIN_LENGTH_KEY: lambda dict: None,
+    MIN_PROPERTIES_KEY: lambda dict: None,
+    MINIMUM_KEY: lambda dict: None,
+    MULTIPLE_OF_KEY: lambda dict: None,
+    NOT_KEY: lambda dict: None,
+    ONE_OF_KEY: lambda dict: None,
+    PATTERN_KEY: lambda dict: None,
+    PATTERN_PROPERTIES_KEY: lambda dict: None,
+    PROPERTIES_KEY: lambda dict: None,
+    REF_KEY: lambda dict: None,
+    REQUIRED_KEY: lambda dict: None,
+    SCHEMA_KEY: lambda dict: None,
+    TITLE_KEY: lambda dict: None,
+    TYPE_KEY: lambda dict: None,
+    UNIQUE_ITEMS_KEY: lambda dict: None
+}
+
+
 def is_primitive_type_str(type_str):
     type_strs = [
         'array', 'boolean', 'integer', 'null', 'number', 'object', 'string'
@@ -312,8 +352,12 @@ def validate_unique_items(unique_items):
 
 class JSchema(object):
     def __init__(self, **kwargs):
-        additional_items = kwargs.get(ADDITIONAL_ITEMS_KEY, None)
-        validate_is_bool_or_schema(ADDITIONAL_ITEMS_KEY, additional_items)
+        self._dict = {}
+
+        for key, keyword in KEYWORDS.items():
+            if key in kwargs:
+                SCHEMA_VALIDATION_FUNCTIONS[key](kwargs)
+                self._dict[keyword] = kwargs[key]
 
         additional_properties = kwargs.get(ADDITIONAL_PROPERTIES_KEY, None)
         validate_is_bool_or_schema(
@@ -402,11 +446,6 @@ class JSchema(object):
 
         unique_items = kwargs.get(UNIQUE_ITEMS_KEY, None)
         validate_unique_items(unique_items)
-
-        self._dict = {}
-        for key, keyword in KEYWORDS.items():
-            if key in kwargs:
-                self._dict[keyword] = kwargs[key]
 
     def asdict(self, root=False, schema=None):
         dict = self._dict.copy()
