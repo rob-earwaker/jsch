@@ -74,46 +74,140 @@ KEYWORDS = {
 
 
 SCHEMA_VALIDATION_FUNCTIONS = {
-    'default': lambda dict: None,
+    'default':
+        lambda dict:
+            None,
     ADDITIONAL_ITEMS_KEY:
-        lambda dict: validate_is_bool_or_schema(
-            ADDITIONAL_ITEMS_KEY, dict.get(ADDITIONAL_ITEMS_KEY, None)
-        ),
+        lambda dict:
+            validate_is_bool_or_schema(
+                ADDITIONAL_ITEMS_KEY, dict.get(ADDITIONAL_ITEMS_KEY, None)
+            ),
     ADDITIONAL_PROPERTIES_KEY:
-        lambda dict: validate_is_bool_or_schema(
-            ADDITIONAL_PROPERTIES_KEY,
-            dict.get(ADDITIONAL_PROPERTIES_KEY, None)
-        ),
-    ALL_OF_KEY: lambda dict: None,
-    ANY_OF_KEY: lambda dict: None,
-    DEFINITIONS_KEY: lambda dict: None,
-    DEPENDENCIES_KEY: lambda dict: None,
-    DESCRIPTION_KEY: lambda dict: None,
-    ENUM_KEY: lambda dict: None,
-    EXCLUSIVE_MAXIMUM_KEY: lambda dict: None,
-    EXCLUSIVE_MINIMUM_KEY: lambda dict: None,
-    ID_KEY: lambda dict: None,
-    ITEMS_KEY: lambda dict: None,
-    MAX_ITEMS_KEY: lambda dict: None,
-    MAX_LENGTH_KEY: lambda dict: None,
-    MAX_PROPERTIES_KEY: lambda dict: None,
-    MAXIMUM_KEY: lambda dict: None,
-    MIN_ITEMS_KEY: lambda dict: None,
-    MIN_LENGTH_KEY: lambda dict: None,
-    MIN_PROPERTIES_KEY: lambda dict: None,
-    MINIMUM_KEY: lambda dict: None,
-    MULTIPLE_OF_KEY: lambda dict: None,
-    NOT_KEY: lambda dict: None,
-    ONE_OF_KEY: lambda dict: None,
-    PATTERN_KEY: lambda dict: None,
-    PATTERN_PROPERTIES_KEY: lambda dict: None,
-    PROPERTIES_KEY: lambda dict: None,
-    REF_KEY: lambda dict: None,
-    REQUIRED_KEY: lambda dict: None,
-    SCHEMA_KEY: lambda dict: None,
-    TITLE_KEY: lambda dict: None,
-    TYPE_KEY: lambda dict: None,
-    UNIQUE_ITEMS_KEY: lambda dict: None
+        lambda dict:
+            validate_is_bool_or_schema(
+                ADDITIONAL_PROPERTIES_KEY,
+                dict.get(ADDITIONAL_PROPERTIES_KEY, None)
+            ),
+    ALL_OF_KEY:
+        lambda dict:
+            validate_is_schema_list(ALL_OF_KEY, dict.get(ALL_OF_KEY, None)),
+    ANY_OF_KEY:
+        lambda dict:
+            validate_is_schema_list(ANY_OF_KEY, dict.get(ANY_OF_KEY, None)),
+    DEFINITIONS_KEY:
+        lambda dict:
+            validate_is_schema_dict(
+                DEFINITIONS_KEY, dict.get(DEFINITIONS_KEY, None)
+            ),
+    DEPENDENCIES_KEY:
+        lambda dict:
+            validate_dependencies(dict.get(DEPENDENCIES_KEY, None)),
+    DESCRIPTION_KEY:
+        lambda dict:
+            validate_is_str(DESCRIPTION_KEY, dict.get(DESCRIPTION_KEY, None)),
+    ENUM_KEY:
+        lambda dict:
+            validate_enum(dict.get(ENUM_KEY, None)),
+    EXCLUSIVE_MAXIMUM_KEY:
+        lambda dict:
+            validate_maximum(
+                dict.get(MAXIMUM_KEY, None),
+                dict.get(EXCLUSIVE_MAXIMUM_KEY, None)
+            ),
+    EXCLUSIVE_MINIMUM_KEY:
+        lambda dict:
+            validate_minimum(
+                dict.get(MINIMUM_KEY, None),
+                dict.get(EXCLUSIVE_MINIMUM_KEY, None)
+            ),
+    ID_KEY:
+        lambda dict:
+            validate_is_str(ID_KEY, dict.get(ID_KEY, None)),
+    ITEMS_KEY:
+        lambda dict:
+            validate_items(dict.get(ITEMS_KEY, None)),
+    MAX_ITEMS_KEY:
+        lambda dict:
+            validate_is_positive_int_or_zero(
+                MAX_ITEMS_KEY, dict.get(MAX_ITEMS_KEY, None)
+            ),
+    MAX_LENGTH_KEY:
+        lambda dict:
+            validate_is_positive_int_or_zero(
+                MAX_LENGTH_KEY, dict.get(MAX_LENGTH_KEY, None)
+            ),
+    MAX_PROPERTIES_KEY:
+        lambda dict:
+            validate_is_positive_int_or_zero(
+                MAX_PROPERTIES_KEY, dict.get(MAX_PROPERTIES_KEY, None)
+            ),
+    MAXIMUM_KEY:
+        lambda dict:
+            validate_maximum(
+                dict.get(MAXIMUM_KEY, None),
+                dict.get(EXCLUSIVE_MAXIMUM_KEY, None)
+            ),
+    MIN_ITEMS_KEY:
+        lambda dict:
+            validate_is_positive_int_or_zero(
+                MIN_ITEMS_KEY, dict.get(MIN_ITEMS_KEY, None)
+            ),
+    MIN_LENGTH_KEY:
+        lambda dict:
+            validate_is_positive_int_or_zero(
+                MIN_LENGTH_KEY, dict.get(MIN_LENGTH_KEY, None)
+            ),
+    MIN_PROPERTIES_KEY:
+        lambda dict:
+            validate_is_positive_int_or_zero(
+                MIN_PROPERTIES_KEY, dict.get(MIN_PROPERTIES_KEY, None)
+            ),
+    MINIMUM_KEY:
+        lambda dict:
+            validate_minimum(
+                dict.get(MINIMUM_KEY, None),
+                dict.get(EXCLUSIVE_MINIMUM_KEY, None)
+            ),
+    MULTIPLE_OF_KEY:
+        lambda dict:
+            validate_multiple_of(dict.get(MULTIPLE_OF_KEY, None)),
+    NOT_KEY:
+        lambda dict:
+            validate_not(dict.get(NOT_KEY, None)),
+    ONE_OF_KEY:
+        lambda dict:
+            validate_is_schema_list(ONE_OF_KEY, dict.get(ONE_OF_KEY, None)),
+    PATTERN_KEY:
+        lambda dict:
+            validate_pattern(dict.get(PATTERN_KEY, None)),
+    PATTERN_PROPERTIES_KEY:
+        lambda dict:
+            validate_is_schema_dict(
+                PATTERN_PROPERTIES_KEY, dict.get(PATTERN_PROPERTIES_KEY, None)
+            ),
+    PROPERTIES_KEY:
+        lambda dict:
+            validate_is_schema_dict(
+                PROPERTIES_KEY, dict.get(PROPERTIES_KEY, None)
+            ),
+    REF_KEY:
+        lambda dict:
+            validate_is_str(REF_KEY, dict.get(REF_KEY, None)),
+    REQUIRED_KEY:
+        lambda dict:
+            validate_required(dict.get(REQUIRED_KEY, None)),
+    SCHEMA_KEY:
+        lambda dict:
+            None,
+    TITLE_KEY:
+        lambda dict:
+            validate_is_str(TITLE_KEY, dict.get(TITLE_KEY, None)),
+    TYPE_KEY:
+        lambda dict:
+            validate_type(dict.get(TYPE_KEY, None)),
+    UNIQUE_ITEMS_KEY:
+        lambda dict:
+            validate_unique_items(dict.get(UNIQUE_ITEMS_KEY, None))
 }
 
 
@@ -362,84 +456,6 @@ class JSchema(object):
             if key in kwargs:
                 SCHEMA_VALIDATION_FUNCTIONS[key](kwargs)
                 self._dict[keyword] = kwargs[key]
-
-        validate_is_schema_list(ALL_OF_KEY, kwargs.get(ALL_OF_KEY, None))
-
-        validate_is_schema_list(ANY_OF_KEY, kwargs.get(ANY_OF_KEY, None))
-
-        validate_is_schema_dict(
-            DEFINITIONS_KEY, kwargs.get(DEFINITIONS_KEY, None)
-        )
-
-        validate_dependencies(kwargs.get(DEPENDENCIES_KEY, None))
-
-        validate_is_str(DESCRIPTION_KEY, kwargs.get(DESCRIPTION_KEY, None))
-
-        validate_enum(kwargs.get(ENUM_KEY, None))
-
-        validate_is_str(ID_KEY, kwargs.get(ID_KEY, None))
-
-        validate_items(kwargs.get(ITEMS_KEY, None))
-
-        validate_is_positive_int_or_zero(
-            MAX_ITEMS_KEY, kwargs.get(MAX_ITEMS_KEY, None)
-        )
-
-        validate_is_positive_int_or_zero(
-            MAX_LENGTH_KEY, kwargs.get(MAX_LENGTH_KEY, None)
-        )
-
-        validate_is_positive_int_or_zero(
-            MAX_PROPERTIES_KEY, kwargs.get(MAX_PROPERTIES_KEY, None)
-        )
-
-        validate_maximum(
-            kwargs.get(MAXIMUM_KEY, None),
-            kwargs.get(EXCLUSIVE_MAXIMUM_KEY, None)
-        )
-
-        validate_is_positive_int_or_zero(
-            MIN_ITEMS_KEY, kwargs.get(MIN_ITEMS_KEY, None)
-        )
-
-        validate_is_positive_int_or_zero(
-            MIN_LENGTH_KEY, kwargs.get(MIN_LENGTH_KEY, None)
-        )
-
-        validate_is_positive_int_or_zero(
-            MIN_PROPERTIES_KEY, kwargs.get(MIN_PROPERTIES_KEY, None)
-        )
-
-        validate_minimum(
-            kwargs.get(MINIMUM_KEY, None),
-            kwargs.get(EXCLUSIVE_MINIMUM_KEY, None)
-        )
-
-        validate_multiple_of(kwargs.get(MULTIPLE_OF_KEY, None))
-
-        validate_not(kwargs.get(NOT_KEY, None))
-
-        validate_pattern(kwargs.get(PATTERN_KEY, None))
-
-        validate_is_schema_dict(
-            PATTERN_PROPERTIES_KEY, kwargs.get(PATTERN_PROPERTIES_KEY, None)
-        )
-
-        validate_is_schema_dict(
-            PROPERTIES_KEY, kwargs.get(PROPERTIES_KEY, None)
-        )
-
-        validate_is_schema_list(ONE_OF_KEY, kwargs.get(ONE_OF_KEY, None))
-
-        validate_is_str(REF_KEY, kwargs.get(REF_KEY, None))
-
-        validate_required(kwargs.get(REQUIRED_KEY, None))
-
-        validate_is_str(TITLE_KEY, kwargs.get(TITLE_KEY, None))
-
-        validate_type(kwargs.get(TYPE_KEY, None))
-
-        validate_unique_items(kwargs.get(UNIQUE_ITEMS_KEY, None))
 
     def asdict(self, root=False, schema=None):
         dict = self._dict.copy()
