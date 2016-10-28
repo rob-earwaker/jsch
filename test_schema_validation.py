@@ -475,6 +475,16 @@ class TestRequiredValidation(SchemaValidationTestCase):
             jschema.JSchema(required=['a', 'b', 'c', 'a'])
 
 
+class TestSchemaValidation(SchemaValidationTestCase):
+    def test_passes_when_str(self):
+        jschema.JSchema().asdict(root=True, schema='http://jschema.org/sch#')
+
+    def test_fails_when_not_str(self):
+        message = "'schema' must be a str"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema().asdict(root=True, schema=76)
+
+
 class TestTypeValidation(SchemaValidationTestCase):
     def test_passes_when_str(self):
         jschema.JSchema(type='number')

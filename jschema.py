@@ -27,12 +27,13 @@ PATTERN_KEY = 'pattern'
 PATTERN_PROPERTIES_KEY = 'pattern_properties'
 PROPERTIES_KEY = 'properties'
 REQUIRED_KEY = 'required'
+SCHEMA_KEY = 'schema'
 TYPE_KEY = 'type'
 UNIQUE_ITEMS_KEY = 'unique_items'
 
 
 KEYWORDS = {
-    'schema': '$schema',
+    SCHEMA_KEY: '$schema',
     'ref': '$ref',
     'id': 'id',
     'title': 'title',
@@ -385,14 +386,23 @@ class JSchema(object):
             if key in kwargs:
                 self._dict[keyword] = kwargs[key]
 
-    def asdict(self, root=True, id=None):
-        return self._dict.copy()
+    def asdict(self, root=False, schema=None):
+        dict = self._dict.copy()
+        if root:
+            kw = KEYWORDS['schema']
+            dict[kw] = 'http://json-schema.org/draft-04/schema#'
+            if schema is not None:
+                if not isinstance(schema, str):
+                    raise SchemaValidationError(SCHEMA_KEY, 'must be a str')
+                dict[kw] = schema
+        return dict
 
-    def asjson(self, pretty=False):
+    def asjson(self, pretty=False, root=False, schema=None):
+        dict = self.asdict(root, schema)
         indent = 4 if pretty else None
         separators = (',', ': ') if pretty else (',', ':')
         return json.dumps(
-            self.asdict(), sort_keys=True, indent=indent, separators=separators
+            dict, sort_keys=True, indent=indent, separators=separators
         )
 
 

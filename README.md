@@ -19,11 +19,7 @@ JSON schema field can be passed as a keyword argument when initialising a
 >>> jschema.JSchema()
 <jschema.JSchema object at 0x...>
 >>>
->>> jschema.JSchema(
-...     title='First name',
-...     type='string',
-...     max_length=32
-... )
+>>> jschema.JSchema(title='First name', type='string', max_length=32)
 <jschema.JSchema object at 0x...>
 >>>
 ```
@@ -38,25 +34,49 @@ The JSON schema can be accessed as either a `dict` or a JSON string:
 ```python
 >>> import jschema
 >>>
->>> schema = jschema.JSchema(
-...     title='Age',
-...     type='integer',
-...     minimum=0
-... )
+>>> schema = jschema.JSchema(title='Age', type='integer', minimum=0)
 >>>
+>>> dict = schema.asdict()
 >>> import pprint
->>> pprint.pprint(schema.asdict())
+>>> pprint.pprint(dict)
 {'minimum': 0, 'title': 'Age', 'type': 'integer'}
 >>>
->>> print(schema.asjson())
+>>> json = schema.asjson()
+>>> print(json)
 {"minimum":0,"title":"Age","type":"integer"}
 >>>
->>> print(schema.asjson(pretty=True))
+>>> pretty_json = schema.asjson(pretty=True)
+>>> print(pretty_json)
 {
     "minimum": 0,
     "title": "Age",
     "type": "integer"
 }
+>>>
+```
+
+If the schema is intended to be a root schema specify the `root` flag, with
+an optional `$schema` string, when converting to a `dict` or a JSON string:
+
+```python
+>>> import jschema
+>>>
+>>> schema = jschema.JSchema(title='Height', type='number')
+>>>
+>>> json = schema.asjson(pretty=True, root=True)
+>>> print(json)
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Height",
+    "type": "number"
+}
+>>>
+>>> dict = schema.asdict(root=True, schema='http://jschema.org/custom-schema#')
+>>> import pprint
+>>> pprint.pprint(dict)
+{'$schema': 'http://jschema.org/custom-schema#',
+ 'title': 'Height',
+ 'type': 'number'}
 >>>
 ```
 
