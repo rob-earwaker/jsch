@@ -52,148 +52,122 @@ def are_items_unique(items):
 
 
 class SchemaValidationError(Exception):
-    pass
+    def __init__(self, key, message):
+        super().__init__("'{0}' {1}".format(key, message))
 
 
 def validate_is_bool_or_schema(key, value):
     if value is not None:
         if not isinstance(value, (bool, JSchema)):
-            raise SchemaValidationError(
-                "'{0}' must be a bool or a schema".format(key)
-            )
+            raise SchemaValidationError(key, "must be a bool or a schema")
 
 
 def validate_is_schema_list(key, value):
     if value is not None:
         if not isinstance(value, list):
-            raise SchemaValidationError("'{0}' must be a list".format(key))
+            raise SchemaValidationError(key, "must be a list")
         if not len(value) >= 1:
-            raise SchemaValidationError(
-                "'{0}' list must not be empty".format(key)
-            )
+            raise SchemaValidationError(key, "list must not be empty")
         for item in value:
             if not isinstance(item, JSchema):
-                raise SchemaValidationError(
-                    "'{0}' list item must be a schema".format(key)
-                )
+                raise SchemaValidationError(key, "list item must be a schema")
 
 
 def validate_is_schema_dict(key, value):
     if value is not None:
         if not isinstance(value, dict):
-            raise SchemaValidationError("'{0}' must be a dict".format(key))
+            raise SchemaValidationError(key, "must be a dict")
         for k, v in value.items():
             if not isinstance(k, str):
-                raise SchemaValidationError(
-                    "'{0}' dict key must be a str".format(key)
-                )
+                raise SchemaValidationError(key, "dict key must be a str")
             if not isinstance(v, JSchema):
-                raise SchemaValidationError(
-                    "'{0}' dict value must be a schema".format(key)
-                )
+                raise SchemaValidationError(key, "dict value must be a schema")
 
 
 def validate_dependencies(dependencies):
     if dependencies is not None:
         if not isinstance(dependencies, dict):
-            raise SchemaValidationError(
-                "'{0}' must be a dict".format(DEPENDENCIES_KEY)
-            )
+            raise SchemaValidationError(DEPENDENCIES_KEY, "must be a dict")
         for key, value in dependencies.items():
             if not isinstance(key, str):
                 raise SchemaValidationError(
-                    "'{0}' dict key must be a str".format(DEPENDENCIES_KEY)
+                    DEPENDENCIES_KEY, "dict key must be a str"
                 )
             if not isinstance(value, (JSchema, list)):
                 raise SchemaValidationError(
-                    "'{0}' dict value must be a schema or a list".format(
-                        DEPENDENCIES_KEY
-                    )
+                    DEPENDENCIES_KEY, "dict value must be a schema or a list"
                 )
             if isinstance(value, list):
                 if not len(value) >= 1:
                     raise SchemaValidationError(
-                        "'{0}' dict value list must not be empty".format(
-                            DEPENDENCIES_KEY
-                        )
+                        DEPENDENCIES_KEY, "dict value list must not be empty"
                     )
                 for item in value:
                     if not isinstance(item, str):
                         raise SchemaValidationError(
-                            "'{0}' dict value list item must be a str".format(
-                                DEPENDENCIES_KEY
-                            )
+                            DEPENDENCIES_KEY,
+                            "dict value list item must be a str"
                         )
                 if not len(set(value)) == len(value):
                     raise SchemaValidationError(
-                        "'{0}' dict value list item str must be unique".format(
-                            DEPENDENCIES_KEY
-                        )
+                        DEPENDENCIES_KEY,
+                        "dict value list item str must be unique"
                     )
 
 
 def validate_enum(enum):
     if enum is not None:
         if not isinstance(enum, list):
-            raise SchemaValidationError(
-                "'{0}' must be a list".format(ENUM_KEY)
-            )
+            raise SchemaValidationError(ENUM_KEY, "must be a list")
         if not len(enum) >= 1:
-            raise SchemaValidationError(
-                "'{0}' list must not be empty".format(ENUM_KEY)
-            )
+            raise SchemaValidationError(ENUM_KEY, "list must not be empty")
         for item in enum:
             if not is_primitive_type(item):
                 raise SchemaValidationError(
-                    "'{0}' list item must be a primitive type".format(ENUM_KEY)
+                    ENUM_KEY, "list item must be a primitive type"
                 )
         if not are_items_unique(enum):
-            raise SchemaValidationError(
-                "'{0}' list item must be unique".format(ENUM_KEY)
-            )
+            raise SchemaValidationError(ENUM_KEY, "list item must be unique")
 
 
 def validate_items(items):
     if items is not None:
         if not isinstance(items, (JSchema, list)):
             raise SchemaValidationError(
-                "'{0}' must be a schema or a list".format(ITEMS_KEY)
+                ITEMS_KEY, "must be a schema or a list"
             )
         if isinstance(items, list):
             for item in items:
                 if not isinstance(item, JSchema):
                     raise SchemaValidationError(
-                        "'{0}' list must contain only schemas".format(
-                            ITEMS_KEY
-                        )
+                        ITEMS_KEY, "list must contain only schemas"
                     )
 
 
 def validate_is_positive_int_or_zero(key, value):
     if value is not None:
         if not isinstance(value, int):
-            raise SchemaValidationError("'{0}' must be an int".format(key))
+            raise SchemaValidationError(key, "must be an int")
         if not value >= 0:
             raise SchemaValidationError(
-                "'{0}' must be greater than or equal to zero".format(key)
+                key, "must be greater than or equal to zero"
             )
 
 
 def validate_maximum(maximum, exclusive_maximum):
     if maximum is not None:
         if not isinstance(maximum, (int, float)):
-            raise SchemaValidationError(
-                "'{0}' must be an int or float".format(MAXIMUM_KEY)
-            )
+            raise SchemaValidationError(MAXIMUM_KEY, "must be an int or float")
     if exclusive_maximum is not None:
         if not isinstance(exclusive_maximum, bool):
             raise SchemaValidationError(
-                "'{0}' must be a bool".format(EXCLUSIVE_MAXIMUM_KEY)
+                EXCLUSIVE_MAXIMUM_KEY, "must be a bool"
             )
         if maximum is None:
             raise SchemaValidationError(
-                "'{0}' must be present if '{1}' is defined".format(
-                    MAXIMUM_KEY, EXCLUSIVE_MAXIMUM_KEY
+                MAXIMUM_KEY,
+                "must be present if '{0}' is defined".format(
+                    EXCLUSIVE_MAXIMUM_KEY
                 )
             )
 
@@ -201,18 +175,17 @@ def validate_maximum(maximum, exclusive_maximum):
 def validate_minimum(minimum, exclusive_minimum):
     if minimum is not None:
         if not isinstance(minimum, (int, float)):
-            raise SchemaValidationError(
-                "'{0}' must be an int or float".format(MINIMUM_KEY)
-            )
+            raise SchemaValidationError(MINIMUM_KEY, "must be an int or float")
     if exclusive_minimum is not None:
         if not isinstance(exclusive_minimum, bool):
             raise SchemaValidationError(
-                "'{0}' must be a bool".format(EXCLUSIVE_MINIMUM_KEY)
+                EXCLUSIVE_MINIMUM_KEY, "must be a bool"
             )
         if minimum is None:
             raise SchemaValidationError(
-                "'{0}' must be present if '{1}' is defined".format(
-                    MINIMUM_KEY, EXCLUSIVE_MINIMUM_KEY
+                MINIMUM_KEY,
+                "must be present if '{0}' is defined".format(
+                    EXCLUSIVE_MINIMUM_KEY
                 )
             )
 
@@ -221,86 +194,72 @@ def validate_multiple_of(multiple_of):
     if multiple_of is not None:
         if not isinstance(multiple_of, (int, float)):
             raise SchemaValidationError(
-                "'{0}' must be an int or float".format(MULTIPLE_OF_KEY)
+                MULTIPLE_OF_KEY, "must be an int or float"
             )
         if not multiple_of > 0:
             raise SchemaValidationError(
-                "'{0}' must be greater than zero".format(MULTIPLE_OF_KEY)
+                MULTIPLE_OF_KEY, "must be greater than zero"
             )
 
 
 def validate_not(not_):
     if not_ is not None:
         if not isinstance(not_, JSchema):
-            raise SchemaValidationError(
-                "'{0}' must be a schema".format(NOT_KEY)
-            )
+            raise SchemaValidationError(NOT_KEY, "must be a schema")
 
 
 def validate_pattern(pattern):
     if pattern is not None:
         if not isinstance(pattern, str):
-            raise SchemaValidationError(
-                "'{0}' must be a str".format(PATTERN_KEY)
-            )
+            raise SchemaValidationError(PATTERN_KEY, "must be a str")
 
 
 def validate_required(required):
     if required is not None:
         if not isinstance(required, list):
-            raise SchemaValidationError(
-                "'{0}' must be a list".format(REQUIRED_KEY)
-            )
+            raise SchemaValidationError(REQUIRED_KEY, "must be a list")
         if not len(required) >= 1:
-            raise SchemaValidationError(
-                "'{0}' list must not be empty".format(REQUIRED_KEY)
-            )
+            raise SchemaValidationError(REQUIRED_KEY, "list must not be empty")
         for item in required:
             if not isinstance(item, str):
                 raise SchemaValidationError(
-                    "'{0}' list item must be a str".format(REQUIRED_KEY)
+                    REQUIRED_KEY, "list item must be a str"
                 )
         if not len(set(required)) == len(required):
             raise SchemaValidationError(
-                "'{0}' list item str must be unique".format(REQUIRED_KEY)
+                REQUIRED_KEY, "list item str must be unique"
             )
 
 
 def validate_type(type):
     if type is not None:
         if not isinstance(type, (str, list)):
-            raise SchemaValidationError(
-                "'{0}' must be a str or a list".format(TYPE_KEY)
-            )
+            raise SchemaValidationError(TYPE_KEY, "must be a str or a list")
         if isinstance(type, str):
             if not is_primitive_type_str(type):
                 raise SchemaValidationError(
-                    "'{0}' str must be a primitive type".format(TYPE_KEY)
+                    TYPE_KEY, "str must be a primitive type"
                 )
         if isinstance(type, list):
             for item in type:
                 if not isinstance(item, str):
                     raise SchemaValidationError(
-                        "'{0}' list item must be a str".format(TYPE_KEY)
+                        TYPE_KEY, "list item must be a str"
                     )
                 if not is_primitive_type_str(item):
                     raise SchemaValidationError(
-                        "'{0}' list item str must be a primitive type".format(
-                            TYPE_KEY
-                        )
+                        TYPE_KEY, "list item str must be a primitive type"
                     )
             if not len(set(type)) == len(type):
                 raise SchemaValidationError(
-                    "'{0}' list item str must be unique".format(TYPE_KEY)
+                    TYPE_KEY, "list item str must be unique"
                 )
 
 
 def validate_unique_items(unique_items):
     if unique_items is not None:
         if not isinstance(unique_items, bool):
-            raise SchemaValidationError(
-                "'{0}' must be a bool".format(UNIQUE_ITEMS_KEY)
-            )
+            raise SchemaValidationError(UNIQUE_ITEMS_KEY, "must be a bool")
 
 
 class JSchema(object):
