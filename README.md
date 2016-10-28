@@ -55,6 +55,8 @@ The JSON schema can be accessed as either a `dict` or a JSON string:
 >>>
 ```
 
+If the schema is intended to be a root schema, specify the `root` flag with an 
+optional `$schema` string when converting to a `dict` or a JSON string:
 
 ```python
 >>> import jschema
