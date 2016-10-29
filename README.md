@@ -59,11 +59,11 @@ jschema.SchemaValidationError: 'required' list must not be empty
 The schema validation rules in the JSON schema specification go a long way
 towards ensuring a schema is valid, but there are still some gaps, especially
 around inter-keyword validation. For more strict validation when creating a
-schema object, use the `jschema.StrictJSchema` class instead:
+schema object, use the `jschema.JSchemaStrict` class instead:
 
 (not implemented)
 
-# Accessing the JSON schema
+## Accessing the JSON schema
 The JSON schema can be accessed as either a `dict` or a JSON string:
 
 ```python
@@ -115,7 +115,7 @@ optional `$schema` string when converting to a `dict` or a JSON string:
 >>>
 ```
 
-# Simplifying schema object creation
+## Simplifying schema object creation
 For convenience, a class is provided for each of the primitive JSON schema
 types, to save specifying the `type` keyword:
 
