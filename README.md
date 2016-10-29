@@ -8,8 +8,8 @@
 Define classes that conform to a [JSON schema](http://json-schema.org/), with
 built-in validation and schema generation.
 
-## The JSchema Class
-A `jschema.JSchema` object represents an validated JSON schema. Any recognised
+## Creating a schema object
+A `jschema.JSchema` object represents a validated JSON schema. Any recognised
 JSON schema field can be passed as a keyword argument when initialising a
 `jschema.JSchema` object:
 
@@ -29,6 +29,41 @@ format used by the JSON schema definition, i.e. `max_length` rather than
 `maxLength`. This is done to conform to the [PEP8 Style Guide]
 (https://www.python.org/dev/peps/pep-0008/).
 
+A `jschema.SchemaValidationError` will be raised on initialisation if any
+[JSON schema validation]
+(http://json-schema.org/latest/json-schema-validation.html) rules are breached:
+
+```python
+>>> import jschema
+>>>
+>>> jschema.JSchema(
+...     title='Luggage',
+...     type='array',
+...     max_items=0.5
+... )
+Traceback (most recent call last):
+  ...
+jschema.SchemaValidationError: 'max_items' must be an int
+>>>
+>>> jschema.JSchema(
+...     title='Height',
+...     type='object',
+...     required=[]
+... )
+Traceback (most recent call last):
+  ...
+jschema.SchemaValidationError: 'required' list must not be empty
+>>>
+```
+
+The schema validation rules in the JSON schema specification go a long way
+towards ensuring a schema is valid, but there are still some gaps, especially
+around inter-keyword validation. For more strict validation when creating a
+schema object, use the `jschema.StrictJSchema` class instead:
+
+(not implemented)
+
+# Accessing the JSON schema
 The JSON schema can be accessed as either a `dict` or a JSON string:
 
 ```python
@@ -80,29 +115,8 @@ optional `$schema` string when converting to a `dict` or a JSON string:
 >>>
 ```
 
-A `jschema.SchemaValidationError` will be raised on initialisation if any
-[JSON schema validation]
-(http://json-schema.org/latest/json-schema-validation.html) rules are breached:
+# Simplifying schema object creation
+For convenience, a class is provided for each of the primitive JSON schema
+types, to save specifying the `type` keyword:
 
-```python
->>> import jschema
->>>
->>> jschema.JSchema(
-...     title='Luggage',
-...     type='array',
-...     max_items=0.5
-... )
-Traceback (most recent call last):
-  ...
-jschema.SchemaValidationError: 'max_items' must be an int
->>>
->>> jschema.JSchema(
-...     title='Height',
-...     type='object',
-...     required=[]
-... )
-Traceback (most recent call last):
-  ...
-jschema.SchemaValidationError: 'required' list must not be empty
->>>
-```
+ (not implemented)
