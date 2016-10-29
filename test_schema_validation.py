@@ -160,7 +160,22 @@ class TestEnumValidation(SchemaValidationTestCase):
     def test_fails_when_list_item_not_primitive_type(self):
         message = "'enum' list item must be a primitive type"
         with self.assertRaisesSchemaValidationError(message):
-            jschema.JSchema(enum=[{'a', 'b'}])
+            jschema.JSchema(enum=[('a', 'b')])
+
+    def test_fails_when_list_item_list_item_not_primitive_type(self):
+        message = "'enum' list item must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(enum=[[{'a', 'b'}]])
+
+    def test_fails_when_list_item_dict_key_not_primitive_type(self):
+        message = "'enum' list item must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(enum=[{8j: 'value'}])
+
+    def test_fails_when_list_item_dict_value_not_primitive_type(self):
+        message = "'enum' list item must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(enum=[{'name': b'\xff\xde'}])
 
     def test_fails_when_list_item_list_not_unique(self):
         message = "'enum' list item must be unique"

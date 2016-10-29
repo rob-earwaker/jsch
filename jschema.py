@@ -136,7 +136,19 @@ def is_primitive_type_str(type_str):
 
 def is_primitive_type(type):
     types = (list, bool, int, float, dict, str)
-    return type is None or isinstance(type, types)
+    if type is not None and not isinstance(type, types):
+        return False
+    if isinstance(type, list):
+        for item in type:
+            if not is_primitive_type(item):
+                return False
+    if isinstance(type, dict):
+        for key, value in type.items():
+            if not is_primitive_type(key):
+                return False
+            if not is_primitive_type(value):
+                return False
+    return True
 
 
 def are_items_unique(items):
