@@ -75,6 +75,46 @@ class TestAnyOfValidation(SchemaValidationTestCase):
             jschema.JSchema(any_of=[jschema.JSchema(), '{}'])
 
 
+class TestDefaultValidation(SchemaValidationTestCase):
+    def test_passes_when_list(self):
+        jschema.JSchema(default=['a', {}, 8])
+
+    def test_passes_when_bool(self):
+        jschema.JSchema(default=True)
+
+    def test_passes_when_int(self):
+        jschema.JSchema(default=6)
+
+    def test_passes_when_float(self):
+        jschema.JSchema(default=5.9)
+
+    def test_passes_when_dict(self):
+        jschema.JSchema(default={'h': [7], 9: {'g': []}})
+
+    def test_passes_when_str(self):
+        jschema.JSchema(default='name')
+
+    def test_fails_when_not_primitive_type(self):
+        message = "'default' must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(default=('a', 'b'))
+
+    def test_fails_when_list_item_not_primitive_type(self):
+        message = "'default' must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(default=[{'a', 'b'}])
+
+    def test_fails_when_dict_key_not_primitive_type(self):
+        message = "'default' must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(default={8j: 'value'})
+
+    def test_fails_when_dict_value_not_primitive_type(self):
+        message = "'default' must be a primitive type"
+        with self.assertRaisesSchemaValidationError(message):
+            jschema.JSchema(default={'name': b'\xff\xde'})
+
+
 class TestDefinitionsValidation(SchemaValidationTestCase):
     def test_passes_when_dict(self):
         jschema.JSchema(definitions={'name': jschema.JSchema()})

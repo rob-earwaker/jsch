@@ -6,6 +6,7 @@ ADDITIONAL_ITEMS_KEY = 'additional_items'
 ADDITIONAL_PROPERTIES_KEY = 'additional_properties'
 ALL_OF_KEY = 'all_of'
 ANY_OF_KEY = 'any_of'
+DEFAULT_KEY = 'default'
 DEFINITIONS_KEY = 'definitions'
 DEPENDENCIES_KEY = 'dependencies'
 DESCRIPTION_KEY = 'description'
@@ -37,11 +38,11 @@ UNIQUE_ITEMS_KEY = 'unique_items'
 
 
 KEYWORDS = {
-    'default': 'default',
     ADDITIONAL_ITEMS_KEY: 'additionalItems',
     ADDITIONAL_PROPERTIES_KEY: 'additionalProperties',
     ALL_OF_KEY: 'allOf',
     ANY_OF_KEY: 'anyOf',
+    DEFAULT_KEY: 'default',
     DEFINITIONS_KEY: 'definitions',
     DEPENDENCIES_KEY: 'dependencies',
     DESCRIPTION_KEY: 'description',
@@ -74,7 +75,6 @@ KEYWORDS = {
 
 
 SCHEMA_VALIDATION_FUNCTIONS = {
-    'default': lambda kwargs: None,
     ADDITIONAL_ITEMS_KEY:
         lambda kwargs:
             validate_is_bool_or_schema(ADDITIONAL_ITEMS_KEY, kwargs),
@@ -83,6 +83,7 @@ SCHEMA_VALIDATION_FUNCTIONS = {
             validate_is_bool_or_schema(ADDITIONAL_PROPERTIES_KEY, kwargs),
     ALL_OF_KEY: lambda kwargs: validate_is_schema_list(ALL_OF_KEY, kwargs),
     ANY_OF_KEY: lambda kwargs: validate_is_schema_list(ANY_OF_KEY, kwargs),
+    DEFAULT_KEY: lambda kwargs: validate_default(kwargs),
     DEFINITIONS_KEY:
         lambda kwargs: validate_is_schema_dict(DEFINITIONS_KEY, kwargs),
     DEPENDENCIES_KEY: lambda kwargs: validate_dependencies(kwargs),
@@ -200,6 +201,13 @@ def validate_is_schema_dict(key, kwargs):
                 raise SchemaValidationError(key, "dict key must be a str")
             if not isinstance(v, JSchema):
                 raise SchemaValidationError(key, "dict value must be a schema")
+
+
+def validate_default(kwargs):
+    key = DEFAULT_KEY
+    value = kwargs.get(key, None)
+    if not is_primitive_type(value):
+        raise SchemaValidationError(key, "must be a primitive type")
 
 
 def validate_dependencies(kwargs):
@@ -382,7 +390,6 @@ def validate_unique_items(kwargs):
 class JSchema(object):
     def __init__(self, **kwargs):
         self._dict = {}
-
         for key, keyword in KEYWORDS.items():
             validate_keyword = SCHEMA_VALIDATION_FUNCTIONS[key]
             validate_keyword(kwargs)
