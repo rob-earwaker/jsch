@@ -61,7 +61,10 @@ towards ensuring a schema is valid, but there are still some gaps, especially
 around inter-keyword validation. For more strict validation when creating a
 schema object, use the `jschema.JSchemaStrict` class instead:
 
-(not implemented)
+```python
+>>> # not yet implemented
+>>> 
+```
 
 ## Accessing the JSON schema
 The JSON schema can be accessed as either a `dict` or a JSON string:
@@ -119,4 +122,7 @@ optional `$schema` string when converting to a `dict` or a JSON string:
 For convenience, a class is provided for each of the primitive JSON schema
 types, to save specifying the `type` keyword:
 
- (not implemented)
+```python
+>>> # not yet implemented
+>>> 
+```
