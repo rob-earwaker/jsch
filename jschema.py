@@ -396,6 +396,11 @@ class JSchema(object):
             if key in kwargs:
                 self._dict[keyword] = kwargs[key]
 
+    def __getattr__(self, name):
+        if name not in KEYWORDS:
+            raise AttributeError("'{0}' is not a valid keyword".format(name))
+        return self._dict.get(KEYWORDS[name], None)
+
     def asdict(self, root=False, schema=None):
         dict = self._dict.copy()
         if root:

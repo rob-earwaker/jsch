@@ -19,8 +19,11 @@ JSON schema field can be passed as a keyword argument when initialising a
 >>> jschema.JSchema()
 <jschema.JSchema object at 0x...>
 >>>
->>> jschema.JSchema(title='First name', type='string', max_length=32)
-<jschema.JSchema object at 0x...>
+>>> schema = jschema.JSchema(title='First name', type='string', max_length=32)
+>>> schema.max_length
+32
+>>> schema.title
+'First name'
 >>>
 ```
 
