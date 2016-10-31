@@ -126,6 +126,25 @@ For convenience, a class is provided for each of the primitive JSON schema
 types, to save specifying the `type` keyword:
 
 ```python
->>> # not yet implemented
->>> 
+>>> import jschema
+>>>
+>>> schema = jschema.String(pattern='^[0-9]{4}$')
+>>> json = schema.asjson(pretty=True)
+>>> print(json)
+{
+    "pattern": "^[0-9]{4}$",
+    "type": "string"
+}
+>>>
+>>> schema = jschema.Array(items=jschema.Integer(), min_items=1)
+>>> json = schema.asjson(pretty=True)
+>>> print(json)
+{
+    "items": {
+        "type": "integer"
+    },
+    "minItems": 1,
+    "type": "array"
+}
+>>>
 ```

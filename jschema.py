@@ -412,11 +412,12 @@ class JSchema(object):
         return dict
 
     def asjson(self, pretty=False, root=False, schema=None):
-        dict = self.asdict(root, schema)
-        indent = 4 if pretty else None
-        separators = (',', ': ') if pretty else (',', ':')
         return json.dumps(
-            dict, sort_keys=True, indent=indent, separators=separators
+            self.asdict(root, schema),
+            cls=JSchemaJsonEncoder,
+            sort_keys=True,
+            indent=(4 if pretty else None),
+            separators=((',', ': ') if pretty else (',', ':'))
         )
 
 
@@ -428,3 +429,50 @@ class JSchemaMeta(type):
     def __call__(cls, *args, **kwargs):
         jschema = super(JSchemaMeta, cls).__call__(*args, **kwargs)
         return type(uname(), (object,), {'jschema': jschema})
+
+
+class Array(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'array'
+        super().__init__(**kwargs)
+
+
+class Boolean(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'boolean'
+        super().__init__(**kwargs)
+
+
+class Integer(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'integer'
+        super().__init__(**kwargs)
+
+
+class Null(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'null'
+        super().__init__(**kwargs)
+
+
+class Number(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'number'
+        super().__init__(**kwargs)
+
+
+class Object(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'object'
+        super().__init__(**kwargs)
+
+
+class String(JSchema):
+    def __init__(self, **kwargs):
+        kwargs['type'] = 'string'
+        super().__init__(**kwargs)
+
+
+class JSchemaJsonEncoder(json.JSONEncoder):
+    def default(self, o):
+        return o.asdict() if hasattr(o, 'asdict') else o
