@@ -3,7 +3,7 @@ python:
   - 3.5
 script:
   - pip install nose coverage coveralls
-  - nosetests --with-doctest --with-coverage --cover-package=jschema
+  - nosetests --with-doctest --with-coverage --cover-package=jsch
     --cover-erase --cover-html --doctest-extension=md
     --doctest-options=+ELLIPSIS
 after_success:

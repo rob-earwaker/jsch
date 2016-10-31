@@ -175,7 +175,7 @@ def validate_is_str(key, kwargs):
 def validate_is_bool_or_schema(key, kwargs):
     value = kwargs.get(key, None)
     if value is not None:
-        if not isinstance(value, (bool, JSchema)):
+        if not isinstance(value, (bool, Schema)):
             raise SchemaValidationError(key, "must be a bool or a schema")
 
 
@@ -187,7 +187,7 @@ def validate_is_schema_list(key, kwargs):
         if not len(value) >= 1:
             raise SchemaValidationError(key, "list must not be empty")
         for item in value:
-            if not isinstance(item, JSchema):
+            if not isinstance(item, Schema):
                 raise SchemaValidationError(key, "list item must be a schema")
 
 
@@ -199,7 +199,7 @@ def validate_is_schema_dict(key, kwargs):
         for k, v in value.items():
             if not isinstance(k, str):
                 raise SchemaValidationError(key, "dict key must be a str")
-            if not isinstance(v, JSchema):
+            if not isinstance(v, Schema):
                 raise SchemaValidationError(key, "dict value must be a schema")
 
 
@@ -219,7 +219,7 @@ def validate_dependencies(kwargs):
         for k, v in value.items():
             if not isinstance(k, str):
                 raise SchemaValidationError(key, "dict key must be a str")
-            if not isinstance(v, (JSchema, list)):
+            if not isinstance(v, (Schema, list)):
                 raise SchemaValidationError(
                     key, "dict value must be a schema or a list"
                 )
@@ -260,11 +260,11 @@ def validate_items(kwargs):
     key = ITEMS_KEY
     value = kwargs.get(key, None)
     if value is not None:
-        if not isinstance(value, (JSchema, list)):
+        if not isinstance(value, (Schema, list)):
             raise SchemaValidationError(key, "must be a schema or a list")
         if isinstance(value, list):
             for item in value:
-                if not isinstance(item, JSchema):
+                if not isinstance(item, Schema):
                     raise SchemaValidationError(
                         key, "list must contain only schemas"
                     )
@@ -335,7 +335,7 @@ def validate_not(kwargs):
     key = NOT_KEY
     value = kwargs.get(key, None)
     if value is not None:
-        if not isinstance(value, JSchema):
+        if not isinstance(value, Schema):
             raise SchemaValidationError(key, "must be a schema")
 
 
@@ -387,7 +387,7 @@ def validate_unique_items(kwargs):
             raise SchemaValidationError(key, "must be a bool")
 
 
-class JSchema(object):
+class Schema(object):
     def __init__(self, **kwargs):
         self._dict = {}
         for key, keyword in KEYWORDS.items():
@@ -431,43 +431,43 @@ class JSchemaMeta(type):
         return type(uname(), (object,), {'jschema': jschema})
 
 
-class Array(JSchema):
+class Array(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'array'
         super().__init__(**kwargs)
 
 
-class Boolean(JSchema):
+class Boolean(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'boolean'
         super().__init__(**kwargs)
 
 
-class Integer(JSchema):
+class Integer(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'integer'
         super().__init__(**kwargs)
 
 
-class Null(JSchema):
+class Null(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'null'
         super().__init__(**kwargs)
 
 
-class Number(JSchema):
+class Number(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'number'
         super().__init__(**kwargs)
 
 
-class Object(JSchema):
+class Object(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'object'
         super().__init__(**kwargs)
 
 
-class String(JSchema):
+class String(Schema):
     def __init__(self, **kwargs):
         kwargs['type'] = 'string'
         super().__init__(**kwargs)
