@@ -414,7 +414,7 @@ class Schema(object):
     def asjson(self, pretty=False, root=False, schema=None):
         return json.dumps(
             self.asdict(root, schema),
-            cls=JSchemaJsonEncoder,
+            cls=SchemaJsonEncoder,
             sort_keys=True,
             indent=(4 if pretty else None),
             separators=((',', ': ') if pretty else (',', ':'))
@@ -425,10 +425,10 @@ def uname():
     return uuid.uuid4().hex
 
 
-class JSchemaMeta(type):
+class SchemaMeta(type):
     def __call__(cls, *args, **kwargs):
-        jschema = super(JSchemaMeta, cls).__call__(*args, **kwargs)
-        return type(uname(), (object,), {'jschema': jschema})
+        schema = super(SchemaMeta, cls).__call__(*args, **kwargs)
+        return type(uname(), (object,), {'schema': schema})
 
 
 class Array(Schema):
@@ -473,6 +473,6 @@ class String(Schema):
         super().__init__(**kwargs)
 
 
-class JSchemaJsonEncoder(json.JSONEncoder):
+class SchemaJsonEncoder(json.JSONEncoder):
     def default(self, o):
         return o.asdict() if hasattr(o, 'asdict') else o
