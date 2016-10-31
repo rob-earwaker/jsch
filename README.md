@@ -75,22 +75,28 @@ The JSON schema can be accessed as either a `dict` or a JSON string:
 ```python
 >>> import jschema
 >>>
->>> schema = jschema.JSchema(title='Age', type='integer', minimum=0)
+>>> schema = jschema.JSchema(
+...     title='Approximate Age',
+...     type='integer',
+...     minimum=0,
+...     multiple_of=10
+... )
 >>>
 >>> dict = schema.asdict()
 >>> import pprint
 >>> pprint.pprint(dict)
-{'minimum': 0, 'title': 'Age', 'type': 'integer'}
+{'minimum': 0, 'multipleOf': 10, 'title': 'Approximate Age', 'type': 'integer'}
 >>>
 >>> json = schema.asjson()
 >>> print(json)
-{"minimum":0,"title":"Age","type":"integer"}
+{"minimum":0,"multipleOf":10,"title":"Approximate Age","type":"integer"}
 >>>
 >>> pretty_json = schema.asjson(pretty=True)
 >>> print(pretty_json)
 {
     "minimum": 0,
-    "title": "Age",
+    "multipleOf": 10,
+    "title": "Approximate Age",
     "type": "integer"
 }
 >>>
