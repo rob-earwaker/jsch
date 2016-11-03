@@ -14,12 +14,12 @@ JSON schema field can be passed as a keyword argument when initialising a
 `Schema` object:
 
 ```python
->>> from jsch.schema import Schema
+>>> import jsch
 >>>
->>> Schema()
+>>> jsch.Schema()
 <jsch.schema.Schema object at 0x...>
 >>>
->>> schema = Schema(title='First name', type='string', max_length=32)
+>>> schema = jsch.Schema(title='First name', type='string', max_length=32)
 >>> schema.max_length
 32
 >>> schema.title
@@ -37,14 +37,14 @@ A `SchemaValidationError` will be raised on initialisation if any
 (http://json-schema.org/latest/json-schema-validation.html) rules are breached:
 
 ```python
->>> from jsch.schema import Schema
+>>> import jsch
 >>>
->>> Schema(title='Luggage', type='array', max_items=0.5)
+>>> jsch.Schema(title='Luggage', type='array', max_items=0.5)
 Traceback (most recent call last):
   ...
 jsch.schema.SchemaValidationError: 'max_items' must be an int
 >>>
->>> Schema(title='Height', type='object', required=[])
+>>> jsch.Schema(title='Height', type='object', required=[])
 Traceback (most recent call last):
   ...
 jsch.schema.SchemaValidationError: 'required' list must not be empty
@@ -65,9 +65,9 @@ schema object, use the `SchemaStrict` class instead:
 The JSON schema can be accessed as either a `dict` or a JSON string:
 
 ```python
->>> from jsch.schema import Schema
+>>> import jsch
 >>>
->>> schema = Schema(
+>>> schema = jsch.Schema(
 ...     title='Approximate Age',
 ...     type='integer',
 ...     minimum=0,
@@ -98,9 +98,9 @@ If the schema is intended to be a root schema, specify the `root` flag with an
 optional `$schema` string when converting to a `dict` or a JSON string:
 
 ```python
->>> from jsch.schema import Schema
+>>> import jsch
 >>>
->>> schema = Schema(title='Height', type='number')
+>>> schema = jsch.Schema(title='Height', type='number')
 >>>
 >>> json = schema.asjson(pretty=True, root=True)
 >>> print(json)
@@ -124,9 +124,9 @@ For convenience, a class is provided for each of the primitive JSON schema
 types, to save specifying the `type` keyword:
 
 ```python
->>> from jsch.schema import Array, Integer, String
+>>> import jsch
 >>>
->>> schema = String(pattern='^[0-9]{4}$')
+>>> schema = jsch.String(pattern='^[0-9]{4}$')
 >>> json = schema.asjson(pretty=True)
 >>> print(json)
 {
@@ -134,7 +134,7 @@ types, to save specifying the `type` keyword:
     "type": "string"
 }
 >>>
->>> schema = Array(items=Integer(), min_items=1)
+>>> schema = jsch.Array(items=jsch.Integer(), min_items=1)
 >>> json = schema.asjson(pretty=True)
 >>> print(json)
 {
