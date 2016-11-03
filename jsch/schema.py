@@ -396,10 +396,19 @@ class Schema(object):
             if key in kwargs:
                 self._dict[keyword] = kwargs[key]
 
-    def __getattr__(self, name):
-        if name not in KEYWORDS:
-            raise AttributeError("'{0}' is not a valid keyword".format(name))
-        return self._dict.get(KEYWORDS[name], None)
+    def __getattribute__(self, name):
+        return (
+            self._dict.get(KEYWORDS[name], None) if name in KEYWORDS
+            else super().__getattribute__(name)
+        )
+
+    def __setattr__(self, name, value):
+        if name in KEYWORDS:
+            raise AttributeError("can't set keyword attribute")
+        super().__setattr__(name, value)
+
+    def __eq__(self, other):
+        return self._dict == other._dict
 
     def asdict(self, root=False, schema=None):
         dict = self._dict.copy()
