@@ -26,12 +26,10 @@ JSON schema field can be passed as a keyword argument when initialising a
 
 Keywords are provided in the underscored format rather than the camel case
 format used by the JSON schema definition, i.e. `max_length` rather than
-`maxLength`. This is done to conform to the [PEP8 Style Guide]
-(https://www.python.org/dev/peps/pep-0008/).
+`maxLength`. This is done to conform to the [PEP8 Style Guide](https://www.python.org/dev/peps/pep-0008/).
 
 A `SchemaValidationError` will be raised on initialisation if any
-[JSON schema validation]
-(http://json-schema.org/latest/json-schema-validation.html) rules are breached:
+[JSON schema validation](http://json-schema.org/latest/json-schema-validation.html) rules are breached:
 
 ```python
 >>> import jsch
