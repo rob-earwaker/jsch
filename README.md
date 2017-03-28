@@ -1,8 +1,5 @@
-[![Build Status](https://travis-ci.org/rob-earwaker/jsch.svg?branch=master)]
-(https://travis-ci.org/rob-earwaker/jsch)
-[![Coverage Status]
-(https://coveralls.io/repos/github/rob-earwaker/jsch/badge.svg?branch=master)]
-(https://coveralls.io/github/rob-earwaker/jsch?branch=master)
+[![Build Status](https://travis-ci.org/rob-earwaker/jsch.svg?branch=master)](https://travis-ci.org/rob-earwaker/jsch)
+[![Coverage Status](https://coveralls.io/repos/github/rob-earwaker/jsch/badge.svg?branch=master)](https://coveralls.io/github/rob-earwaker/jsch?branch=master)
 
 # jsch
 Define classes that conform to a [JSON schema](http://json-schema.org/), with
